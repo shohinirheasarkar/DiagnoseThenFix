@@ -127,3 +127,17 @@ def test_audit_catches_physics_error_shared_by_logger_and_replay(monkeypatch):
     record = live.episode(baseline('stay'), seed=50000, max_decisions=1)
     with pytest.raises(ValueError, match='Upstream trajectory mismatch'):
         verify_live(record)
+
+
+def test_audit_rejects_changed_censoring_and_final_lane():
+    record = episode(baseline('stay'), seed=50000, max_decisions=2)
+    assert record['censored']
+    verify_live(record)
+    changed = deepcopy(record)
+    changed['censored'] = False
+    with pytest.raises(ValueError, match='censoring label mismatch'):
+        verify_live(changed)
+    changed = deepcopy(record)
+    changed['final_lane'] = 8
+    with pytest.raises(ValueError, match='final-lane mismatch'):
+        verify_live(changed)
