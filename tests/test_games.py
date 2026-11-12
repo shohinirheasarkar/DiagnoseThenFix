@@ -57,3 +57,30 @@ def test_overcooked_restore_includes_scripted_partner_and_rng():
         assert saved == snapshot(saved.game, saved.seed, saved.actions)
         assert not event['collision']
     assert Snapshot.from_dict(saved.to_dict()) == saved
+
+
+def test_search_does_not_merge_different_hidden_replay_histories():
+    a = snapshot('Freeway-v0', actions=('S',))
+    b = snapshot('Freeway-v0', actions=('D',))
+    assert a.observation == b.observation
+    assert a.key != b.key
+
+
+def test_snake_search_matches_unmerged_exhaustive_rollouts():
+    from itertools import product
+    saved = snapshot('Snake-v0')
+    safe = set()
+    for sequence in product(('U', 'D', 'L', 'R', 'S'), repeat=3):
+        current = saved
+        for action in sequence:
+            current, event = advance(current, action)
+            if event['collision']:
+                break
+            if current.terminal:
+                safe.add(sequence[0])
+                break
+        else:
+            safe.add(sequence[0])
+    result = search(saved, 3)
+    assert result['exhaustive']
+    assert set(result['safe']) == safe
