@@ -47,8 +47,8 @@ def make_task(state, stage, representation='coordinates', k=1, seed=0,
         raise ValueError('Invalid horizon or paraphrase')
     if not state.cars:
         raise ValueError('A probe needs at least one object')
-    allowed = {'A': {'base'}, 'B': {'base', 'rule', 'scratchpad', 'chained', 'tool'},
-               'C': {'base', 'generic', 'forecast_then_act'},
+    allowed = {'A': {'base'}, 'B': {'base', 'rule', 'scratchpad', 'chained', 'tool', 'code'},
+               'C': {'base', 'generic', 'forecast_then_act', 'bound', 'retry', 'oracle_shield'},
                'D': {'base', 'no_history', 'window', 'balanced'},
                'E': {'base', 'strategy'}, 'action': {'base', 'generic'}}
     if stage not in allowed or repair not in allowed[stage]:
@@ -69,6 +69,19 @@ def make_task(state, stage, representation='coordinates', k=1, seed=0,
         else:
             question = f'What is object 0 head column after exactly {k} car ticks? Answer integer.'
             truth = futures(state, k)[-1][0]
+        if repair == 'code':
+            if kind != 'position':
+                raise ValueError('Code offload currently scores position forecasts only')
+            return {'stage': stage, 'representation': representation, 'k': k, 'seed': seed,
+                    'paraphrase': paraphrase, 'kind': kind, 'repair': repair,
+                    'history_kind': history_kind, 'history_length': history_length,
+                    'skin': skin, 'labels': labels, 'name_leak': name_leak, 'truth': truth,
+                    'prompt': PARAPHRASES[paraphrase] + '\n' + RULES +
+                    '\nWrite one Python function forecast(x, timer, p, k) returning the head '
+                    'column after k ticks. Only arithmetic, assignments, if/elif, and for '
+                    'loops over range are supported. Calls allowed: abs,int,min,max,range. '
+                    'No imports, attributes, recursion, lists, or other functions. '
+                    'Return JSON {"code": "function source", "confidence": number from 0 to 1}.'}
         if repair == 'rule':
             question += '\nApply the provided timer and delayed-wrap rules explicitly.'
         elif repair == 'scratchpad':
@@ -89,6 +102,12 @@ def make_task(state, stage, representation='coordinates', k=1, seed=0,
                     f'{k} ticks would collide. Return JSON '
                     '{"action": "label", "collision": {"U": bool, "S": bool, "D": bool}, '
                     '"confidence": number from 0 to 1}.')
+        if stage == 'C' and kind == 'forecast':
+            question = (f'Forecast collision for repeating each action for {k} ticks. '
+                        'Return JSON {"collision": {"U": bool, "S": bool, "D": bool}, '
+                        '"confidence": number from 0 to 1}. Do not choose an action.')
+        elif stage == 'C' and kind in ('action', 'own', 'oracle'):
+            question = 'Choose an action. Return JSON {"action": "label", "confidence": number from 0 to 1}.'
         if repair == 'generic':
             question += '\nThink carefully and check your answer.'
         elif repair == 'forecast_then_act':
@@ -152,8 +171,18 @@ def score(task, value, error, state, truth):
             if type(target) in (int, float):
                 result['signed_error'] = answer - target
             return result
+        if task['stage'] == 'C' and task['kind'] == 'forecast':
+            beliefs = value['collision']
+            if set(beliefs) != set(ACTIONS) or any(type(v) is not bool for v in beliefs.values()):
+                raise ValueError('invalid forecast')
+            actual = {a: repeated_outcome(state, a, task['k']) == 'collision' for a in ACTIONS}
+            return {'valid': True, 'correct': beliefs == actual, 'confidence': confidence,
+                    'own_collision': beliefs, 'actual_collision': actual}
         reverse = {v: a for a, v in LABELS[task['labels']].items()}
         action = reverse[value['action']]
+        if task['stage'] == 'C' and task['kind'] in ('action', 'own', 'oracle'):
+            return {'valid': True, 'correct': action in truth['optimal'],
+                    'safe': action in truth['safe'], 'action': action, 'confidence': confidence}
         collision = value['collision']
         if set(collision) != set(ACTIONS) or any(type(v) is not bool for v in collision.values()):
             raise ValueError('collision forecast must contain three booleans')
@@ -170,4 +199,4 @@ def score(task, value, error, state, truth):
 
 def inventory():
     return {'A': ['occupancy', 'nearest', 'count', 'motion', 'position'],
-            'B': ['position', 'collision'], 'C': ['action'], 'D': ['action'], 'E': ['action', 'null']}
+            'B': ['position', 'collision'], 'C': ['forecast', 'action', 'own', 'oracle', 'combined'], 'D': ['action'], 'E': ['action', 'null']}
