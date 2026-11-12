@@ -709,6 +709,15 @@ def build(evidence, output, figures, root):
               'action-only baseline and execution-corrected history remain future controls. No '
               'novelty priority, venue readiness, or broad model-size law is claimed.')
     heading('8. Reproducibility and review status')
+    paragraph('The main collector loads frozen source commit '
+              'f71b9259abd055291c7c865659363aa1b3d9ec0f; commitment-test manifests record their '
+              'separate module hashes. Canonical wins use lane 0, although upstream redraws the '
+              'player at lane 9 in its terminal observation. The frozen collector also redraws '
+              'initial cars after a collision on tick 100; current code retains the upstream '
+              'terminal cars. This last-board display difference changes no success label, '
+              'collision count, elapsed tick or later decision. The offline audit checks each '
+              'physical tick against upstream and applies the frozen display convention only '
+              'for that declared source revision.')
     paragraph('The repository contains the preregistration, execution-plan deviations, pinned '
               'upstream revision, labeled bank, tests, runner, raw response logs or losslessly '
               'compressed copies, and this paper generator. The evidence JSON records the '
