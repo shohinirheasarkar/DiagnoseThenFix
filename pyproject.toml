@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "diagnose-then-fix"
+version = "0.1.0"
+description = "Simulator-checked diagnostics and repairs for real-time game agents"
+requires-python = ">=3.11"
+dependencies = ["numpy==2.2.6", "pygame==2.6.1"]
+
+[project.optional-dependencies]
+test = ["pytest==8.3.5", "pytest-cov==6.1.1", "ruff==0.11.13"]
+paper = ["reportlab==4.4.1", "matplotlib==3.10.3", "pypdf==5.6.0"]
+
+[project.scripts]
+diagnose = "diagnose.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["diagnose*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
