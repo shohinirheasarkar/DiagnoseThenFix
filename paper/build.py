@@ -19,10 +19,11 @@ os.environ.setdefault('XDG_CACHE_HOME', str(Path(__file__).resolve().parents[1] 
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import numpy as np
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-from reportlab.platypus import (Image, Paragraph, SimpleDocTemplate,
+from reportlab.platypus import (Image, KeepTogether, Paragraph, SimpleDocTemplate,
                                Spacer, Table, TableStyle)
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -92,10 +93,38 @@ def wilson(successes, count):
     return {'mean': p, 'low': max(0., center-half), 'high': min(1., center+half)}
 
 
+def shape_fits(curve):
+    points = sorted(curve.items())
+    if len(points) < 3:
+        return None
+    x, y = np.array(points, dtype=float).T
+    linear = np.polyfit(x, y, 1)
+    linear_prediction = np.polyval(linear, x)
+    exponentials = []
+    for rate in np.linspace(-1., 1., 401):
+        basis = np.exp(rate*x)
+        amplitude = float(basis @ y / (basis @ basis))
+        prediction = amplitude*basis
+        exponentials.append((float(np.mean((prediction-y)**2)), float(rate), amplitude))
+    exp_error, rate, amplitude = min(exponentials)
+    cliffs = []
+    for cut in range(1, len(points)):
+        before, after = float(y[:cut].mean()), float(y[cut:].mean())
+        prediction = np.r_[np.repeat(before, cut), np.repeat(after, len(points)-cut)]
+        cliffs.append((float(np.mean((prediction-y)**2)), float(x[cut-1]), before, after))
+    cliff_error, threshold, before, after = min(cliffs)
+    return {'horizons': len(points),
+            'linear': {'slope': float(linear[0]), 'intercept': float(linear[1]),
+                       'rmse': float(np.sqrt(np.mean((linear_prediction-y)**2)))},
+            'exponential': {'rate': rate, 'amplitude': amplitude, 'rmse': math.sqrt(exp_error)},
+            'cliff': {'last_before': threshold, 'before': before, 'after': after,
+                      'rmse': math.sqrt(cliff_error)}}
+
+
 def analyze(root, bank_path):
     bank_data = json.loads(Path(bank_path).read_text())
     bank = {r['id']: r for r in bank_data['situations']}
-    output = {'bank': bank_data['manifest'], 'models': {}, 'live': [], 'files': {},
+    output = {'bank': bank_data['manifest'], 'models': {}, 'live': [], 'live_paired': [], 'files': {},
               'generated_at': datetime.now(timezone.utc).isoformat(),
               'bank_sha256': hashlib.sha256(Path(bank_path).read_bytes()).hexdigest()}
     for path in sorted((p for p in root.rglob('*') if p.name.endswith(('.jsonl', '.jsonl.gz')))):
@@ -133,6 +162,13 @@ def analyze(root, bank_path):
                 'position_accuracy': interval([r for r in test if r['task']['kind'] == 'position']),
                 'collision_accuracy': interval([r for r in test if r['task']['kind'] == 'collision']),
                 'invalid': sum(not r['score']['valid'] for r in test)}
+        data['position_shape_fits'] = shape_fits(pos_curve)
+        data['position_signed_error_valid'] = interval(
+            [r for r in test if r['task']['kind'] == 'position'], 'signed_error')
+        data['position_absolute_error_valid'] = interval(
+            [{**r, 'score': {**r['score'], 'absolute_error': abs(r['score']['signed_error'])}}
+             for r in test if r['task']['kind'] == 'position' and 'signed_error' in r['score']],
+            'absolute_error')
         repairs = rows(folder / 'B-repairs/responses.jsonl')
         existing = {(r['state_id'], r['task']['kind'], r['task']['repair'], r['task']['k'], r['task']['seed']) for r in repairs}
         repairs += [r for r in rows(folder / 'B-repairs-primary/responses.jsonl')
@@ -190,6 +226,19 @@ def analyze(root, bank_path):
                                   'mean_collisions': statistics.mean(r['collisions'] for r in complete) if complete else None,
                                   'error_decisions': sum(bool(t['response'].get('error')) for r in complete for t in r['trace']),
                                   'decisions': sum(len(r['trace']) for r in complete)})
+        base_live = {r['seed']: r for r in rows(folder / 'live-base.jsonl') if not r.get('censored')}
+        for condition in ('selected', 'all', 'random', 'monitor'):
+            candidate = {r['seed']: r for r in rows(folder / f'live-{condition}.jsonl') if not r.get('censored')}
+            shared = sorted(base_live.keys() & candidate.keys())
+            if shared:
+                differences = [{'state_id': seed,
+                                'success_change': int(candidate[seed]['success'])-int(base_live[seed]['success']),
+                                'token_change': candidate[seed]['tokens']-base_live[seed]['tokens']}
+                               for seed in shared]
+                output['live_paired'].append({'model': profile['model'], 'condition': condition,
+                                             'paired_episodes': len(shared),
+                                             'success_change': bootstrap(differences, 'success_change'),
+                                             'token_change': bootstrap(differences, 'token_change')})
     def model_size(item):
         match = re.search(r':([0-9.]+)b', item[0])
         return float(match.group(1)) if match else float('inf')
@@ -255,7 +304,7 @@ def build(evidence, output, figures, root):
     styles.add(ParagraphStyle('PaperTitle', fontName='Helvetica-Bold', fontSize=21, leading=25,
                               spaceAfter=12, textColor=colors.HexColor('#193b55')))
     styles.add(ParagraphStyle('PaperBody', fontName='Helvetica', fontSize=10, leading=14,
-                              spaceAfter=8))
+                              spaceAfter=8, allowWidows=0, allowOrphans=0))
     styles.add(ParagraphStyle('SmallNote', fontName='Helvetica', fontSize=8.2, leading=11,
                               spaceAfter=7, textColor=colors.HexColor('#465361')))
     styles.add(ParagraphStyle('TableText', fontName='Helvetica', fontSize=8, leading=10))
@@ -267,7 +316,8 @@ def build(evidence, output, figures, root):
     markdown = []
 
     def paragraph(text, style='PaperBody'):
-        story.append(Paragraph(text, styles[style]))
+        block = Paragraph(text, styles[style])
+        story.append(KeepTogether([block]) if style == 'SmallNote' else block)
         markdown.append(text.replace('<b>', '**').replace('</b>', '**'))
 
     def heading(text):
@@ -422,6 +472,20 @@ def build(evidence, output, figures, root):
         paragraph('Confidence and ECE use only valid self-reports; primary accuracy includes every '
                   'trial. ECE uses ten fixed confidence bins. ECE is descriptive and does not '
                   'establish a cognitive mechanism.', 'SmallNote')
+        fit_rows = [[name.replace('qwen3:', '').replace('-q4_K_M', ''),
+                     f'{m["position_signed_error_valid"]["mean"]:.2f}' if m['position_signed_error_valid']['mean'] is not None else '-',
+                     f'{m["position_absolute_error_valid"]["mean"]:.2f}' if m['position_absolute_error_valid']['mean'] is not None else '-',
+                     *[f'{m["position_shape_fits"][kind]["rmse"]:.3f}' for kind in ('linear', 'exponential', 'cliff')]]
+                    for name, m in models.items() if m['position_shape_fits']]
+        if fit_rows:
+            table(['Model tag', 'Signed error', 'Absolute error', 'Linear RMSE', 'Exponential RMSE', 'Cliff RMSE'],
+                  fit_rows, [70, 80, 80, 95, 108, 95])
+            paragraph('Cell errors condition on valid numeric position answers. Shape fits use the '
+                      'episode-weighted position means: ordinary least-squares line, a*exp(b*k) '
+                      'with b on a fixed [-1,1] grid at 0.005 spacing, and two constant levels with '
+                      'one breakpoint. RMSE is in-sample accuracy error. The cliff has an extra '
+                      'selected parameter; lower RMSE is not evidence that it generalizes or that '
+                      'compounding error caused the curve. No confirmatory shape test is claimed.', 'SmallNote')
     heading('5. Targeted repairs and consistency')
     paragraph('We compare direct answers with rule reminders, scratchpad tables, chained tables, '
               'model-written code, and a supplied deterministic forecast. Code is interpreted in '
@@ -511,6 +575,18 @@ def build(evidence, output, figures, root):
                   'when every episode succeeds or fails. The requested bootstrap intervals are '
                   'also retained in the evidence JSON. These methods agree on the point estimate '
                   'but quantify uncertainty differently.', 'SmallNote')
+        if evidence.get('live_paired'):
+            table(['Model', 'Repair vs base', 'Shared episodes', 'Success change [pp, 95% CI]',
+                   'Generated-token change / ep.'],
+                  [[r['model'].replace('qwen3:', '').replace('-q4_K_M', ''), r['condition'],
+                    str(r['paired_episodes']), ci(r['success_change']),
+                    f'{r["token_change"]["mean"]:.0f}'] for r in evidence['live_paired']],
+                  [70, 90, 75, 183, 110])
+            paragraph('Paired changes use only shared, uncensored episode seeds and percentile '
+                      'bootstrap intervals across episodes. They are exploratory and unadjusted. '
+                      'Identical outcomes on every observed pair can give a degenerate bootstrap '
+                      'interval; this does not establish zero population difference. Token changes '
+                      'include additional calls and retries, but are not a cost-matched comparison.', 'SmallNote')
     else:
         paragraph('No live episode completed at report generation. Frozen accuracy alone cannot '
                   'establish usefulness during live play.')

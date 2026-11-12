@@ -11,6 +11,8 @@ from diagnose.model import canonical, parse_reply
 from diagnose.probes import score
 from diagnose.repairs import ArithmeticProgram
 from diagnose.world import State, futures, initial, repeated_outcome, step
+from diagnose.commitment import score as commitment_score, truth as commitment_truth, validate_beliefs
+from diagnose.repairs import bound_action
 
 
 def read(path):
@@ -84,10 +86,61 @@ def verify_forecast(record, situation):
         raise ValueError('Forecast score mismatch')
 
 
+def verify_commitment(record, situation):
+    state = State.from_dict(situation['state'])
+    target = commitment_truth(state, record['horizon'])
+    if target != record['target'] or state.source_seed != record['source_seed']:
+        raise ValueError('Commitment target mismatch')
+    responses = record['responses']
+    forecast, forecast_error = parse_reply(responses[0], ('unsafe', 'confidence'))
+    beliefs = None
+    if not forecast_error:
+        try:
+            beliefs = validate_beliefs(forecast['unsafe'])
+            confidence = forecast['confidence']
+            if type(confidence) not in (int, float) or not 0 <= confidence <= 1:
+                raise ValueError('Invalid forecast confidence')
+        except (ValueError, KeyError, TypeError) as exc:
+            forecast_error = str(exc)
+    condition = record['condition']
+    own = error = value = None
+    if condition in ('bound', 'shield'):
+        if len(responses) != 1:
+            raise ValueError('Unexpected commitment request count')
+        if condition == 'bound' and forecast_error:
+            error = forecast_error
+        else:
+            own = beliefs if condition == 'bound' else target['unsafe']
+            value = {'action': bound_action(own), 'confidence': 1.}
+    elif condition == 'own' and forecast_error:
+        error = forecast_error
+        if len(responses) != 1:
+            raise ValueError('Unexpected commitment request count')
+    else:
+        combined = condition in ('combined', 'generic', 'retry')
+        required = ('action', 'confidence', 'unsafe') if combined else ('action', 'confidence')
+        value, error = parse_reply(responses[1], required)
+        own = (value.get('unsafe') if combined and not error
+               else target['unsafe'] if condition == 'oracle' else beliefs)
+        retry = False
+        if condition == 'retry' and not error:
+            proposed = commitment_score(value, None, target, own)
+            retry = bool(proposed.get('contradiction') or proposed.get('failed_abstention'))
+        if len(responses) != 2+int(retry):
+            raise ValueError('Unexpected commitment request count')
+        if retry:
+            value, error = parse_reply(responses[-1], ('action', 'confidence'))
+    if value != record['value']:
+        raise ValueError('Commitment parsed-value mismatch')
+    computed = commitment_score(value, error, target, own)
+    if {k: v for k, v in computed.items() if k != 'error'} != {k: v for k, v in record['score'].items() if k != 'error'}:
+        raise ValueError('Commitment score mismatch')
+
+
 def check(root, bank_path=Path('data/freeway.json')):
     root = Path(root)
     bank = {r['id']: r for r in json.loads(Path(bank_path).read_text())['situations']}
-    counts = {'forecast_trials': 0, 'live_episodes': 0, 'files': 0}
+    counts = {'forecast_trials': 0, 'commitment_trials': 0, 'live_episodes': 0, 'files': 0}
     archive = root / 'archive.json'
     if archive.exists():
         for record in json.loads(archive.read_text())['files']:
@@ -96,6 +149,14 @@ def check(root, bank_path=Path('data/freeway.json')):
                 raise ValueError('Archive path escapes its root')
             if hashlib.sha256(path.read_bytes()).hexdigest() != record['artifact_sha256']:
                 raise ValueError(f'Archive hash mismatch: {path}')
+            opener = gzip.open if path.suffix == '.gz' else open
+            digest, size = hashlib.sha256(), 0
+            with opener(path, 'rb') as handle:
+                while chunk := handle.read(1024*1024):
+                    digest.update(chunk)
+                    size += len(chunk)
+            if digest.hexdigest() != record['source_sha256'] or size != record['source_bytes']:
+                raise ValueError(f'Archive round-trip mismatch: {path}')
     for path in sorted(root.rglob('*')):
         if not path.name.endswith(('.jsonl', '.jsonl.gz')):
             continue
@@ -110,6 +171,9 @@ def check(root, bank_path=Path('data/freeway.json')):
                 if 'task' in record and record['task']['stage'] == 'B':
                     verify_forecast(record, bank[record['state_id']])
                     counts['forecast_trials'] += 1
+                elif record.get('protocol') == 'repeated-action-commitment-v1':
+                    verify_commitment(record, bank[record['state_id']])
+                    counts['commitment_trials'] += 1
                 elif 'trace' in record:
                     verify_live(record)
                     counts['live_episodes'] += 1

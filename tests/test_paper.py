@@ -56,3 +56,39 @@ def test_live_boundary_intervals_do_not_claim_population_certainty():
     assert wilson(50, 50)['low'] < .93
     assert wilson(25, 50)['low'] < .5 < wilson(25, 50)['high']
     assert wilson(0, 0)['mean'] is None
+
+
+def test_descriptive_shapes_recover_known_curves():
+    import math
+    import pytest
+    from paper.build import shape_fits
+    assert shape_fits({1: .5, 2: .4}) is None
+    line = shape_fits({k: 1-.05*k for k in range(1, 11)})
+    assert line['linear']['rmse'] < 1e-12
+    assert line['linear']['slope'] == pytest.approx(-.05)
+    exponential = shape_fits({k: .9*math.exp(-.2*k) for k in range(1, 11)})
+    assert exponential['exponential']['rmse'] < 1e-12
+    assert exponential['exponential']['rate'] == pytest.approx(-.2)
+    cliff = shape_fits({k: .9 if k <= 4 else .2 for k in range(1, 11)})
+    assert cliff['cliff']['rmse'] < 1e-12
+    assert cliff['cliff']['last_before'] == 4
+
+
+def test_paired_live_estimates_exclude_unshared_and_censored_episodes(tmp_path):
+    root = tmp_path / 'results'
+    folder = root / 'model'
+    folder.mkdir(parents=True)
+    (folder / 'profile.json').write_text(json.dumps({'model': 'test-model', 'best_representation': 'coordinates'}))
+    def row(seed, success, tokens, censored=False):
+        return {'seed': seed, 'success': success, 'tokens': tokens, 'censored': censored,
+                'calls': 1, 'collisions': 0, 'trace': []}
+    base = [row(1, False, 10), row(2, True, 20), row(3, False, 10)]
+    selected = [row(1, True, 15), row(2, False, 50, True), row(4, True, 100)]
+    for name, records in (('base', base), ('selected', selected)):
+        (folder / f'live-{name}.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in records))
+    result = analyze(root, Path('data/freeway.json'))
+    paired = result['live_paired'][0]
+    assert paired['paired_episodes'] == 1
+    assert paired['success_change']['mean'] == 1
+    assert paired['token_change']['mean'] == 5
+    assert next(r for r in result['live'] if r['condition'] == 'selected')['censored'] == 1

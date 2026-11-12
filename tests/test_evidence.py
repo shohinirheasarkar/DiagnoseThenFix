@@ -50,3 +50,42 @@ def test_physics_audit_checks_delay_and_cost_totals():
     changed['tokens'] = 1
     with pytest.raises(ValueError, match='cost totals'):
         verify_live(changed)
+
+
+@pytest.mark.parametrize('reply', [
+    {'action': 'D', 'unsafe': {'U': False, 'S': False, 'D': True}, 'confidence': .8},
+    {'action': None, 'unsafe': {'U': True, 'S': True, 'D': True}, 'confidence': .8},
+    {'action': 'X', 'unsafe': {'U': False}, 'confidence': 2},
+])
+def test_commitment_audit_reparses_retries_and_rejects_changed_scores(tmp_path, reply):
+    from diagnose.commitment import run as run_commitment
+    from scripts.check_evidence import verify_commitment
+    fake = FakeOllama()
+    fake.reply = reply
+    s = initial(1000)
+    situation = {'id': s.key, 'split': 'test', 'state': s.to_dict(), 'oracle': label(s)}
+    records = run_commitment([situation], LocalModel('test', tmp_path / 'cache', transport=fake),
+                             tmp_path / 'run', seeds=(0,))
+    for record in records:
+        verify_commitment(record, situation)
+        changed = deepcopy(record)
+        changed['score']['correct'] = not changed['score']['correct']
+        with pytest.raises(ValueError, match='score mismatch'):
+            verify_commitment(changed, situation)
+    changed = deepcopy(records[0])
+    changed['target']['choice'] = 'X'
+    with pytest.raises(ValueError, match='target mismatch'):
+        verify_commitment(changed, situation)
+
+
+def test_archive_audit_checks_decompressed_hash(tmp_path):
+    from scripts.package_results import package
+    source, destination = tmp_path / 'source', tmp_path / 'archive'
+    source.mkdir()
+    (source / 'example.json').write_text('{}')
+    manifest = package(source, destination)
+    check(destination)
+    manifest['files'][0]['source_sha256'] = '0'*64
+    (destination / 'archive.json').write_text(json.dumps(manifest))
+    with pytest.raises(ValueError, match='round-trip mismatch'):
+        check(destination)
