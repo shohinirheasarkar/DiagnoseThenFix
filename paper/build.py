@@ -299,7 +299,7 @@ def curves_figure(evidence, output):
         return None
     plt.rcParams.update({'font.size': 9, 'axes.spines.top': False, 'axes.spines.right': False,
                          'font.family': 'DejaVu Sans'})
-    figure, axes = plt.subplots(2, len(models), figsize=(3.05*len(models), 5.1), squeeze=False,
+    figure, axes = plt.subplots(2, len(models), figsize=(7.33, 4.1), squeeze=False,
                                 sharex=True, sharey=True, layout='constrained')
     for col, name in enumerate(models):
         model = evidence['models'][name]
@@ -318,11 +318,11 @@ def curves_figure(evidence, output):
             ax.grid(alpha=.15)
             if row == 0:
                 ax.set_title(name.replace('qwen3:', '').replace('-q4_K_M', '') + f' | {model["states"]} boards')
-            if row == 1:
-                ax.set_xlabel('Forecast horizon (car ticks)')
             if col == 0:
                 ax.set_ylabel(('Exact head position' if row == 0 else 'Collision prediction') + '\nAccuracy')
-    axes[0][0].legend(loc='lower left', fontsize=7)
+    handles, labels = axes[0][0].get_legend_handles_labels()
+    figure.legend(handles, labels, loc='outside upper center', ncol=4, fontsize=8)
+    figure.supxlabel('Forecast horizon (car ticks)', fontsize=9)
     figure.savefig(output, dpi=180, bbox_inches='tight')
     plt.close(figure)
     return output
