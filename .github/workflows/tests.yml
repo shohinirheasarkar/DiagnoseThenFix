@@ -14,5 +14,6 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - run: pip install -e '.[test]'
+      - run: pip install --no-deps 'git+https://github.com/SALT-NLP/RealtimeGym.git@3d5b3ef37dafee25ca2e8d2e8d71f5fe842eda7b'
       - run: pytest --cov=diagnose --cov-report=term-missing
       - run: ruff check diagnose tests
