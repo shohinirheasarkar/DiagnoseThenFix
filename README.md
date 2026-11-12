@@ -4,10 +4,13 @@ Where do small language models get stuck in real-time games? We separate reading
 the board, forecasting motion, choosing an action, copying history, and following
 priors, then test fixes against simulator labels.
 
-This cycle focuses on Freeway and four local Qwen3 artifacts. The full multi-game
-study is still in progress; [the execution plan](execution_plan.md) records the
-scope, time cap, and unfinished experiments. Snake and Overcooked have tested
-snapshot/replay adapters.
+This eight-hour cycle completed 8,000 held-out Freeway forecast trials across
+four local Qwen3 artifacts. [The review paper](output/pdf/diagnose-then-repair.pdf)
+reports the results, failures, and partial live cohorts.
+
+The full multi-game study remains unfinished; [the execution plan](execution_plan.md)
+records the scope and deviations. Snake and Overcooked have tested snapshot/replay
+adapters.
 
 ## Run locally
 
@@ -27,6 +30,15 @@ python -m pytest
 ```sh
 diagnose probe --model qwen3:1.7b-q4_K_M --output results/my-run --stages B --limit 5
 python -m diagnose.commitment --model qwen3:1.7b-q4_K_M --output results/my-commitments
+```
+
+## Check the paper and data
+
+These commands use [saved evidence](results/review), with no model calls:
+
+```sh
+python scripts/check_evidence.py results/review
+python paper/build.py --results results/review --output output/pdf/diagnose-then-repair.pdf
 ```
 
 Requests include exact model hashes and prompts; completed trials resume without

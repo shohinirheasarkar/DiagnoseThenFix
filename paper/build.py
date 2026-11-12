@@ -246,17 +246,21 @@ def analyze(root, bank_path):
                 data['commitment'].append({'condition': name, 'accuracy': interval(group),
                                            'forecast_accuracy_valid_only': interval(group, 'forecast_accuracy'),
                                            'inconsistency_valid_only': interval(group, 'inconsistent'),
+                                           'skipped_progress_valid_only': interval(group, 'skipped_progress'),
+                                           'failed_abstention_valid_only': interval(group, 'failed_abstention'),
                                            'unsafe_choice_own_feasible': interval(eligible, 'contradiction'),
                                            'trials': len(group), 'invalid': sum(not r['score']['valid'] for r in group),
                                            'states': len({r['state_id'] for r in group}),
                                            'upper_bound': name in ('oracle', 'shield')})
         output['models'][profile['model']] = data
-        for path in folder.glob('live-*.jsonl*'):
+        for path in sorted(folder.glob('live-*.jsonl*'), key=lambda p: (
+                {'base': 0, 'selected': 1, 'all': 2}.get(p.name.split('.')[0][5:], 3), p.name)):
             group = rows(path)
             complete = [r for r in group if not r.get('censored')]
             values = [{'state_id': r['seed'], 'success': r['success']} for r in complete]
             output['live'].append({'model': profile['model'], 'condition': path.name.removesuffix('.gz').removesuffix('.jsonl')[5:],
                                   'episodes': len(complete), 'censored': len(group)-len(complete),
+                                  'episode_seeds': sorted(r['seed'] for r in complete),
                                   'successes': sum(r['success'] for r in complete),
                                   'success': bootstrap(values, 'success'),
                                   'success_wilson': wilson(sum(r['success'] for r in complete), len(complete)),
@@ -286,6 +290,7 @@ def analyze(root, bank_path):
         group = rows(path)
         output['live'].append({'model': 'simulator control', 'condition': path.name.removesuffix('.gz').removesuffix('.jsonl')[9:],
                               'episodes': len(group), 'censored': 0,
+                              'episode_seeds': sorted(r['seed'] for r in group),
                               'successes': sum(r['success'] for r in group),
                               'success': bootstrap([{'state_id': r['seed'], 'success': r['success']} for r in group], 'success'),
                               'success_wilson': wilson(sum(r['success'] for r in group),len(group)),
@@ -391,8 +396,10 @@ def build(evidence, output, figures, root):
                f'{percent(max(position_values))} across the collected artifacts. '
                if position_values else '')
     agent_live = [r for r in evidence['live'] if r['model'] != 'simulator control']
+    live_seed_count = len({seed for r in agent_live for seed in r['episode_seeds']})
     live_finding = (f'Live collection produced {sum(r["episodes"] for r in agent_live)} completed '
-                    f'model-condition runs ({sum(r["successes"] for r in agent_live)} goals) and '
+                    f'model-condition runs over {live_seed_count} environment seeds '
+                    f'({sum(r["successes"] for r in agent_live)} goals) and '
                     f'{sum(r["censored"] for r in agent_live)} censored runs. ' if agent_live else '')
     title = 'Diagnose, Then Repair'
     paragraph(title, 'PaperTitle')
@@ -459,6 +466,7 @@ def build(evidence, output, figures, root):
               'timing and software fingerprints are logged. Requests are cached by all decoding '
               'settings and model identity. Malformed outputs, truncations, and timeouts remain in '
               'the primary denominator. Calibration error is conditional on valid confidence reports. '
+              'Accuracy and mean confidence weight source episodes equally; ECE pools valid trials. '
               'Intervals are percentile 95% bootstrap intervals over source episodes, with 2,000 '
               'resamples; sampling repeats do not become independent boards. Boundary estimates '
               'can yield degenerate resampling intervals, which do not establish certainty on new states.')
@@ -629,6 +637,15 @@ def build(evidence, output, figures, root):
                   'skipped believed-safe progress, and failure to abstain when all commitments are '
                   'believed unsafe. This fixes the temporal mismatch of the legacy proxy, while '
                   'remaining a behavioral report-based measurement rather than a causal mechanism test.')
+        paragraph('None uses a fresh action prompt with a separately elicited forecast for '
+                  'comparison; own/oracle inject model/reference forecasts. Combined jointly '
+                  'reports action and forecast, and generic adds a check instruction. Bound '
+                  'selects from model beliefs. Retry makes one extra action call after an unsafe '
+                  'choice or failed abstention, retaining the initial beliefs. Shield applies '
+                  'the priority selector to oracle beliefs, making it a construction ceiling. '
+                  'Action accuracy enforces the full preference rule; inconsistency reports '
+                  'the three events defined above. This follow-up diagnostic does not refit '
+                  'the already-frozen live policy.')
         table(['Model tag', 'Condition', 'Boards / trials', 'Action accuracy [95% CI]',
                'Forecast accuracy', 'Inconsistency, valid records', 'Invalid'], commitment_rows,
               [50, 75, 44, 115, 81, 123, 40])
@@ -637,6 +654,7 @@ def build(evidence, output, figures, root):
                   'correct dynamics. Invalid outputs count against primary accuracy; inconsistency '
                   'and mean per-action forecast accuracy condition on valid action/forecast records. '
                   'The parenthesized n is that conditional record count. '
+                  'Separate component rates are retained in the evidence JSON. '
                   'All action and forecast prompts use '
                   'the same declared commitment horizon.', 'SmallNote')
     else:
@@ -676,7 +694,7 @@ def build(evidence, output, figures, root):
                  '-' if r['mean_collisions'] is None else f'{r["mean_collisions"]:.1f}',
                  f'{r.get("error_decisions", 0)}/{r.get("decisions", 0)}']
                 for r in evidence['live']]
-        table(['Model', 'Condition', 'Complete / censored', 'Success [Wilson 95% CI]',
+        table(['Model', 'Condition', 'Done / censored', 'Success [Wilson 95% CI]',
                'Generated tokens / ep.', 'Collisions / ep.', 'Error decisions / total'],
               body, [70, 50, 45, 135, 80, 68, 80])
         paragraph('Costs, collisions and errors summarize completed episodes. Errors are parse, '
@@ -758,6 +776,12 @@ def build(evidence, output, figures, root):
               f'{"complete" if complete else "incomplete"}. This PDF is a review artifact for '
               'the completed local cycle, not a claim that the full proposed project is done.', 'SmallNote')
     heading('9. Conclusion')
+    if sum(r['episodes'] for r in agent_live) and not sum(r['successes'] for r in agent_live):
+        paragraph(f'None of the {sum(r["episodes"] for r in agent_live)} completed model-condition '
+                  f'runs reached the goal. These runs reuse {live_seed_count} environment seeds '
+                  'across models and conditions. This cycle does not demonstrate a goal-completion '
+                  'benefit from diagnosis-selected repairs under the chosen latency setting. '
+                  'Small live cohorts and wide Wilson bounds limit this negative result.')
     paragraph('The artifact makes stage probes and repair decisions inspectable against a pinned '
               'simulator. The completed results describe the tested prompts, states and local '
               'model artifacts; they do not establish that a weak probe score uniquely identifies '

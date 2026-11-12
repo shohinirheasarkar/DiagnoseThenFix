@@ -100,6 +100,7 @@ def test_paired_live_estimates_exclude_unshared_and_censored_episodes(tmp_path):
     assert baseline['error_decisions'] == 1 and baseline['decisions'] == 2
     assert baseline['successes'] == 1
     assert next(r for r in result['live'] if r['condition'] == 'selected')['successes'] == 2
+    assert next(r for r in result['live'] if r['condition'] == 'selected')['episode_seeds'] == [1, 4]
 
 
 def test_error_onset_uses_delayed_wrap_and_keeps_partial_sequences_separate():
