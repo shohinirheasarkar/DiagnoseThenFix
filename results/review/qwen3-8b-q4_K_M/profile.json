@@ -1,0 +1,251 @@
+{
+  "split": "validation",
+  "model": "qwen3:8b-q4_K_M",
+  "digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+  "best_representation": "json",
+  "representation_accuracy": {
+    "ascii": 0.44,
+    "coordinates": 0.46,
+    "prose": 0.48,
+    "lanes": 0.22,
+    "relations": 0.16,
+    "json": 0.5
+  },
+  "A": 0.44,
+  "B": 0.0625,
+  "C": 0.7916666666666666,
+  "prior": {
+    "scores": {
+      "U": -5.364432580368117e-06,
+      "S": -14.171651840209961,
+      "D": -12.280233383178711
+    },
+    "response": {
+      "cache_hit": true,
+      "created_at": "2026-11-12T09:17:25.982517+00:00",
+      "error": null,
+      "identity": {
+        "digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+        "request": {
+          "keep_alive": "5m",
+          "logprobs": true,
+          "messages": [
+            {
+              "content": "Game rules: U moves one lane toward 0, D toward 9, S stays. Column stays 4.\nThe player moves first. Reaching lane 0 wins before objects update.\nEach object is [head x, lane, timer, speed_parameter p, length].\nIf x<0 set x=8; if x>8 set x=0; either wrap uses the whole tick.\nOtherwise if abs(p)>=1: decrease timer by 1; only if timer becomes -1,\nincrease timer by abs(p) and move head by sign(p).\nIf abs(p)<1: move head by int(1/p). No same-tick modulo wrap.\nAn object occupies x, x-sign(p), ... for its length. After objects move, contact\nwith column 4 in the player's lane causes a collision and resets the board.\nOnly occupied cells at tick endpoints collide; no swept collision rule.\nAt tick 100 the game ends. Prefer safe progress to the goal; don't wait forever.\nA means U, B means S, C means D.\nBOARD MASKED.\nReply with exactly one token: A for U, B for S, C for D.",
+              "role": "user"
+            }
+          ],
+          "model": "qwen3:8b-q4_K_M",
+          "options": {
+            "num_ctx": 8192,
+            "num_predict": 1,
+            "seed": 0,
+            "temperature": 1.0
+          },
+          "stream": false,
+          "think": false,
+          "top_logprobs": 20
+        },
+        "version": {
+          "version": "0.40.16"
+        }
+      },
+      "key": "c558c12c7af6042f14731ebf3e4abf5cf5549bc53a862bf4d026a1f998ced4dd",
+      "raw": {
+        "created_at": "2026-11-12T09:17:25.981542Z",
+        "done": true,
+        "done_reason": "length",
+        "eval_count": 1,
+        "eval_duration": 1000,
+        "load_duration": 4376584,
+        "logprobs": [
+          {
+            "bytes": [
+              65
+            ],
+            "logprob": -5.364432581700385e-06,
+            "token": "A",
+            "top_logprobs": [
+              {
+                "bytes": [
+                  65
+                ],
+                "logprob": -5.364432581700385e-06,
+                "token": "A"
+              },
+              {
+                "bytes": [
+                  67
+                ],
+                "logprob": -12.280233383178711,
+                "token": "C"
+              },
+              {
+                "bytes": [
+                  66
+                ],
+                "logprob": -14.171651840209961,
+                "token": "B"
+              },
+              {
+                "bytes": [
+                  68
+                ],
+                "logprob": -27.869691848754883,
+                "token": "D"
+              },
+              {
+                "bytes": [
+                  85
+                ],
+                "logprob": -29.248035430908203,
+                "token": "U"
+              },
+              {
+                "bytes": [
+                  42,
+                  42
+                ],
+                "logprob": -30.406841278076172,
+                "token": "**"
+              },
+              {
+                "bytes": [
+                  73
+                ],
+                "logprob": -32.97267532348633,
+                "token": "I"
+              },
+              {
+                "bytes": [
+                  42,
+                  65
+                ],
+                "logprob": -33.104774475097656,
+                "token": "*A"
+              },
+              {
+                "bytes": [
+                  83
+                ],
+                "logprob": -33.80281448364258,
+                "token": "S"
+              },
+              {
+                "bytes": [
+                  97
+                ],
+                "logprob": -34.03989028930664,
+                "token": "a"
+              },
+              {
+                "bytes": [
+                  65,
+                  67,
+                  84,
+                  73,
+                  79,
+                  78
+                ],
+                "logprob": -34.1007080078125,
+                "token": "ACTION"
+              },
+              {
+                "bytes": [
+                  32,
+                  65
+                ],
+                "logprob": -34.20699691772461,
+                "token": " A"
+              },
+              {
+                "bytes": [
+                  40,
+                  65
+                ],
+                "logprob": -34.29716873168945,
+                "token": "(A"
+              },
+              {
+                "bytes": [
+                  84,
+                  104,
+                  101
+                ],
+                "logprob": -34.337215423583984,
+                "token": "The"
+              },
+              {
+                "bytes": [
+                  91,
+                  65
+                ],
+                "logprob": -34.36207580566406,
+                "token": "[A"
+              },
+              {
+                "bytes": [
+                  77
+                ],
+                "logprob": -34.47153854370117,
+                "token": "M"
+              },
+              {
+                "bytes": [
+                  96,
+                  96,
+                  96
+                ],
+                "logprob": -34.61214065551758,
+                "token": "```"
+              },
+              {
+                "bytes": [
+                  95,
+                  65
+                ],
+                "logprob": -34.79186248779297,
+                "token": "_A"
+              },
+              {
+                "bytes": [
+                  34,
+                  65
+                ],
+                "logprob": -35.02227020263672,
+                "token": "\"A"
+              },
+              {
+                "bytes": [
+                  208,
+                  144
+                ],
+                "logprob": -35.22426986694336,
+                "token": "\u0410"
+              }
+            ]
+          }
+        ],
+        "message": {
+          "content": "A",
+          "role": "assistant"
+        },
+        "model": "qwen3:8b-q4_K_M",
+        "prompt_eval_cached_count": 3,
+        "prompt_eval_count": 257,
+        "prompt_eval_duration": 2294800000,
+        "total_duration": 2338896584
+      },
+      "wall_seconds": 2.340477916994132
+    },
+    "error": null
+  },
+  "D": 1.0,
+  "history_not_profiled": true,
+  "null_probabilities": {
+    "U": 0.9999946570140559,
+    "S": 7.003736778917087e-07,
+    "D": 4.642612266167991e-06
+  },
+  "E": 0.5
+}

@@ -1,0 +1,47 @@
+{
+  "started_at": "2026-11-12T08:01:33.189799+00:00",
+  "deadline": "2026-11-12T14:40:00Z",
+  "models": [
+    "qwen3:4b-q4_K_M",
+    "qwen3:1.7b-q4_K_M",
+    "qwen3:8b-q4_K_M",
+    "qwen3:14b-q4_K_M"
+  ],
+  "status": "time_limit",
+  "scope": "time-capped exploratory Freeway study",
+  "resumed_at": "2026-11-12T13:45:56.283291+00:00",
+  "source_commit": "f71b9259abd055291c7c865659363aa1b3d9ec0f",
+  "queue_revision": "protect-paired-live-comparison",
+  "scheduling_notes": {
+    "at": "2026-11-12T13:44:00Z",
+    "reason": "Observed live episode throughput would exhaust the remaining window on the first model.",
+    "change": "Finish ten paired 1.7B seeds, then prioritize the planned 4B conditions; designs unchanged."
+  },
+  "forecast_model_order": [
+    "qwen3:1.7b-q4_K_M",
+    "qwen3:4b-q4_K_M",
+    "qwen3:8b-q4_K_M",
+    "qwen3:14b-q4_K_M"
+  ],
+  "ended_at": "2026-11-12T14:40:01.910928+00:00",
+  "commitment_collection": {
+    "deadline": "2026-11-12T14:55:00Z",
+    "ended_at": "2026-11-12T14:55:00.731919Z",
+    "models": {
+      "qwen3:1.7b-q4_K_M": {
+        "trials": 800,
+        "target": 800,
+        "states": 20,
+        "complete": true
+      },
+      "qwen3:4b-q4_K_M": {
+        "trials": 436,
+        "target": 800,
+        "states": 11,
+        "complete": false
+      }
+    }
+  },
+  "cycle_closed_at": "2026-11-12T14:55:37.890766+00:00",
+  "full_research_plan_complete": false
+}

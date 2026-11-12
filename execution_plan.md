@@ -111,3 +111,13 @@ replies before switching models. Completed records are retained. Conditions,
 cases, decoding, seeds and scoring are unchanged; only scheduling changes. Keep
 the 50-seed targets and report the actual partial counts. The reason is model
 coverage within the fixed time cap, not selection on a favorable live outcome.
+
+## Closed local cycle
+
+The four-model main forecast matrix completed 8,000 held-out trials. Each of the
+two live models completed ten shared seeds in base/selected/all: 60 completed
+model-condition runs, zero goals, and one additional censored 4B base attempt.
+All 250 simulator-control episodes completed. Commitment trials completed at 800/800 for 1.7B (20 boards) and 436/800 for 4B
+(11 boards).
+Collection stopped at 14:55 UTC. The paper and lossless archive report these
+actual cohorts; the full multi-game research plan remains unfinished.

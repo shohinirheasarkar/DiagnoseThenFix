@@ -1,0 +1,5046 @@
+{
+  "bank": {
+    "actual": 500,
+    "balanced": true,
+    "bank_seed": 0,
+    "categories": {
+      "dangerous_advance": 125,
+      "must_retreat": 125,
+      "safe_advance": 125,
+      "waiting_helps": 125
+    },
+    "horizon": 10,
+    "max_states_per_episode": 2,
+    "requested": 500,
+    "source_episodes": {
+      "test": 51,
+      "train": 152,
+      "validation": 50
+    },
+    "splits": {
+      "test": 100,
+      "train": 300,
+      "validation": 100
+    },
+    "upstream": "3d5b3ef37dafee25ca2e8d2e8d71f5fe842eda7b"
+  },
+  "models": {
+    "qwen3:1.7b-q4_K_M": {
+      "profile": {
+        "split": "validation",
+        "model": "qwen3:1.7b-q4_K_M",
+        "digest": "8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7",
+        "best_representation": "coordinates",
+        "representation_accuracy": {
+          "ascii": 0.36,
+          "coordinates": 0.4,
+          "prose": 0.34,
+          "lanes": 0.06,
+          "relations": 0.28,
+          "json": 0.3
+        },
+        "A": 0.36,
+        "B": 0.10416666666666667,
+        "C": 1,
+        "prior": {
+          "scores": {
+            "U": -1.8843027353286743,
+            "S": -6.714560031890869,
+            "D": -0.16626986391067167
+          },
+          "response": {
+            "cache_hit": true,
+            "created_at": "2026-11-12T08:04:54.809325+00:00",
+            "error": null,
+            "identity": {
+              "digest": "8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7",
+              "request": {
+                "keep_alive": "5m",
+                "logprobs": true,
+                "messages": [
+                  {
+                    "content": "Game rules: U moves one lane toward 0, D toward 9, S stays. Column stays 4.\nThe player moves first. Reaching lane 0 wins before objects update.\nEach object is [head x, lane, timer, speed_parameter p, length].\nIf x<0 set x=8; if x>8 set x=0; either wrap uses the whole tick.\nOtherwise if abs(p)>=1: decrease timer by 1; only if timer becomes -1,\nincrease timer by abs(p) and move head by sign(p).\nIf abs(p)<1: move head by int(1/p). No same-tick modulo wrap.\nAn object occupies x, x-sign(p), ... for its length. After objects move, contact\nwith column 4 in the player's lane causes a collision and resets the board.\nOnly occupied cells at tick endpoints collide; no swept collision rule.\nAt tick 100 the game ends. Prefer safe progress to the goal; don't wait forever.\nA means U, B means S, C means D.\nBOARD MASKED.\nReply with exactly one token: A for U, B for S, C for D.",
+                    "role": "user"
+                  }
+                ],
+                "model": "qwen3:1.7b-q4_K_M",
+                "options": {
+                  "num_ctx": 8192,
+                  "num_predict": 1,
+                  "seed": 0,
+                  "temperature": 1.0
+                },
+                "stream": false,
+                "think": false,
+                "top_logprobs": 20
+              },
+              "version": {
+                "version": "0.40.16"
+              }
+            },
+            "key": "dc8eb34da2195890f0a36cfaa6cee8624f81449e36e5fc7122af38b8670002b0",
+            "raw": {
+              "created_at": "2026-11-12T08:04:54.808431Z",
+              "done": true,
+              "done_reason": "length",
+              "eval_count": 1,
+              "eval_duration": 1000,
+              "load_duration": 1776667,
+              "logprobs": [
+                {
+                  "bytes": [
+                    67
+                  ],
+                  "logprob": -0.16626986861228943,
+                  "token": "C",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        67
+                      ],
+                      "logprob": -0.16626986861228943,
+                      "token": "C"
+                    },
+                    {
+                      "bytes": [
+                        65
+                      ],
+                      "logprob": -1.8843027353286743,
+                      "token": "A"
+                    },
+                    {
+                      "bytes": [
+                        66
+                      ],
+                      "logprob": -6.714560031890869,
+                      "token": "B"
+                    },
+                    {
+                      "bytes": [
+                        68
+                      ],
+                      "logprob": -10.32376766204834,
+                      "token": "D"
+                    },
+                    {
+                      "bytes": [
+                        69
+                      ],
+                      "logprob": -13.959223747253418,
+                      "token": "E"
+                    },
+                    {
+                      "bytes": [
+                        83
+                      ],
+                      "logprob": -15.62438678741455,
+                      "token": "S"
+                    },
+                    {
+                      "bytes": [
+                        85
+                      ],
+                      "logprob": -15.966561317443848,
+                      "token": "U"
+                    },
+                    {
+                      "bytes": [
+                        82
+                      ],
+                      "logprob": -16.414106369018555,
+                      "token": "R"
+                    },
+                    {
+                      "bytes": [
+                        70
+                      ],
+                      "logprob": -16.674053192138672,
+                      "token": "F"
+                    },
+                    {
+                      "bytes": [
+                        73
+                      ],
+                      "logprob": -17.314884185791016,
+                      "token": "I"
+                    },
+                    {
+                      "bytes": [
+                        76
+                      ],
+                      "logprob": -17.460359573364258,
+                      "token": "L"
+                    },
+                    {
+                      "bytes": [
+                        71
+                      ],
+                      "logprob": -17.583948135375977,
+                      "token": "G"
+                    },
+                    {
+                      "bytes": [
+                        80
+                      ],
+                      "logprob": -17.832700729370117,
+                      "token": "P"
+                    },
+                    {
+                      "bytes": [
+                        77
+                      ],
+                      "logprob": -18.1900691986084,
+                      "token": "M"
+                    },
+                    {
+                      "bytes": [
+                        78
+                      ],
+                      "logprob": -18.352521896362305,
+                      "token": "N"
+                    },
+                    {
+                      "bytes": [
+                        84,
+                        104,
+                        101
+                      ],
+                      "logprob": -18.401887893676758,
+                      "token": "The"
+                    },
+                    {
+                      "bytes": [
+                        79
+                      ],
+                      "logprob": -18.777751922607422,
+                      "token": "O"
+                    },
+                    {
+                      "bytes": [
+                        89
+                      ],
+                      "logprob": -19.12642478942871,
+                      "token": "Y"
+                    },
+                    {
+                      "bytes": [
+                        84
+                      ],
+                      "logprob": -19.163822174072266,
+                      "token": "T"
+                    },
+                    {
+                      "bytes": [
+                        32,
+                        67
+                      ],
+                      "logprob": -19.341629028320312,
+                      "token": " C"
+                    }
+                  ]
+                }
+              ],
+              "message": {
+                "content": "C",
+                "role": "assistant"
+              },
+              "model": "qwen3:1.7b-q4_K_M",
+              "prompt_eval_cached_count": 3,
+              "prompt_eval_count": 257,
+              "prompt_eval_duration": 319664000,
+              "total_duration": 354735000
+            },
+            "wall_seconds": 0.35619595799653325
+          },
+          "error": null
+        },
+        "D": 1.0,
+        "history_not_profiled": true,
+        "null_probabilities": {
+          "U": 0.15194016399347038,
+          "S": 0.0012131611685285656,
+          "D": 0.846846674838001
+        },
+        "E": 0.5
+      },
+      "trials": 2000,
+      "states": 20,
+      "source_episodes": 18,
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "curve": [
+        {
+          "kind": "position",
+          "k": 1,
+          "accuracy": {
+            "mean": 0.36666666666666664,
+            "low": 0.16666666666666666,
+            "high": 0.5888888888888889,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.7777777777777778,
+            "low": 0.5555555555555556,
+            "high": 0.9444444444444444,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.5700000000000001,
+          "always_collision": null,
+          "mean_confidence_valid": 1,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 2,
+          "accuracy": {
+            "mean": 0.24444444444444444,
+            "low": 0.06666666666666667,
+            "high": 0.4444444444444444,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.7777777777777778,
+            "low": 0.5555555555555556,
+            "high": 0.9444444444444444,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.6799999999999999,
+          "always_collision": null,
+          "mean_confidence_valid": 1,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 3,
+          "accuracy": {
+            "mean": 0.08333333333333333,
+            "low": 0.0,
+            "high": 0.2222222222222222,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.5833333333333334,
+            "low": 0.3611111111111111,
+            "high": 0.8055555555555556,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.9,
+          "always_collision": null,
+          "mean_confidence_valid": 1,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 4,
+          "accuracy": {
+            "mean": 0.09444444444444444,
+            "low": 0.022222222222222223,
+            "high": 0.18888888888888888,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.7222222222222222,
+            "low": 0.5,
+            "high": 0.8888888888888888,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.89,
+          "always_collision": null,
+          "mean_confidence_valid": 1,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 5,
+          "accuracy": {
+            "mean": 0.022222222222222223,
+            "low": 0.0,
+            "high": 0.06666666666666667,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.4444444444444444,
+            "low": 0.2222222222222222,
+            "high": 0.6666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.98,
+          "always_collision": null,
+          "mean_confidence_valid": 1,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 6,
+          "accuracy": {
+            "mean": 0.03333333333333333,
+            "low": 0.0,
+            "high": 0.09999999999999999,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.5555555555555556,
+            "low": 0.3333333333333333,
+            "high": 0.7777777777777778,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.97,
+          "always_collision": null,
+          "mean_confidence_valid": 1,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 7,
+          "accuracy": {
+            "mean": 0.022222222222222223,
+            "low": 0.0,
+            "high": 0.06666666666666667,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.4722222222222222,
+            "low": 0.25,
+            "high": 0.6944444444444444,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.98,
+          "always_collision": null,
+          "mean_confidence_valid": 1,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 8,
+          "accuracy": {
+            "mean": 0.022222222222222223,
+            "low": 0.0,
+            "high": 0.06666666666666667,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.5555555555555556,
+            "low": 0.3333333333333333,
+            "high": 0.7777777777777778,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.98,
+          "always_collision": null,
+          "mean_confidence_valid": 1,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 9,
+          "accuracy": {
+            "mean": 0.03333333333333333,
+            "low": 0.0,
+            "high": 0.09999999999999999,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.4444444444444444,
+            "low": 0.2222222222222222,
+            "high": 0.6666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.97,
+          "always_collision": null,
+          "mean_confidence_valid": 1,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 10,
+          "accuracy": {
+            "mean": 0.1111111111111111,
+            "low": 0.0,
+            "high": 0.2777777777777778,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.6111111111111112,
+            "low": 0.3888888888888889,
+            "high": 0.8333333333333334,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.9,
+          "always_collision": null,
+          "mean_confidence_valid": 1,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 1,
+          "accuracy": {
+            "mean": 0.3333333333333333,
+            "low": 0.1111111111111111,
+            "high": 0.5555555555555556,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8055555555555556,
+            "low": 0.6111111111111112,
+            "high": 0.9722222222222222,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.6924999999999999,
+          "always_collision": 0.7,
+          "mean_confidence_valid": 0.9924999999999999,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 2,
+          "accuracy": {
+            "mean": 0.2777777777777778,
+            "low": 0.1111111111111111,
+            "high": 0.5,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.9444444444444444,
+            "low": 0.8333333333333334,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.727,
+          "always_collision": 0.75,
+          "mean_confidence_valid": 0.977,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 3,
+          "accuracy": {
+            "mean": 0.16666666666666666,
+            "low": 0.0,
+            "high": 0.3333333333333333,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.9444444444444444,
+            "low": 0.8333333333333334,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8214999999999999,
+          "always_collision": 0.85,
+          "mean_confidence_valid": 0.9714999999999999,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 4,
+          "accuracy": {
+            "mean": 0.16666666666666666,
+            "low": 0.0,
+            "high": 0.3333333333333333,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8333333333333334,
+            "low": 0.6666666666666666,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8109999999999999,
+          "always_collision": 0.85,
+          "mean_confidence_valid": 0.961,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 5,
+          "accuracy": {
+            "mean": 0.16666666666666666,
+            "low": 0.0,
+            "high": 0.3333333333333333,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8333333333333334,
+            "low": 0.6666666666666666,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8094999999999999,
+          "always_collision": 0.85,
+          "mean_confidence_valid": 0.9594999999999999,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 6,
+          "accuracy": {
+            "mean": 0.16666666666666666,
+            "low": 0.0,
+            "high": 0.3333333333333333,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8888888888888888,
+            "low": 0.7222222222222222,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8035,
+          "always_collision": 0.85,
+          "mean_confidence_valid": 0.9535,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 7,
+          "accuracy": {
+            "mean": 0.1111111111111111,
+            "low": 0.0,
+            "high": 0.2777777777777778,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.9444444444444444,
+            "low": 0.8333333333333334,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.85,
+          "always_collision": 0.9,
+          "mean_confidence_valid": 0.95,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 8,
+          "accuracy": {
+            "mean": 0.05555555555555555,
+            "low": 0.0,
+            "high": 0.16666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8888888888888888,
+            "low": 0.7222222222222222,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.9019999999999999,
+          "always_collision": 0.95,
+          "mean_confidence_valid": 0.952,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 9,
+          "accuracy": {
+            "mean": 0.05555555555555555,
+            "low": 0.0,
+            "high": 0.16666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8888888888888888,
+            "low": 0.7222222222222222,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.9035,
+          "always_collision": 0.95,
+          "mean_confidence_valid": 0.9535,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 10,
+          "accuracy": {
+            "mean": 0.05555555555555555,
+            "low": 0.0,
+            "high": 0.16666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8888888888888888,
+            "low": 0.7222222222222222,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.9069999999999999,
+          "always_collision": 0.95,
+          "mean_confidence_valid": 0.957,
+          "invalid": 0,
+          "states": 20
+        }
+      ],
+      "f_prefix_80": 0,
+      "f_largest_80": 0,
+      "position_accuracy": {
+        "mean": 0.10333333333333333,
+        "low": 0.06444444444444444,
+        "high": 0.14444444444444446,
+        "clusters": 18,
+        "observations": 1000
+      },
+      "collision_accuracy": {
+        "mean": 0.15555555555555556,
+        "low": 0.03888888888888889,
+        "high": 0.3055555555555555,
+        "clusters": 18,
+        "observations": 1000
+      },
+      "invalid": 0,
+      "position_shape_fits": {
+        "horizons": 10,
+        "linear": {
+          "slope": -0.025993265993265978,
+          "intercept": 0.2462962962962962,
+          "rmse": 0.07974472928106745
+        },
+        "exponential": {
+          "rate": -0.52,
+          "amplitude": 0.6195309500286699,
+          "rmse": 0.040361839857827396
+        },
+        "cliff": {
+          "last_before": 2.0,
+          "before": 0.3055555555555555,
+          "after": 0.05277777777777777,
+          "rmse": 0.041350653479840876
+        }
+      },
+      "first_error_events": {
+        "complete_sequences": 100,
+        "incomplete_sequences": 0,
+        "all_correct": 0,
+        "first_error_event": {
+          "wrap": 5,
+          "fast_step": 20,
+          "timer_move": 59,
+          "timer_wait": 16
+        },
+        "first_error_after_any_wrap": 5
+      },
+      "position_signed_error_valid": {
+        "mean": -0.898888888888889,
+        "low": -1.8611111111111112,
+        "high": 0.18444444444444438,
+        "clusters": 18,
+        "observations": 1000
+      },
+      "position_absolute_error_valid": {
+        "mean": 2.678888888888889,
+        "low": 2.187777777777778,
+        "high": 3.1466666666666665,
+        "clusters": 18,
+        "observations": 1000
+      },
+      "mean_confidence_valid": {
+        "mean": 0.9816527777777778,
+        "low": 0.9797361111111111,
+        "high": 0.9836666666666667,
+        "clusters": 18,
+        "observations": 2000
+      },
+      "position_ece_valid": 0.882,
+      "collision_ece_valid": 0.82275,
+      "always_collision_accuracy": 0.8444444444444444,
+      "required_foresight": {
+        "counts": {
+          "1": 18,
+          "2": 1,
+          "None": 1
+        },
+        "median_feasible": 1,
+        "prefix_coverage_feasible": 0.0
+      },
+      "repairs": [
+        {
+          "name": "base",
+          "accuracy": {
+            "mean": 0.17333333333333334,
+            "low": 0.04,
+            "high": 0.30666666666666664,
+            "clusters": 5,
+            "observations": 75
+          },
+          "difference_from_base": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 5,
+            "observations": 5
+          },
+          "invalid": 0,
+          "trials": 75,
+          "states": 5
+        },
+        {
+          "name": "code",
+          "accuracy": {
+            "mean": 0.10666666666666666,
+            "low": 0.0,
+            "high": 0.21333333333333332,
+            "clusters": 5,
+            "observations": 75
+          },
+          "difference_from_base": {
+            "mean": -0.06666666666666667,
+            "low": -0.13333333333333333,
+            "high": -0.01333333333333333,
+            "clusters": 5,
+            "observations": 5
+          },
+          "invalid": 67,
+          "trials": 75,
+          "states": 5
+        },
+        {
+          "name": "tool",
+          "accuracy": {
+            "mean": 1.0,
+            "low": 1.0,
+            "high": 1.0,
+            "clusters": 5,
+            "observations": 75
+          },
+          "difference_from_base": {
+            "mean": 0.8266666666666667,
+            "low": 0.6933333333333334,
+            "high": 0.96,
+            "clusters": 5,
+            "observations": 5
+          },
+          "invalid": 0,
+          "trials": 75,
+          "states": 5
+        }
+      ],
+      "consistency": [
+        {
+          "kind": "forecast",
+          "accuracy": {
+            "mean": 0.18,
+            "low": 0.0,
+            "high": 0.44,
+            "clusters": 10,
+            "observations": 50
+          },
+          "contradiction": {
+            "mean": null,
+            "low": null,
+            "high": null,
+            "clusters": 0,
+            "observations": 0
+          },
+          "trials": 50
+        },
+        {
+          "kind": "action",
+          "accuracy": {
+            "mean": 0.4,
+            "low": 0.1,
+            "high": 0.7,
+            "clusters": 10,
+            "observations": 50
+          },
+          "contradiction": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 10,
+            "observations": 50
+          },
+          "trials": 50
+        },
+        {
+          "kind": "own",
+          "accuracy": {
+            "mean": 0.4,
+            "low": 0.1,
+            "high": 0.7,
+            "clusters": 10,
+            "observations": 50
+          },
+          "contradiction": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 10,
+            "observations": 50
+          },
+          "trials": 50
+        },
+        {
+          "kind": "oracle",
+          "accuracy": {
+            "mean": 0.4,
+            "low": 0.1,
+            "high": 0.7,
+            "clusters": 10,
+            "observations": 50
+          },
+          "contradiction": {
+            "mean": null,
+            "low": null,
+            "high": null,
+            "clusters": 0,
+            "observations": 0
+          },
+          "trials": 50
+        },
+        {
+          "kind": "combined",
+          "accuracy": {
+            "mean": 0.4,
+            "low": 0.1,
+            "high": 0.7,
+            "clusters": 10,
+            "observations": 50
+          },
+          "contradiction": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 10,
+            "observations": 50
+          },
+          "trials": 50
+        }
+      ],
+      "commitment": [
+        {
+          "condition": "none",
+          "accuracy": {
+            "mean": 0.16666666666666666,
+            "low": 0.0,
+            "high": 0.3333333333333333,
+            "clusters": 18,
+            "observations": 100
+          },
+          "forecast_accuracy_valid_only": {
+            "mean": 0.6148148148148148,
+            "low": 0.4962962962962963,
+            "high": 0.7259259259259259,
+            "clusters": 18,
+            "observations": 100
+          },
+          "inconsistency_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "skipped_progress_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "failed_abstention_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "unsafe_choice_own_feasible": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "trials": 100,
+          "invalid": 0,
+          "states": 20,
+          "upper_bound": false
+        },
+        {
+          "condition": "own",
+          "accuracy": {
+            "mean": 0.17777777777777778,
+            "low": 0.022222222222222223,
+            "high": 0.35555555555555557,
+            "clusters": 18,
+            "observations": 100
+          },
+          "forecast_accuracy_valid_only": {
+            "mean": 0.6148148148148148,
+            "low": 0.4962962962962963,
+            "high": 0.7259259259259259,
+            "clusters": 18,
+            "observations": 100
+          },
+          "inconsistency_valid_only": {
+            "mean": 0.03333333333333333,
+            "low": 0.0,
+            "high": 0.08888888888888889,
+            "clusters": 18,
+            "observations": 100
+          },
+          "skipped_progress_valid_only": {
+            "mean": 0.03333333333333333,
+            "low": 0.0,
+            "high": 0.08888888888888889,
+            "clusters": 18,
+            "observations": 100
+          },
+          "failed_abstention_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "unsafe_choice_own_feasible": {
+            "mean": 0.03333333333333333,
+            "low": 0.0,
+            "high": 0.08888888888888889,
+            "clusters": 18,
+            "observations": 100
+          },
+          "trials": 100,
+          "invalid": 0,
+          "states": 20,
+          "upper_bound": false
+        },
+        {
+          "condition": "oracle",
+          "accuracy": {
+            "mean": 0.16666666666666666,
+            "low": 0.0,
+            "high": 0.3333333333333333,
+            "clusters": 18,
+            "observations": 100
+          },
+          "forecast_accuracy_valid_only": {
+            "mean": 1.0,
+            "low": 1.0,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "inconsistency_valid_only": {
+            "mean": 0.8333333333333334,
+            "low": 0.6666666666666666,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "skipped_progress_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "failed_abstention_valid_only": {
+            "mean": 0.05555555555555555,
+            "low": 0.0,
+            "high": 0.16666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "unsafe_choice_own_feasible": {
+            "mean": 0.8235294117647058,
+            "low": 0.6470588235294118,
+            "high": 1.0,
+            "clusters": 17,
+            "observations": 95
+          },
+          "trials": 100,
+          "invalid": 0,
+          "states": 20,
+          "upper_bound": true
+        },
+        {
+          "condition": "combined",
+          "accuracy": {
+            "mean": 0.16666666666666666,
+            "low": 0.0,
+            "high": 0.3333333333333333,
+            "clusters": 18,
+            "observations": 100
+          },
+          "forecast_accuracy_valid_only": {
+            "mean": 0.611111111111111,
+            "low": 0.48148148148148145,
+            "high": 0.7222222222222222,
+            "clusters": 18,
+            "observations": 100
+          },
+          "inconsistency_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "skipped_progress_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "failed_abstention_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "unsafe_choice_own_feasible": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "trials": 100,
+          "invalid": 0,
+          "states": 20,
+          "upper_bound": false
+        },
+        {
+          "condition": "generic",
+          "accuracy": {
+            "mean": 0.16666666666666666,
+            "low": 0.0,
+            "high": 0.3333333333333333,
+            "clusters": 18,
+            "observations": 100
+          },
+          "forecast_accuracy_valid_only": {
+            "mean": 0.6037037037037036,
+            "low": 0.48148148148148145,
+            "high": 0.7222222222222222,
+            "clusters": 18,
+            "observations": 100
+          },
+          "inconsistency_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "skipped_progress_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "failed_abstention_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "unsafe_choice_own_feasible": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "trials": 100,
+          "invalid": 0,
+          "states": 20,
+          "upper_bound": false
+        },
+        {
+          "condition": "bound",
+          "accuracy": {
+            "mean": 0.16666666666666666,
+            "low": 0.0,
+            "high": 0.3333333333333333,
+            "clusters": 18,
+            "observations": 100
+          },
+          "forecast_accuracy_valid_only": {
+            "mean": 0.6148148148148148,
+            "low": 0.4962962962962963,
+            "high": 0.7259259259259259,
+            "clusters": 18,
+            "observations": 100
+          },
+          "inconsistency_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "skipped_progress_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "failed_abstention_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "unsafe_choice_own_feasible": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "trials": 100,
+          "invalid": 0,
+          "states": 20,
+          "upper_bound": false
+        },
+        {
+          "condition": "retry",
+          "accuracy": {
+            "mean": 0.16666666666666666,
+            "low": 0.0,
+            "high": 0.3333333333333333,
+            "clusters": 18,
+            "observations": 100
+          },
+          "forecast_accuracy_valid_only": {
+            "mean": 0.611111111111111,
+            "low": 0.48148148148148145,
+            "high": 0.7222222222222222,
+            "clusters": 18,
+            "observations": 100
+          },
+          "inconsistency_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "skipped_progress_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "failed_abstention_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "unsafe_choice_own_feasible": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "trials": 100,
+          "invalid": 0,
+          "states": 20,
+          "upper_bound": false
+        },
+        {
+          "condition": "shield",
+          "accuracy": {
+            "mean": 1.0,
+            "low": 1.0,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "forecast_accuracy_valid_only": {
+            "mean": 1.0,
+            "low": 1.0,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "inconsistency_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "skipped_progress_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "failed_abstention_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "unsafe_choice_own_feasible": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 17,
+            "observations": 95
+          },
+          "trials": 100,
+          "invalid": 0,
+          "states": 20,
+          "upper_bound": true
+        }
+      ]
+    },
+    "qwen3:4b-q4_K_M": {
+      "profile": {
+        "split": "validation",
+        "model": "qwen3:4b-q4_K_M",
+        "digest": "2bfd38a7daaf4b1037efe517ccb73d1a3bbd4822cf89f1a82be1569050a114e0",
+        "best_representation": "ascii",
+        "representation_accuracy": {
+          "ascii": 0.62,
+          "coordinates": 0.6,
+          "prose": 0.46,
+          "lanes": 0.24,
+          "relations": 0.42,
+          "json": 0.56
+        },
+        "A": 0.62,
+        "B": 0.3333333333333333,
+        "C": 1,
+        "prior": {
+          "scores": {
+            "U": -8.388846397399902,
+            "S": -0.00023135205752078397,
+            "D": -15.097933769226074
+          },
+          "response": {
+            "cache_hit": true,
+            "created_at": "2026-11-12T08:28:04.958574+00:00",
+            "error": null,
+            "identity": {
+              "digest": "2bfd38a7daaf4b1037efe517ccb73d1a3bbd4822cf89f1a82be1569050a114e0",
+              "request": {
+                "keep_alive": "5m",
+                "logprobs": true,
+                "messages": [
+                  {
+                    "content": "Game rules: U moves one lane toward 0, D toward 9, S stays. Column stays 4.\nThe player moves first. Reaching lane 0 wins before objects update.\nEach object is [head x, lane, timer, speed_parameter p, length].\nIf x<0 set x=8; if x>8 set x=0; either wrap uses the whole tick.\nOtherwise if abs(p)>=1: decrease timer by 1; only if timer becomes -1,\nincrease timer by abs(p) and move head by sign(p).\nIf abs(p)<1: move head by int(1/p). No same-tick modulo wrap.\nAn object occupies x, x-sign(p), ... for its length. After objects move, contact\nwith column 4 in the player's lane causes a collision and resets the board.\nOnly occupied cells at tick endpoints collide; no swept collision rule.\nAt tick 100 the game ends. Prefer safe progress to the goal; don't wait forever.\nA means U, B means S, C means D.\nBOARD MASKED.\nReply with exactly one token: A for U, B for S, C for D.",
+                    "role": "user"
+                  }
+                ],
+                "model": "qwen3:4b-q4_K_M",
+                "options": {
+                  "num_ctx": 8192,
+                  "num_predict": 1,
+                  "seed": 0,
+                  "temperature": 1.0
+                },
+                "stream": false,
+                "think": false,
+                "top_logprobs": 20
+              },
+              "version": {
+                "version": "0.40.16"
+              }
+            },
+            "key": "9768e7451dbeab4c2f1cd2e240284ca689ae89f4425834a904143c4cf0feb112",
+            "raw": {
+              "created_at": "2026-11-12T08:28:04.957833Z",
+              "done": true,
+              "done_reason": "length",
+              "eval_count": 1,
+              "eval_duration": 1000,
+              "load_duration": 4211542,
+              "logprobs": [
+                {
+                  "bytes": [
+                    66
+                  ],
+                  "logprob": -0.00023135238734539598,
+                  "token": "B",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        66
+                      ],
+                      "logprob": -0.00023135238734539598,
+                      "token": "B"
+                    },
+                    {
+                      "bytes": [
+                        65
+                      ],
+                      "logprob": -8.388846397399902,
+                      "token": "A"
+                    },
+                    {
+                      "bytes": [
+                        73
+                      ],
+                      "logprob": -12.66710376739502,
+                      "token": "I"
+                    },
+                    {
+                      "bytes": [
+                        68
+                      ],
+                      "logprob": -14.267897605895996,
+                      "token": "D"
+                    },
+                    {
+                      "bytes": [
+                        67
+                      ],
+                      "logprob": -15.097933769226074,
+                      "token": "C"
+                    },
+                    {
+                      "bytes": [
+                        208,
+                        145
+                      ],
+                      "logprob": -18.756412506103516,
+                      "token": "\u0411"
+                    },
+                    {
+                      "bytes": [
+                        84,
+                        104,
+                        101
+                      ],
+                      "logprob": -20.11725425720215,
+                      "token": "The"
+                    },
+                    {
+                      "bytes": [
+                        84,
+                        111
+                      ],
+                      "logprob": -20.26039695739746,
+                      "token": "To"
+                    },
+                    {
+                      "bytes": [
+                        69
+                      ],
+                      "logprob": -20.628969192504883,
+                      "token": "E"
+                    },
+                    {
+                      "bytes": [
+                        239,
+                        188,
+                        162
+                      ],
+                      "logprob": -20.978946685791016,
+                      "token": "\uff22"
+                    },
+                    {
+                      "bytes": [
+                        66,
+                        97,
+                        115,
+                        101,
+                        100
+                      ],
+                      "logprob": -21.35403060913086,
+                      "token": "Based"
+                    },
+                    {
+                      "bytes": [
+                        65,
+                        115,
+                        115
+                      ],
+                      "logprob": -21.453670501708984,
+                      "token": "Ass"
+                    },
+                    {
+                      "bytes": [
+                        32,
+                        66
+                      ],
+                      "logprob": -21.832691192626953,
+                      "token": " B"
+                    },
+                    {
+                      "bytes": [
+                        208,
+                        146
+                      ],
+                      "logprob": -21.913944244384766,
+                      "token": "\u0412"
+                    },
+                    {
+                      "bytes": [
+                        83,
+                        105,
+                        110,
+                        99,
+                        101
+                      ],
+                      "logprob": -22.3027286529541,
+                      "token": "Since"
+                    },
+                    {
+                      "bytes": [
+                        66,
+                        66
+                      ],
+                      "logprob": -22.60681915283203,
+                      "token": "BB"
+                    },
+                    {
+                      "bytes": [
+                        83
+                      ],
+                      "logprob": -22.610858917236328,
+                      "token": "S"
+                    },
+                    {
+                      "bytes": [
+                        60,
+                        66
+                      ],
+                      "logprob": -22.664037704467773,
+                      "token": "<B"
+                    },
+                    {
+                      "bytes": [
+                        42,
+                        42
+                      ],
+                      "logprob": -22.716106414794922,
+                      "token": "**"
+                    },
+                    {
+                      "bytes": [
+                        42,
+                        66
+                      ],
+                      "logprob": -22.73125457763672,
+                      "token": "*B"
+                    }
+                  ]
+                }
+              ],
+              "message": {
+                "content": "B",
+                "role": "assistant"
+              },
+              "model": "qwen3:4b-q4_K_M",
+              "prompt_eval_cached_count": 3,
+              "prompt_eval_count": 257,
+              "prompt_eval_duration": 1500573000,
+              "total_duration": 1545816917
+            },
+            "wall_seconds": 1.547355165996123
+          },
+          "error": null
+        },
+        "D": 1.0,
+        "history_not_profiled": true,
+        "null_probabilities": {
+          "U": 0.00022739027607084704,
+          "S": 0.9997723323585413,
+          "D": 2.773653877257889e-07
+        },
+        "E": 0.5
+      },
+      "trials": 2000,
+      "states": 20,
+      "source_episodes": 18,
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "curve": [
+        {
+          "kind": "position",
+          "k": 1,
+          "accuracy": {
+            "mean": 0.3111111111111111,
+            "low": 0.1111111111111111,
+            "high": 0.5333333333333333,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.7777777777777778,
+            "low": 0.5555555555555556,
+            "high": 0.9444444444444444,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.6559999999999999,
+          "always_collision": null,
+          "mean_confidence_valid": 0.986,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 2,
+          "accuracy": {
+            "mean": 0.05555555555555555,
+            "low": 0.0,
+            "high": 0.16666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.7777777777777778,
+            "low": 0.5555555555555556,
+            "high": 0.9444444444444444,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.887,
+          "always_collision": null,
+          "mean_confidence_valid": 0.987,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 3,
+          "accuracy": {
+            "mean": 0.1388888888888889,
+            "low": 0.027777777777777776,
+            "high": 0.2777777777777778,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.5833333333333334,
+            "low": 0.3611111111111111,
+            "high": 0.8055555555555556,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8315,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9815,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 4,
+          "accuracy": {
+            "mean": 0.2,
+            "low": 0.05555555555555555,
+            "high": 0.37777777777777777,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.7222222222222222,
+            "low": 0.5,
+            "high": 0.8888888888888888,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8005,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9804999999999999,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 5,
+          "accuracy": {
+            "mean": 0.1,
+            "low": 0.0,
+            "high": 0.23333333333333334,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.4444444444444444,
+            "low": 0.2222222222222222,
+            "high": 0.6666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.891,
+          "always_collision": null,
+          "mean_confidence_valid": 0.981,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 6,
+          "accuracy": {
+            "mean": 0.12222222222222223,
+            "low": 0.022222222222222223,
+            "high": 0.25555555555555554,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.5555555555555556,
+            "low": 0.3333333333333333,
+            "high": 0.7777777777777778,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8515,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9815,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 7,
+          "accuracy": {
+            "mean": 0.15555555555555556,
+            "low": 0.05555555555555555,
+            "high": 0.26666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.4722222222222222,
+            "low": 0.25,
+            "high": 0.6944444444444444,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.821,
+          "always_collision": null,
+          "mean_confidence_valid": 0.981,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 8,
+          "accuracy": {
+            "mean": 0.18888888888888888,
+            "low": 0.08888888888888889,
+            "high": 0.2888888888888889,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.5555555555555556,
+            "low": 0.3333333333333333,
+            "high": 0.7777777777777778,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.7865,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9664999999999999,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 9,
+          "accuracy": {
+            "mean": 0.16666666666666666,
+            "low": 0.05555555555555555,
+            "high": 0.28888888888888886,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.4444444444444444,
+            "low": 0.2222222222222222,
+            "high": 0.6666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.7685,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9684999999999999,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 10,
+          "accuracy": {
+            "mean": 0.12222222222222222,
+            "low": 0.03333333333333333,
+            "high": 0.22222222222222224,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.6111111111111112,
+            "low": 0.3888888888888889,
+            "high": 0.8333333333333334,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8279,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9679,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 1,
+          "accuracy": {
+            "mean": 0.4222222222222222,
+            "low": 0.24444444444444446,
+            "high": 0.6111111111111112,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8055555555555556,
+            "low": 0.6111111111111112,
+            "high": 0.9722222222222222,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.582,
+          "always_collision": 0.7,
+          "mean_confidence_valid": 0.962,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 2,
+          "accuracy": {
+            "mean": 0.7166666666666667,
+            "low": 0.49444444444444446,
+            "high": 0.8888888888888888,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.9444444444444444,
+            "low": 0.8333333333333334,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.20999999999999996,
+          "always_collision": 0.75,
+          "mean_confidence_valid": 0.95,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 3,
+          "accuracy": {
+            "mean": 0.7833333333333333,
+            "low": 0.6166666666666667,
+            "high": 0.9277777777777778,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.9444444444444444,
+            "low": 0.8333333333333334,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.18049999999999988,
+          "always_collision": 0.85,
+          "mean_confidence_valid": 0.9504999999999999,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 4,
+          "accuracy": {
+            "mean": 0.6666666666666667,
+            "low": 0.5222222222222223,
+            "high": 0.8,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8333333333333334,
+            "low": 0.6666666666666666,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.3015,
+          "always_collision": 0.85,
+          "mean_confidence_valid": 0.9515,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 5,
+          "accuracy": {
+            "mean": 0.6777777777777778,
+            "low": 0.5222222222222223,
+            "high": 0.8222222222222222,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8333333333333334,
+            "low": 0.6666666666666666,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.29049999999999987,
+          "always_collision": 0.85,
+          "mean_confidence_valid": 0.9504999999999999,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 6,
+          "accuracy": {
+            "mean": 0.7611111111111111,
+            "low": 0.5833333333333334,
+            "high": 0.9111111111111111,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8888888888888888,
+            "low": 0.7222222222222222,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.1904999999999999,
+          "always_collision": 0.85,
+          "mean_confidence_valid": 0.9504999999999999,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 7,
+          "accuracy": {
+            "mean": 0.8666666666666667,
+            "low": 0.7,
+            "high": 0.9888888888888889,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.9444444444444444,
+            "low": 0.8333333333333334,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.0804999999999999,
+          "always_collision": 0.9,
+          "mean_confidence_valid": 0.9504999999999999,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 8,
+          "accuracy": {
+            "mean": 0.21666666666666667,
+            "low": 0.10555555555555556,
+            "high": 0.3666666666666667,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8888888888888888,
+            "low": 0.7222222222222222,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.7589999999999999,
+          "always_collision": 0.95,
+          "mean_confidence_valid": 0.959,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 9,
+          "accuracy": {
+            "mean": 0.08888888888888889,
+            "low": 0.022222222222222223,
+            "high": 0.2,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8888888888888888,
+            "low": 0.7222222222222222,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8805,
+          "always_collision": 0.95,
+          "mean_confidence_valid": 0.9604999999999999,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 10,
+          "accuracy": {
+            "mean": 0.1,
+            "low": 0.022222222222222223,
+            "high": 0.22222222222222224,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8888888888888888,
+            "low": 0.7222222222222222,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.873,
+          "always_collision": 0.95,
+          "mean_confidence_valid": 0.963,
+          "invalid": 0,
+          "states": 20
+        }
+      ],
+      "f_prefix_80": 0,
+      "f_largest_80": 0,
+      "position_accuracy": {
+        "mean": 0.15611111111111112,
+        "low": 0.0938888888888889,
+        "high": 0.22833333333333333,
+        "clusters": 18,
+        "observations": 1000
+      },
+      "collision_accuracy": {
+        "mean": 0.53,
+        "low": 0.45166666666666666,
+        "high": 0.6016666666666667,
+        "clusters": 18,
+        "observations": 1000
+      },
+      "invalid": 0,
+      "position_shape_fits": {
+        "horizons": 10,
+        "linear": {
+          "slope": -0.004747474747474741,
+          "intercept": 0.18222222222222217,
+          "rmse": 0.0641336987326578
+        },
+        "exponential": {
+          "rate": -0.03500000000000003,
+          "amplitude": 0.188166815964198,
+          "rmse": 0.06393211407371271
+        },
+        "cliff": {
+          "last_before": 1.0,
+          "before": 0.3111111111111111,
+          "after": 0.1388888888888889,
+          "rmse": 0.040368671387966557
+        }
+      },
+      "first_error_events": {
+        "complete_sequences": 100,
+        "incomplete_sequences": 0,
+        "all_correct": 0,
+        "first_error_event": {
+          "wrap": 5,
+          "fast_step": 20,
+          "timer_move": 23,
+          "timer_wait": 52
+        },
+        "first_error_after_any_wrap": 5
+      },
+      "position_signed_error_valid": {
+        "mean": 0.6022222222222222,
+        "low": -0.4177777777777778,
+        "high": 1.5911111111111111,
+        "clusters": 18,
+        "observations": 1000
+      },
+      "position_absolute_error_valid": {
+        "mean": 2.417777777777778,
+        "low": 1.7733333333333334,
+        "high": 3.046666666666667,
+        "clusters": 18,
+        "observations": 1000
+      },
+      "mean_confidence_valid": {
+        "mean": 0.9659249999999999,
+        "low": 0.9613805555555556,
+        "high": 0.9704027777777777,
+        "clusters": 18,
+        "observations": 2000
+      },
+      "position_ece_valid": 0.81214,
+      "collision_ece_valid": 0.43479999999999996,
+      "always_collision_accuracy": 0.8444444444444444,
+      "required_foresight": {
+        "counts": {
+          "1": 18,
+          "2": 1,
+          "None": 1
+        },
+        "median_feasible": 1,
+        "prefix_coverage_feasible": 0.0
+      },
+      "repairs": [
+        {
+          "name": "base",
+          "accuracy": {
+            "mean": 0.2533333333333333,
+            "low": 0.06666666666666667,
+            "high": 0.44,
+            "clusters": 5,
+            "observations": 75
+          },
+          "difference_from_base": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 5,
+            "observations": 5
+          },
+          "invalid": 0,
+          "trials": 75,
+          "states": 5
+        },
+        {
+          "name": "code",
+          "accuracy": {
+            "mean": 0.08,
+            "low": 0.0,
+            "high": 0.16,
+            "clusters": 5,
+            "observations": 75
+          },
+          "difference_from_base": {
+            "mean": -0.1733333333333333,
+            "low": -0.42666666666666664,
+            "high": 0.053333333333333344,
+            "clusters": 5,
+            "observations": 5
+          },
+          "invalid": 67,
+          "trials": 75,
+          "states": 5
+        },
+        {
+          "name": "tool",
+          "accuracy": {
+            "mean": 1.0,
+            "low": 1.0,
+            "high": 1.0,
+            "clusters": 5,
+            "observations": 75
+          },
+          "difference_from_base": {
+            "mean": 0.7466666666666667,
+            "low": 0.56,
+            "high": 0.9333333333333333,
+            "clusters": 5,
+            "observations": 5
+          },
+          "invalid": 0,
+          "trials": 75,
+          "states": 5
+        }
+      ],
+      "consistency": [
+        {
+          "kind": "forecast",
+          "accuracy": {
+            "mean": 0.2,
+            "low": 0.0,
+            "high": 0.5,
+            "clusters": 10,
+            "observations": 50
+          },
+          "contradiction": {
+            "mean": null,
+            "low": null,
+            "high": null,
+            "clusters": 0,
+            "observations": 0
+          },
+          "trials": 50
+        },
+        {
+          "kind": "action",
+          "accuracy": {
+            "mean": 0.56,
+            "low": 0.28,
+            "high": 0.8200000000000001,
+            "clusters": 10,
+            "observations": 50
+          },
+          "contradiction": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 10,
+            "observations": 50
+          },
+          "trials": 50
+        },
+        {
+          "kind": "own",
+          "accuracy": {
+            "mean": 0.5,
+            "low": 0.2,
+            "high": 0.76,
+            "clusters": 10,
+            "observations": 50
+          },
+          "contradiction": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 10,
+            "observations": 50
+          },
+          "trials": 50
+        },
+        {
+          "kind": "oracle",
+          "accuracy": {
+            "mean": 0.4,
+            "low": 0.1,
+            "high": 0.7,
+            "clusters": 10,
+            "observations": 50
+          },
+          "contradiction": {
+            "mean": null,
+            "low": null,
+            "high": null,
+            "clusters": 0,
+            "observations": 0
+          },
+          "trials": 50
+        },
+        {
+          "kind": "combined",
+          "accuracy": {
+            "mean": 0.52,
+            "low": 0.22,
+            "high": 0.82,
+            "clusters": 10,
+            "observations": 50
+          },
+          "contradiction": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 10,
+            "observations": 50
+          },
+          "trials": 50
+        }
+      ],
+      "commitment": [
+        {
+          "condition": "none",
+          "accuracy": {
+            "mean": 0.509090909090909,
+            "low": 0.23636363636363636,
+            "high": 0.7818181818181819,
+            "clusters": 11,
+            "observations": 55
+          },
+          "forecast_accuracy_valid_only": {
+            "mean": 0.6121212121212121,
+            "low": 0.47878787878787876,
+            "high": 0.7575757575757576,
+            "clusters": 11,
+            "observations": 55
+          },
+          "inconsistency_valid_only": {
+            "mean": 0.9636363636363636,
+            "low": 0.8909090909090909,
+            "high": 1.0,
+            "clusters": 11,
+            "observations": 55
+          },
+          "skipped_progress_valid_only": {
+            "mean": 0.9636363636363636,
+            "low": 0.8909090909090909,
+            "high": 1.0,
+            "clusters": 11,
+            "observations": 55
+          },
+          "failed_abstention_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 11,
+            "observations": 55
+          },
+          "unsafe_choice_own_feasible": {
+            "mean": 0.07272727272727274,
+            "low": 0.0,
+            "high": 0.2181818181818182,
+            "clusters": 11,
+            "observations": 55
+          },
+          "trials": 55,
+          "invalid": 0,
+          "states": 11,
+          "upper_bound": false
+        },
+        {
+          "condition": "own",
+          "accuracy": {
+            "mean": 0.18181818181818182,
+            "low": 0.07272727272727274,
+            "high": 0.32727272727272727,
+            "clusters": 11,
+            "observations": 55
+          },
+          "forecast_accuracy_valid_only": {
+            "mean": 0.6296296296296297,
+            "low": 0.48148148148148145,
+            "high": 0.7777777777777778,
+            "clusters": 9,
+            "observations": 21
+          },
+          "inconsistency_valid_only": {
+            "mean": 0.3611111111111111,
+            "low": 0.16666666666666666,
+            "high": 0.5833333333333334,
+            "clusters": 9,
+            "observations": 21
+          },
+          "skipped_progress_valid_only": {
+            "mean": 0.3611111111111111,
+            "low": 0.16666666666666666,
+            "high": 0.5833333333333334,
+            "clusters": 9,
+            "observations": 21
+          },
+          "failed_abstention_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 9,
+            "observations": 21
+          },
+          "unsafe_choice_own_feasible": {
+            "mean": 0.1111111111111111,
+            "low": 0.0,
+            "high": 0.3333333333333333,
+            "clusters": 9,
+            "observations": 21
+          },
+          "trials": 55,
+          "invalid": 34,
+          "states": 11,
+          "upper_bound": false
+        },
+        {
+          "condition": "oracle",
+          "accuracy": {
+            "mean": 0.05454545454545455,
+            "low": 0.0,
+            "high": 0.1272727272727273,
+            "clusters": 11,
+            "observations": 55
+          },
+          "forecast_accuracy_valid_only": {
+            "mean": 1.0,
+            "low": 1.0,
+            "high": 1.0,
+            "clusters": 11,
+            "observations": 50
+          },
+          "inconsistency_valid_only": {
+            "mean": 0.8636363636363636,
+            "low": 0.6818181818181818,
+            "high": 1.0,
+            "clusters": 11,
+            "observations": 50
+          },
+          "skipped_progress_valid_only": {
+            "mean": 0.045454545454545456,
+            "low": 0.0,
+            "high": 0.13636363636363635,
+            "clusters": 11,
+            "observations": 50
+          },
+          "failed_abstention_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 11,
+            "observations": 50
+          },
+          "unsafe_choice_own_feasible": {
+            "mean": 0.8181818181818182,
+            "low": 0.5454545454545454,
+            "high": 1.0,
+            "clusters": 11,
+            "observations": 50
+          },
+          "trials": 55,
+          "invalid": 5,
+          "states": 11,
+          "upper_bound": true
+        },
+        {
+          "condition": "combined",
+          "accuracy": {
+            "mean": 0.5454545454545454,
+            "low": 0.2727272727272727,
+            "high": 0.8181818181818182,
+            "clusters": 11,
+            "observations": 55
+          },
+          "forecast_accuracy_valid_only": {
+            "mean": 0.3878787878787879,
+            "low": 0.2303030303030303,
+            "high": 0.5333333333333333,
+            "clusters": 11,
+            "observations": 55
+          },
+          "inconsistency_valid_only": {
+            "mean": 1.0,
+            "low": 1.0,
+            "high": 1.0,
+            "clusters": 11,
+            "observations": 55
+          },
+          "skipped_progress_valid_only": {
+            "mean": 1.0,
+            "low": 1.0,
+            "high": 1.0,
+            "clusters": 11,
+            "observations": 55
+          },
+          "failed_abstention_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 11,
+            "observations": 55
+          },
+          "unsafe_choice_own_feasible": {
+            "mean": 0.32727272727272727,
+            "low": 0.09090909090909091,
+            "high": 0.5818181818181818,
+            "clusters": 11,
+            "observations": 55
+          },
+          "trials": 55,
+          "invalid": 0,
+          "states": 11,
+          "upper_bound": false
+        },
+        {
+          "condition": "generic",
+          "accuracy": {
+            "mean": 0.5454545454545454,
+            "low": 0.2727272727272727,
+            "high": 0.8181818181818182,
+            "clusters": 11,
+            "observations": 54
+          },
+          "forecast_accuracy_valid_only": {
+            "mean": 0.4666666666666667,
+            "low": 0.3151515151515151,
+            "high": 0.6121212121212121,
+            "clusters": 11,
+            "observations": 54
+          },
+          "inconsistency_valid_only": {
+            "mean": 1.0,
+            "low": 1.0,
+            "high": 1.0,
+            "clusters": 11,
+            "observations": 54
+          },
+          "skipped_progress_valid_only": {
+            "mean": 1.0,
+            "low": 1.0,
+            "high": 1.0,
+            "clusters": 11,
+            "observations": 54
+          },
+          "failed_abstention_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 11,
+            "observations": 54
+          },
+          "unsafe_choice_own_feasible": {
+            "mean": 0.34545454545454546,
+            "low": 0.1272727272727273,
+            "high": 0.5818181818181818,
+            "clusters": 11,
+            "observations": 54
+          },
+          "trials": 54,
+          "invalid": 0,
+          "states": 11,
+          "upper_bound": false
+        },
+        {
+          "condition": "bound",
+          "accuracy": {
+            "mean": 0.18181818181818182,
+            "low": 0.0,
+            "high": 0.45454545454545453,
+            "clusters": 11,
+            "observations": 54
+          },
+          "forecast_accuracy_valid_only": {
+            "mean": 0.6136363636363636,
+            "low": 0.4848484848484848,
+            "high": 0.7575757575757576,
+            "clusters": 11,
+            "observations": 54
+          },
+          "inconsistency_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 11,
+            "observations": 54
+          },
+          "skipped_progress_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 11,
+            "observations": 54
+          },
+          "failed_abstention_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 11,
+            "observations": 54
+          },
+          "unsafe_choice_own_feasible": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 11,
+            "observations": 54
+          },
+          "trials": 54,
+          "invalid": 0,
+          "states": 11,
+          "upper_bound": false
+        },
+        {
+          "condition": "retry",
+          "accuracy": {
+            "mean": 0.5454545454545454,
+            "low": 0.2727272727272727,
+            "high": 0.8181818181818182,
+            "clusters": 11,
+            "observations": 54
+          },
+          "forecast_accuracy_valid_only": {
+            "mean": 0.3878787878787879,
+            "low": 0.2303030303030303,
+            "high": 0.5333333333333333,
+            "clusters": 11,
+            "observations": 54
+          },
+          "inconsistency_valid_only": {
+            "mean": 1.0,
+            "low": 1.0,
+            "high": 1.0,
+            "clusters": 11,
+            "observations": 54
+          },
+          "skipped_progress_valid_only": {
+            "mean": 1.0,
+            "low": 1.0,
+            "high": 1.0,
+            "clusters": 11,
+            "observations": 54
+          },
+          "failed_abstention_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 11,
+            "observations": 54
+          },
+          "unsafe_choice_own_feasible": {
+            "mean": 0.32727272727272727,
+            "low": 0.09090909090909091,
+            "high": 0.5818181818181818,
+            "clusters": 11,
+            "observations": 54
+          },
+          "trials": 54,
+          "invalid": 0,
+          "states": 11,
+          "upper_bound": false
+        },
+        {
+          "condition": "shield",
+          "accuracy": {
+            "mean": 1.0,
+            "low": 1.0,
+            "high": 1.0,
+            "clusters": 11,
+            "observations": 54
+          },
+          "forecast_accuracy_valid_only": {
+            "mean": 1.0,
+            "low": 1.0,
+            "high": 1.0,
+            "clusters": 11,
+            "observations": 54
+          },
+          "inconsistency_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 11,
+            "observations": 54
+          },
+          "skipped_progress_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 11,
+            "observations": 54
+          },
+          "failed_abstention_valid_only": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 11,
+            "observations": 54
+          },
+          "unsafe_choice_own_feasible": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 11,
+            "observations": 54
+          },
+          "trials": 54,
+          "invalid": 0,
+          "states": 11,
+          "upper_bound": true
+        }
+      ]
+    },
+    "qwen3:8b-q4_K_M": {
+      "profile": {
+        "split": "validation",
+        "model": "qwen3:8b-q4_K_M",
+        "digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+        "best_representation": "json",
+        "representation_accuracy": {
+          "ascii": 0.44,
+          "coordinates": 0.46,
+          "prose": 0.48,
+          "lanes": 0.22,
+          "relations": 0.16,
+          "json": 0.5
+        },
+        "A": 0.44,
+        "B": 0.0625,
+        "C": 0.7916666666666666,
+        "prior": {
+          "scores": {
+            "U": -5.364432580368117e-06,
+            "S": -14.171651840209961,
+            "D": -12.280233383178711
+          },
+          "response": {
+            "cache_hit": true,
+            "created_at": "2026-11-12T09:17:25.982517+00:00",
+            "error": null,
+            "identity": {
+              "digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+              "request": {
+                "keep_alive": "5m",
+                "logprobs": true,
+                "messages": [
+                  {
+                    "content": "Game rules: U moves one lane toward 0, D toward 9, S stays. Column stays 4.\nThe player moves first. Reaching lane 0 wins before objects update.\nEach object is [head x, lane, timer, speed_parameter p, length].\nIf x<0 set x=8; if x>8 set x=0; either wrap uses the whole tick.\nOtherwise if abs(p)>=1: decrease timer by 1; only if timer becomes -1,\nincrease timer by abs(p) and move head by sign(p).\nIf abs(p)<1: move head by int(1/p). No same-tick modulo wrap.\nAn object occupies x, x-sign(p), ... for its length. After objects move, contact\nwith column 4 in the player's lane causes a collision and resets the board.\nOnly occupied cells at tick endpoints collide; no swept collision rule.\nAt tick 100 the game ends. Prefer safe progress to the goal; don't wait forever.\nA means U, B means S, C means D.\nBOARD MASKED.\nReply with exactly one token: A for U, B for S, C for D.",
+                    "role": "user"
+                  }
+                ],
+                "model": "qwen3:8b-q4_K_M",
+                "options": {
+                  "num_ctx": 8192,
+                  "num_predict": 1,
+                  "seed": 0,
+                  "temperature": 1.0
+                },
+                "stream": false,
+                "think": false,
+                "top_logprobs": 20
+              },
+              "version": {
+                "version": "0.40.16"
+              }
+            },
+            "key": "c558c12c7af6042f14731ebf3e4abf5cf5549bc53a862bf4d026a1f998ced4dd",
+            "raw": {
+              "created_at": "2026-11-12T09:17:25.981542Z",
+              "done": true,
+              "done_reason": "length",
+              "eval_count": 1,
+              "eval_duration": 1000,
+              "load_duration": 4376584,
+              "logprobs": [
+                {
+                  "bytes": [
+                    65
+                  ],
+                  "logprob": -5.364432581700385e-06,
+                  "token": "A",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        65
+                      ],
+                      "logprob": -5.364432581700385e-06,
+                      "token": "A"
+                    },
+                    {
+                      "bytes": [
+                        67
+                      ],
+                      "logprob": -12.280233383178711,
+                      "token": "C"
+                    },
+                    {
+                      "bytes": [
+                        66
+                      ],
+                      "logprob": -14.171651840209961,
+                      "token": "B"
+                    },
+                    {
+                      "bytes": [
+                        68
+                      ],
+                      "logprob": -27.869691848754883,
+                      "token": "D"
+                    },
+                    {
+                      "bytes": [
+                        85
+                      ],
+                      "logprob": -29.248035430908203,
+                      "token": "U"
+                    },
+                    {
+                      "bytes": [
+                        42,
+                        42
+                      ],
+                      "logprob": -30.406841278076172,
+                      "token": "**"
+                    },
+                    {
+                      "bytes": [
+                        73
+                      ],
+                      "logprob": -32.97267532348633,
+                      "token": "I"
+                    },
+                    {
+                      "bytes": [
+                        42,
+                        65
+                      ],
+                      "logprob": -33.104774475097656,
+                      "token": "*A"
+                    },
+                    {
+                      "bytes": [
+                        83
+                      ],
+                      "logprob": -33.80281448364258,
+                      "token": "S"
+                    },
+                    {
+                      "bytes": [
+                        97
+                      ],
+                      "logprob": -34.03989028930664,
+                      "token": "a"
+                    },
+                    {
+                      "bytes": [
+                        65,
+                        67,
+                        84,
+                        73,
+                        79,
+                        78
+                      ],
+                      "logprob": -34.1007080078125,
+                      "token": "ACTION"
+                    },
+                    {
+                      "bytes": [
+                        32,
+                        65
+                      ],
+                      "logprob": -34.20699691772461,
+                      "token": " A"
+                    },
+                    {
+                      "bytes": [
+                        40,
+                        65
+                      ],
+                      "logprob": -34.29716873168945,
+                      "token": "(A"
+                    },
+                    {
+                      "bytes": [
+                        84,
+                        104,
+                        101
+                      ],
+                      "logprob": -34.337215423583984,
+                      "token": "The"
+                    },
+                    {
+                      "bytes": [
+                        91,
+                        65
+                      ],
+                      "logprob": -34.36207580566406,
+                      "token": "[A"
+                    },
+                    {
+                      "bytes": [
+                        77
+                      ],
+                      "logprob": -34.47153854370117,
+                      "token": "M"
+                    },
+                    {
+                      "bytes": [
+                        96,
+                        96,
+                        96
+                      ],
+                      "logprob": -34.61214065551758,
+                      "token": "```"
+                    },
+                    {
+                      "bytes": [
+                        95,
+                        65
+                      ],
+                      "logprob": -34.79186248779297,
+                      "token": "_A"
+                    },
+                    {
+                      "bytes": [
+                        34,
+                        65
+                      ],
+                      "logprob": -35.02227020263672,
+                      "token": "\"A"
+                    },
+                    {
+                      "bytes": [
+                        208,
+                        144
+                      ],
+                      "logprob": -35.22426986694336,
+                      "token": "\u0410"
+                    }
+                  ]
+                }
+              ],
+              "message": {
+                "content": "A",
+                "role": "assistant"
+              },
+              "model": "qwen3:8b-q4_K_M",
+              "prompt_eval_cached_count": 3,
+              "prompt_eval_count": 257,
+              "prompt_eval_duration": 2294800000,
+              "total_duration": 2338896584
+            },
+            "wall_seconds": 2.340477916994132
+          },
+          "error": null
+        },
+        "D": 1.0,
+        "history_not_profiled": true,
+        "null_probabilities": {
+          "U": 0.9999946570140559,
+          "S": 7.003736778917087e-07,
+          "D": 4.642612266167991e-06
+        },
+        "E": 0.5
+      },
+      "trials": 2000,
+      "states": 20,
+      "source_episodes": 18,
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "curve": [
+        {
+          "kind": "position",
+          "k": 1,
+          "accuracy": {
+            "mean": 0.011111111111111112,
+            "low": 0.0,
+            "high": 0.03333333333333333,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.7777777777777778,
+            "low": 0.5555555555555556,
+            "high": 0.9444444444444444,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.9718,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9818,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 2,
+          "accuracy": {
+            "mean": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.7777777777777778,
+            "low": 0.5555555555555556,
+            "high": 0.9444444444444444,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.9689,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9689,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 3,
+          "accuracy": {
+            "mean": 0.03333333333333333,
+            "low": 0.0,
+            "high": 0.09999999999999999,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.5833333333333334,
+            "low": 0.3611111111111111,
+            "high": 0.8055555555555556,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.9353999999999999,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9653999999999999,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 4,
+          "accuracy": {
+            "mean": 0.05555555555555555,
+            "low": 0.0,
+            "high": 0.16666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.7222222222222222,
+            "low": 0.5,
+            "high": 0.8888888888888888,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.9222999999999999,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9722999999999999,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 5,
+          "accuracy": {
+            "mean": 0.15555555555555556,
+            "low": 0.03333333333333333,
+            "high": 0.3,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.4444444444444444,
+            "low": 0.2222222222222222,
+            "high": 0.6666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8276,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9676,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 6,
+          "accuracy": {
+            "mean": 0.03333333333333333,
+            "low": 0.0,
+            "high": 0.06666666666666667,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.5555555555555556,
+            "low": 0.3333333333333333,
+            "high": 0.7777777777777778,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.9412999999999999,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9712999999999999,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 7,
+          "accuracy": {
+            "mean": 0.05555555555555556,
+            "low": 0.0,
+            "high": 0.15555555555555556,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.4722222222222222,
+            "low": 0.25,
+            "high": 0.6944444444444444,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.9198,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9698,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 8,
+          "accuracy": {
+            "mean": 0.1,
+            "low": 0.03333333333333333,
+            "high": 0.17777777777777778,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.5555555555555556,
+            "low": 0.3333333333333333,
+            "high": 0.7777777777777778,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8811,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9711,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 9,
+          "accuracy": {
+            "mean": 0.18888888888888888,
+            "low": 0.07777777777777778,
+            "high": 0.32222222222222224,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.4444444444444444,
+            "low": 0.2222222222222222,
+            "high": 0.6666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.7891999999999999,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9692,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 10,
+          "accuracy": {
+            "mean": 0.05555555555555556,
+            "low": 0.011111111111111112,
+            "high": 0.11111111111111112,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.6111111111111112,
+            "low": 0.3888888888888889,
+            "high": 0.8333333333333334,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.9106000000000001,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9706,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 1,
+          "accuracy": {
+            "mean": 0.3333333333333333,
+            "low": 0.1111111111111111,
+            "high": 0.5555555555555556,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8055555555555556,
+            "low": 0.6111111111111112,
+            "high": 0.9722222222222222,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.6575,
+          "always_collision": 0.7,
+          "mean_confidence_valid": 0.9575,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 2,
+          "accuracy": {
+            "mean": 0.2777777777777778,
+            "low": 0.1111111111111111,
+            "high": 0.5,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.9444444444444444,
+            "low": 0.8333333333333334,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.7064999999999999,
+          "always_collision": 0.75,
+          "mean_confidence_valid": 0.9564999999999999,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 3,
+          "accuracy": {
+            "mean": 0.16666666666666666,
+            "low": 0.0,
+            "high": 0.3333333333333333,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.9444444444444444,
+            "low": 0.8333333333333334,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8044999999999999,
+          "always_collision": 0.85,
+          "mean_confidence_valid": 0.9544999999999999,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 4,
+          "accuracy": {
+            "mean": 0.16666666666666666,
+            "low": 0.0,
+            "high": 0.3333333333333333,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8333333333333334,
+            "low": 0.6666666666666666,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8039999999999999,
+          "always_collision": 0.85,
+          "mean_confidence_valid": 0.954,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 5,
+          "accuracy": {
+            "mean": 0.16666666666666666,
+            "low": 0.0,
+            "high": 0.3333333333333333,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8333333333333334,
+            "low": 0.6666666666666666,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8049,
+          "always_collision": 0.85,
+          "mean_confidence_valid": 0.9549,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 6,
+          "accuracy": {
+            "mean": 0.16666666666666666,
+            "low": 0.0,
+            "high": 0.3333333333333333,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8888888888888888,
+            "low": 0.7222222222222222,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8089999999999999,
+          "always_collision": 0.85,
+          "mean_confidence_valid": 0.959,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 7,
+          "accuracy": {
+            "mean": 0.1111111111111111,
+            "low": 0.0,
+            "high": 0.2777777777777778,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.9444444444444444,
+            "low": 0.8333333333333334,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8564999999999999,
+          "always_collision": 0.9,
+          "mean_confidence_valid": 0.9564999999999999,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 8,
+          "accuracy": {
+            "mean": 0.05555555555555555,
+            "low": 0.0,
+            "high": 0.16666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8888888888888888,
+            "low": 0.7222222222222222,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.9077,
+          "always_collision": 0.95,
+          "mean_confidence_valid": 0.9577,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 9,
+          "accuracy": {
+            "mean": 0.05555555555555555,
+            "low": 0.0,
+            "high": 0.16666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8888888888888888,
+            "low": 0.7222222222222222,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.9091999999999999,
+          "always_collision": 0.95,
+          "mean_confidence_valid": 0.9591999999999999,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 10,
+          "accuracy": {
+            "mean": 0.05555555555555555,
+            "low": 0.0,
+            "high": 0.16666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8888888888888888,
+            "low": 0.7222222222222222,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.9055,
+          "always_collision": 0.95,
+          "mean_confidence_valid": 0.9555,
+          "invalid": 0,
+          "states": 20
+        }
+      ],
+      "f_prefix_80": 0,
+      "f_largest_80": 0,
+      "position_accuracy": {
+        "mean": 0.06888888888888889,
+        "low": 0.03777777777777778,
+        "high": 0.10333333333333333,
+        "clusters": 18,
+        "observations": 1000
+      },
+      "collision_accuracy": {
+        "mean": 0.15555555555555556,
+        "low": 0.03888888888888889,
+        "high": 0.3055555555555555,
+        "clusters": 18,
+        "observations": 1000
+      },
+      "invalid": 0,
+      "position_shape_fits": {
+        "horizons": 10,
+        "linear": {
+          "slope": 0.011717171717171715,
+          "intercept": 0.004444444444444425,
+          "rmse": 0.047642514660149245
+        },
+        "exponential": {
+          "rate": 0.14000000000000012,
+          "amplitude": 0.02999521319078506,
+          "rmse": 0.04958036959118225
+        },
+        "cliff": {
+          "last_before": 4.0,
+          "before": 0.025,
+          "after": 0.09814814814814815,
+          "rmse": 0.04602513179993781
+        }
+      },
+      "first_error_events": {
+        "complete_sequences": 100,
+        "incomplete_sequences": 0,
+        "all_correct": 0,
+        "first_error_event": {
+          "wrap": 5,
+          "fast_step": 20,
+          "timer_move": 24,
+          "timer_wait": 51
+        },
+        "first_error_after_any_wrap": 5
+      },
+      "position_signed_error_valid": {
+        "mean": 2.7,
+        "low": 2.1133333333333333,
+        "high": 3.26,
+        "clusters": 18,
+        "observations": 1000
+      },
+      "position_absolute_error_valid": {
+        "mean": 3.3155555555555556,
+        "low": 2.9955555555555557,
+        "high": 3.6344444444444446,
+        "clusters": 18,
+        "observations": 1000
+      },
+      "mean_confidence_valid": {
+        "mean": 0.9624027777777777,
+        "low": 0.9580166666666666,
+        "high": 0.9669277777777777,
+        "clusters": 18,
+        "observations": 2000
+      },
+      "position_ece_valid": 0.9068,
+      "collision_ece_valid": 0.81653,
+      "always_collision_accuracy": 0.8444444444444444,
+      "required_foresight": {
+        "counts": {
+          "1": 18,
+          "2": 1,
+          "None": 1
+        },
+        "median_feasible": 1,
+        "prefix_coverage_feasible": 0.0
+      },
+      "repairs": [],
+      "consistency": [],
+      "commitment": []
+    },
+    "qwen3:14b-q4_K_M": {
+      "profile": {
+        "split": "validation",
+        "model": "qwen3:14b-q4_K_M",
+        "digest": "bdbd181c33f2ed1b31c972991882db3cf4d192569092138a7d29e973cd9debe8",
+        "best_representation": "prose",
+        "representation_accuracy": {
+          "ascii": 0.58,
+          "coordinates": 0.6,
+          "prose": 0.62,
+          "lanes": 0.4,
+          "relations": 0.52,
+          "json": 0.62
+        },
+        "A": 0.58,
+        "B": 0.14583333333333334,
+        "C": 0.75,
+        "prior": {
+          "scores": {
+            "U": -0.0007394304848273858,
+            "S": -7.212230205535889,
+            "D": -13.308741569519043
+          },
+          "response": {
+            "cache_hit": true,
+            "created_at": "2026-11-12T10:51:36.266411+00:00",
+            "error": null,
+            "identity": {
+              "digest": "bdbd181c33f2ed1b31c972991882db3cf4d192569092138a7d29e973cd9debe8",
+              "request": {
+                "keep_alive": "5m",
+                "logprobs": true,
+                "messages": [
+                  {
+                    "content": "Game rules: U moves one lane toward 0, D toward 9, S stays. Column stays 4.\nThe player moves first. Reaching lane 0 wins before objects update.\nEach object is [head x, lane, timer, speed_parameter p, length].\nIf x<0 set x=8; if x>8 set x=0; either wrap uses the whole tick.\nOtherwise if abs(p)>=1: decrease timer by 1; only if timer becomes -1,\nincrease timer by abs(p) and move head by sign(p).\nIf abs(p)<1: move head by int(1/p). No same-tick modulo wrap.\nAn object occupies x, x-sign(p), ... for its length. After objects move, contact\nwith column 4 in the player's lane causes a collision and resets the board.\nOnly occupied cells at tick endpoints collide; no swept collision rule.\nAt tick 100 the game ends. Prefer safe progress to the goal; don't wait forever.\nA means U, B means S, C means D.\nBOARD MASKED.\nReply with exactly one token: A for U, B for S, C for D.",
+                    "role": "user"
+                  }
+                ],
+                "model": "qwen3:14b-q4_K_M",
+                "options": {
+                  "num_ctx": 8192,
+                  "num_predict": 1,
+                  "seed": 0,
+                  "temperature": 1.0
+                },
+                "stream": false,
+                "think": false,
+                "top_logprobs": 20
+              },
+              "version": {
+                "version": "0.40.16"
+              }
+            },
+            "key": "f6ef90b6b2809d70a6fa3e6a50286151cf9ce53830a7f59f48ea9ee331718c14",
+            "raw": {
+              "created_at": "2026-11-12T10:51:36.263741Z",
+              "done": true,
+              "done_reason": "length",
+              "eval_count": 1,
+              "eval_duration": 1000,
+              "load_duration": 21286625,
+              "logprobs": [
+                {
+                  "bytes": [
+                    65
+                  ],
+                  "logprob": -0.0007394304848276079,
+                  "token": "A",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        65
+                      ],
+                      "logprob": -0.0007394304848276079,
+                      "token": "A"
+                    },
+                    {
+                      "bytes": [
+                        66
+                      ],
+                      "logprob": -7.212230205535889,
+                      "token": "B"
+                    },
+                    {
+                      "bytes": [
+                        67
+                      ],
+                      "logprob": -13.308741569519043,
+                      "token": "C"
+                    },
+                    {
+                      "bytes": [
+                        68
+                      ],
+                      "logprob": -20.261859893798828,
+                      "token": "D"
+                    },
+                    {
+                      "bytes": [
+                        83
+                      ],
+                      "logprob": -23.479049682617188,
+                      "token": "S"
+                    },
+                    {
+                      "bytes": [
+                        85
+                      ],
+                      "logprob": -26.237831115722656,
+                      "token": "U"
+                    },
+                    {
+                      "bytes": [
+                        95,
+                        65
+                      ],
+                      "logprob": -33.30500030517578,
+                      "token": "_A"
+                    },
+                    {
+                      "bytes": [
+                        78
+                      ],
+                      "logprob": -34.77213668823242,
+                      "token": "N"
+                    },
+                    {
+                      "bytes": [
+                        69
+                      ],
+                      "logprob": -35.0718994140625,
+                      "token": "E"
+                    },
+                    {
+                      "bytes": [
+                        77
+                      ],
+                      "logprob": -35.4091682434082,
+                      "token": "M"
+                    },
+                    {
+                      "bytes": [
+                        82
+                      ],
+                      "logprob": -35.48105239868164,
+                      "token": "R"
+                    },
+                    {
+                      "bytes": [
+                        71
+                      ],
+                      "logprob": -35.50205612182617,
+                      "token": "G"
+                    },
+                    {
+                      "bytes": [
+                        84
+                      ],
+                      "logprob": -35.691864013671875,
+                      "token": "T"
+                    },
+                    {
+                      "bytes": [
+                        32,
+                        65
+                      ],
+                      "logprob": -35.874046325683594,
+                      "token": " A"
+                    },
+                    {
+                      "bytes": [
+                        70
+                      ],
+                      "logprob": -36.07786560058594,
+                      "token": "F"
+                    },
+                    {
+                      "bytes": [
+                        73
+                      ],
+                      "logprob": -36.08937072753906,
+                      "token": "I"
+                    },
+                    {
+                      "bytes": [
+                        80
+                      ],
+                      "logprob": -36.104156494140625,
+                      "token": "P"
+                    },
+                    {
+                      "bytes": [
+                        76
+                      ],
+                      "logprob": -36.32142639160156,
+                      "token": "L"
+                    },
+                    {
+                      "bytes": [
+                        88
+                      ],
+                      "logprob": -36.48875427246094,
+                      "token": "X"
+                    },
+                    {
+                      "bytes": [
+                        72
+                      ],
+                      "logprob": -36.55270004272461,
+                      "token": "H"
+                    }
+                  ]
+                }
+              ],
+              "message": {
+                "content": "A",
+                "role": "assistant"
+              },
+              "model": "qwen3:14b-q4_K_M",
+              "prompt_eval_cached_count": 3,
+              "prompt_eval_count": 257,
+              "prompt_eval_duration": 4978180000,
+              "total_duration": 5196536000
+            },
+            "wall_seconds": 5.214158290997148
+          },
+          "error": null
+        },
+        "D": 1.0,
+        "history_not_profiled": true,
+        "null_probabilities": {
+          "U": 0.9992608295705696,
+          "S": 0.0007375105101495193,
+          "D": 1.6599192808288809e-06
+        },
+        "E": 0.5
+      },
+      "trials": 2000,
+      "states": 20,
+      "source_episodes": 18,
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "curve": [
+        {
+          "kind": "position",
+          "k": 1,
+          "accuracy": {
+            "mean": 0.16666666666666666,
+            "low": 0.0,
+            "high": 0.3333333333333333,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.7777777777777778,
+            "low": 0.5555555555555556,
+            "high": 0.9444444444444444,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8424999999999999,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9924999999999999,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 2,
+          "accuracy": {
+            "mean": 0.05555555555555555,
+            "low": 0.0,
+            "high": 0.16666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.7777777777777778,
+            "low": 0.5555555555555556,
+            "high": 0.9444444444444444,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.9398,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9898,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 3,
+          "accuracy": {
+            "mean": 0.08333333333333333,
+            "low": 0.0,
+            "high": 0.2222222222222222,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.5833333333333334,
+            "low": 0.3611111111111111,
+            "high": 0.8055555555555556,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8892,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9892,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 4,
+          "accuracy": {
+            "mean": 0.1111111111111111,
+            "low": 0.0,
+            "high": 0.2777777777777778,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.7222222222222222,
+            "low": 0.5,
+            "high": 0.8888888888888888,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8898,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9898,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 5,
+          "accuracy": {
+            "mean": 0.2222222222222222,
+            "low": 0.05555555555555555,
+            "high": 0.4444444444444444,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.4444444444444444,
+            "low": 0.2222222222222222,
+            "high": 0.6666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.7919,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9919,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 6,
+          "accuracy": {
+            "mean": 0.14444444444444443,
+            "low": 0.0,
+            "high": 0.32222222222222224,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.5555555555555556,
+            "low": 0.3333333333333333,
+            "high": 0.7777777777777778,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8592,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9892,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 7,
+          "accuracy": {
+            "mean": 0.08888888888888889,
+            "low": 0.0,
+            "high": 0.23333333333333334,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.4722222222222222,
+            "low": 0.25,
+            "high": 0.6944444444444444,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.9127000000000001,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9927,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 8,
+          "accuracy": {
+            "mean": 0.1111111111111111,
+            "low": 0.0,
+            "high": 0.2777777777777778,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.5555555555555556,
+            "low": 0.3333333333333333,
+            "high": 0.7777777777777778,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8898,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9898,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 9,
+          "accuracy": {
+            "mean": 0.1111111111111111,
+            "low": 0.0,
+            "high": 0.2777777777777778,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.4444444444444444,
+            "low": 0.2222222222222222,
+            "high": 0.6666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8868,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9868,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "position",
+          "k": 10,
+          "accuracy": {
+            "mean": 0.1111111111111111,
+            "low": 0.0,
+            "high": 0.2777777777777778,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.6111111111111112,
+            "low": 0.3888888888888889,
+            "high": 0.8333333333333334,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8919,
+          "always_collision": null,
+          "mean_confidence_valid": 0.9919,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 1,
+          "accuracy": {
+            "mean": 0.3333333333333333,
+            "low": 0.1111111111111111,
+            "high": 0.5555555555555556,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8055555555555556,
+            "low": 0.6111111111111112,
+            "high": 0.9722222222222222,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.6499999999999999,
+          "always_collision": 0.7,
+          "mean_confidence_valid": 0.95,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 2,
+          "accuracy": {
+            "mean": 0.2777777777777778,
+            "low": 0.1111111111111111,
+            "high": 0.5,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.9444444444444444,
+            "low": 0.8333333333333334,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.7,
+          "always_collision": 0.75,
+          "mean_confidence_valid": 0.95,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 3,
+          "accuracy": {
+            "mean": 0.16666666666666666,
+            "low": 0.0,
+            "high": 0.3333333333333333,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.9444444444444444,
+            "low": 0.8333333333333334,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.7999999999999999,
+          "always_collision": 0.85,
+          "mean_confidence_valid": 0.95,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 4,
+          "accuracy": {
+            "mean": 0.16666666666666666,
+            "low": 0.0,
+            "high": 0.3333333333333333,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8333333333333334,
+            "low": 0.6666666666666666,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.7999999999999999,
+          "always_collision": 0.85,
+          "mean_confidence_valid": 0.95,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 5,
+          "accuracy": {
+            "mean": 0.16666666666666666,
+            "low": 0.0,
+            "high": 0.3333333333333333,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8333333333333334,
+            "low": 0.6666666666666666,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.7999999999999999,
+          "always_collision": 0.85,
+          "mean_confidence_valid": 0.95,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 6,
+          "accuracy": {
+            "mean": 0.16666666666666666,
+            "low": 0.0,
+            "high": 0.3333333333333333,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8888888888888888,
+            "low": 0.7222222222222222,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.7999999999999999,
+          "always_collision": 0.85,
+          "mean_confidence_valid": 0.95,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 7,
+          "accuracy": {
+            "mean": 0.1111111111111111,
+            "low": 0.0,
+            "high": 0.2777777777777778,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.9444444444444444,
+            "low": 0.8333333333333334,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.85,
+          "always_collision": 0.9,
+          "mean_confidence_valid": 0.95,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 8,
+          "accuracy": {
+            "mean": 0.05555555555555555,
+            "low": 0.0,
+            "high": 0.16666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8888888888888888,
+            "low": 0.7222222222222222,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8994949494949495,
+          "always_collision": 0.95,
+          "mean_confidence_valid": 0.95,
+          "invalid": 1,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 9,
+          "accuracy": {
+            "mean": 0.05555555555555555,
+            "low": 0.0,
+            "high": 0.16666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8888888888888888,
+            "low": 0.7222222222222222,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8999999999999999,
+          "always_collision": 0.95,
+          "mean_confidence_valid": 0.95,
+          "invalid": 0,
+          "states": 20
+        },
+        {
+          "kind": "collision",
+          "k": 10,
+          "accuracy": {
+            "mean": 0.05555555555555555,
+            "low": 0.0,
+            "high": 0.16666666666666666,
+            "clusters": 18,
+            "observations": 100
+          },
+          "linear": {
+            "mean": 0.8888888888888888,
+            "low": 0.7222222222222222,
+            "high": 1.0,
+            "clusters": 18,
+            "observations": 100
+          },
+          "ece_valid_only": 0.8999999999999999,
+          "always_collision": 0.95,
+          "mean_confidence_valid": 0.95,
+          "invalid": 0,
+          "states": 20
+        }
+      ],
+      "f_prefix_80": 0,
+      "f_largest_80": 0,
+      "position_accuracy": {
+        "mean": 0.12055555555555555,
+        "low": 0.04,
+        "high": 0.2277777777777778,
+        "clusters": 18,
+        "observations": 1000
+      },
+      "collision_accuracy": {
+        "mean": 0.15555555555555556,
+        "low": 0.03888888888888889,
+        "high": 0.3055555555555555,
+        "clusters": 18,
+        "observations": 1000
+      },
+      "invalid": 1,
+      "position_shape_fits": {
+        "horizons": 10,
+        "linear": {
+          "slope": -0.000707070707070703,
+          "intercept": 0.12444444444444439,
+          "rmse": 0.04467867570609864
+        },
+        "exponential": {
+          "rate": -0.0050000000000000044,
+          "amplitude": 0.12390781415451435,
+          "rmse": 0.04468143441422498
+        },
+        "cliff": {
+          "last_before": 1.0,
+          "before": 0.16666666666666666,
+          "after": 0.1154320987654321,
+          "rmse": 0.042000718525436555
+        }
+      },
+      "first_error_events": {
+        "complete_sequences": 100,
+        "incomplete_sequences": 0,
+        "all_correct": 0,
+        "first_error_event": {
+          "wrap": 10,
+          "fast_step": 20,
+          "timer_move": 20,
+          "timer_wait": 50
+        },
+        "first_error_after_any_wrap": 10
+      },
+      "position_signed_error_valid": {
+        "mean": 1.5722222222222222,
+        "low": 0.8244444444444444,
+        "high": 2.332222222222222,
+        "clusters": 18,
+        "observations": 1000
+      },
+      "position_absolute_error_valid": {
+        "mean": 3.296666666666667,
+        "low": 2.77,
+        "high": 3.7766666666666664,
+        "clusters": 18,
+        "observations": 1000
+      },
+      "mean_confidence_valid": {
+        "mean": 0.9703290684624017,
+        "low": 0.9693068462401795,
+        "high": 0.9712290684624018,
+        "clusters": 18,
+        "observations": 1999
+      },
+      "position_ece_valid": 0.87936,
+      "collision_ece_valid": 0.8098598598598599,
+      "always_collision_accuracy": 0.8444444444444444,
+      "required_foresight": {
+        "counts": {
+          "1": 18,
+          "2": 1,
+          "None": 1
+        },
+        "median_feasible": 1,
+        "prefix_coverage_feasible": 0.0
+      },
+      "repairs": [],
+      "consistency": [],
+      "commitment": []
+    }
+  },
+  "live": [
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "condition": "base",
+      "episodes": 10,
+      "censored": 0,
+      "episode_seeds": [
+        50000,
+        50001,
+        50002,
+        50003,
+        50004,
+        50005,
+        50006,
+        50007,
+        50008,
+        50009
+      ],
+      "successes": 0,
+      "success": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.0,
+        "clusters": 10,
+        "observations": 10
+      },
+      "success_wilson": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.2775327998628892
+      },
+      "mean_tokens": 1478,
+      "mean_calls": 11.3,
+      "mean_collisions": 8.7,
+      "error_decisions": 0,
+      "decisions": 113
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "condition": "selected",
+      "episodes": 10,
+      "censored": 0,
+      "episode_seeds": [
+        50000,
+        50001,
+        50002,
+        50003,
+        50004,
+        50005,
+        50006,
+        50007,
+        50008,
+        50009
+      ],
+      "successes": 0,
+      "success": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.0,
+        "clusters": 10,
+        "observations": 10
+      },
+      "success_wilson": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.2775327998628892
+      },
+      "mean_tokens": 1764.7,
+      "mean_calls": 15.5,
+      "mean_collisions": 1,
+      "error_decisions": 107,
+      "decisions": 118
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "condition": "all",
+      "episodes": 10,
+      "censored": 0,
+      "episode_seeds": [
+        50000,
+        50001,
+        50002,
+        50003,
+        50004,
+        50005,
+        50006,
+        50007,
+        50008,
+        50009
+      ],
+      "successes": 0,
+      "success": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.0,
+        "clusters": 10,
+        "observations": 10
+      },
+      "success_wilson": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.2775327998628892
+      },
+      "mean_tokens": 2746.1,
+      "mean_calls": 21.8,
+      "mean_collisions": 1.2,
+      "error_decisions": 160,
+      "decisions": 174
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "condition": "base",
+      "episodes": 10,
+      "censored": 1,
+      "episode_seeds": [
+        50000,
+        50001,
+        50002,
+        50003,
+        50004,
+        50005,
+        50006,
+        50007,
+        50008,
+        50009
+      ],
+      "successes": 0,
+      "success": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.0,
+        "clusters": 10,
+        "observations": 10
+      },
+      "success_wilson": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.2775327998628892
+      },
+      "mean_tokens": 1070.7,
+      "mean_calls": 8.6,
+      "mean_collisions": 5,
+      "error_decisions": 0,
+      "decisions": 86
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "condition": "selected",
+      "episodes": 10,
+      "censored": 0,
+      "episode_seeds": [
+        50000,
+        50001,
+        50002,
+        50003,
+        50004,
+        50005,
+        50006,
+        50007,
+        50008,
+        50009
+      ],
+      "successes": 0,
+      "success": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.0,
+        "clusters": 10,
+        "observations": 10
+      },
+      "success_wilson": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.2775327998628892
+      },
+      "mean_tokens": 1524.6,
+      "mean_calls": 9.4,
+      "mean_collisions": 0,
+      "error_decisions": 61,
+      "decisions": 61
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "condition": "all",
+      "episodes": 10,
+      "censored": 0,
+      "episode_seeds": [
+        50000,
+        50001,
+        50002,
+        50003,
+        50004,
+        50005,
+        50006,
+        50007,
+        50008,
+        50009
+      ],
+      "successes": 0,
+      "success": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.0,
+        "clusters": 10,
+        "observations": 10
+      },
+      "success_wilson": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.2775327998628892
+      },
+      "mean_tokens": 1708.9,
+      "mean_calls": 10.8,
+      "mean_collisions": 0,
+      "error_decisions": 78,
+      "decisions": 78
+    },
+    {
+      "model": "simulator control",
+      "condition": "advance",
+      "episodes": 50,
+      "censored": 0,
+      "episode_seeds": [
+        50000,
+        50001,
+        50002,
+        50003,
+        50004,
+        50005,
+        50006,
+        50007,
+        50008,
+        50009,
+        50010,
+        50011,
+        50012,
+        50013,
+        50014,
+        50015,
+        50016,
+        50017,
+        50018,
+        50019,
+        50020,
+        50021,
+        50022,
+        50023,
+        50024,
+        50025,
+        50026,
+        50027,
+        50028,
+        50029,
+        50030,
+        50031,
+        50032,
+        50033,
+        50034,
+        50035,
+        50036,
+        50037,
+        50038,
+        50039,
+        50040,
+        50041,
+        50042,
+        50043,
+        50044,
+        50045,
+        50046,
+        50047,
+        50048,
+        50049
+      ],
+      "successes": 12,
+      "success": {
+        "mean": 0.24,
+        "low": 0.12,
+        "high": 0.36,
+        "clusters": 50,
+        "observations": 50
+      },
+      "success_wilson": {
+        "mean": 0.24,
+        "low": 0.1429739139699173,
+        "high": 0.3741268375794292
+      },
+      "mean_tokens": 0,
+      "mean_calls": 0,
+      "error_decisions": 0,
+      "decisions": 3908,
+      "mean_collisions": 35.42
+    },
+    {
+      "model": "simulator control",
+      "condition": "oracle",
+      "episodes": 50,
+      "censored": 0,
+      "episode_seeds": [
+        50000,
+        50001,
+        50002,
+        50003,
+        50004,
+        50005,
+        50006,
+        50007,
+        50008,
+        50009,
+        50010,
+        50011,
+        50012,
+        50013,
+        50014,
+        50015,
+        50016,
+        50017,
+        50018,
+        50019,
+        50020,
+        50021,
+        50022,
+        50023,
+        50024,
+        50025,
+        50026,
+        50027,
+        50028,
+        50029,
+        50030,
+        50031,
+        50032,
+        50033,
+        50034,
+        50035,
+        50036,
+        50037,
+        50038,
+        50039,
+        50040,
+        50041,
+        50042,
+        50043,
+        50044,
+        50045,
+        50046,
+        50047,
+        50048,
+        50049
+      ],
+      "successes": 40,
+      "success": {
+        "mean": 0.8,
+        "low": 0.68,
+        "high": 0.92,
+        "clusters": 50,
+        "observations": 50
+      },
+      "success_wilson": {
+        "mean": 0.8,
+        "low": 0.6696289406777459,
+        "high": 0.887562499842239
+      },
+      "mean_tokens": 0,
+      "mean_calls": 0,
+      "error_decisions": 0,
+      "decisions": 1463,
+      "mean_collisions": 0.12
+    },
+    {
+      "model": "simulator control",
+      "condition": "planner",
+      "episodes": 50,
+      "censored": 0,
+      "episode_seeds": [
+        50000,
+        50001,
+        50002,
+        50003,
+        50004,
+        50005,
+        50006,
+        50007,
+        50008,
+        50009,
+        50010,
+        50011,
+        50012,
+        50013,
+        50014,
+        50015,
+        50016,
+        50017,
+        50018,
+        50019,
+        50020,
+        50021,
+        50022,
+        50023,
+        50024,
+        50025,
+        50026,
+        50027,
+        50028,
+        50029,
+        50030,
+        50031,
+        50032,
+        50033,
+        50034,
+        50035,
+        50036,
+        50037,
+        50038,
+        50039,
+        50040,
+        50041,
+        50042,
+        50043,
+        50044,
+        50045,
+        50046,
+        50047,
+        50048,
+        50049
+      ],
+      "successes": 40,
+      "success": {
+        "mean": 0.8,
+        "low": 0.68,
+        "high": 0.92,
+        "clusters": 50,
+        "observations": 50
+      },
+      "success_wilson": {
+        "mean": 0.8,
+        "low": 0.6696289406777459,
+        "high": 0.887562499842239
+      },
+      "mean_tokens": 0,
+      "mean_calls": 0,
+      "error_decisions": 0,
+      "decisions": 1463,
+      "mean_collisions": 0.12
+    },
+    {
+      "model": "simulator control",
+      "condition": "random",
+      "episodes": 50,
+      "censored": 0,
+      "episode_seeds": [
+        50000,
+        50001,
+        50002,
+        50003,
+        50004,
+        50005,
+        50006,
+        50007,
+        50008,
+        50009,
+        50010,
+        50011,
+        50012,
+        50013,
+        50014,
+        50015,
+        50016,
+        50017,
+        50018,
+        50019,
+        50020,
+        50021,
+        50022,
+        50023,
+        50024,
+        50025,
+        50026,
+        50027,
+        50028,
+        50029,
+        50030,
+        50031,
+        50032,
+        50033,
+        50034,
+        50035,
+        50036,
+        50037,
+        50038,
+        50039,
+        50040,
+        50041,
+        50042,
+        50043,
+        50044,
+        50045,
+        50046,
+        50047,
+        50048,
+        50049
+      ],
+      "successes": 1,
+      "success": {
+        "mean": 0.02,
+        "low": 0.0,
+        "high": 0.06,
+        "clusters": 50,
+        "observations": 50
+      },
+      "success_wilson": {
+        "mean": 0.02,
+        "low": 0.003539259271646236,
+        "high": 0.10495443589637815
+      },
+      "mean_tokens": 0,
+      "mean_calls": 0,
+      "error_decisions": 0,
+      "decisions": 4970,
+      "mean_collisions": 12.18
+    },
+    {
+      "model": "simulator control",
+      "condition": "stay",
+      "episodes": 50,
+      "censored": 0,
+      "episode_seeds": [
+        50000,
+        50001,
+        50002,
+        50003,
+        50004,
+        50005,
+        50006,
+        50007,
+        50008,
+        50009,
+        50010,
+        50011,
+        50012,
+        50013,
+        50014,
+        50015,
+        50016,
+        50017,
+        50018,
+        50019,
+        50020,
+        50021,
+        50022,
+        50023,
+        50024,
+        50025,
+        50026,
+        50027,
+        50028,
+        50029,
+        50030,
+        50031,
+        50032,
+        50033,
+        50034,
+        50035,
+        50036,
+        50037,
+        50038,
+        50039,
+        50040,
+        50041,
+        50042,
+        50043,
+        50044,
+        50045,
+        50046,
+        50047,
+        50048,
+        50049
+      ],
+      "successes": 0,
+      "success": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.0,
+        "clusters": 50,
+        "observations": 50
+      },
+      "success_wilson": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.07134759913335872
+      },
+      "mean_tokens": 0,
+      "mean_calls": 0,
+      "error_decisions": 0,
+      "decisions": 5000,
+      "mean_collisions": 0
+    }
+  ],
+  "live_paired": [
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "condition": "selected",
+      "paired_episodes": 10,
+      "success_change": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.0,
+        "clusters": 10,
+        "observations": 10
+      },
+      "token_change": {
+        "mean": 286.7,
+        "low": 108.6,
+        "high": 425.3,
+        "clusters": 10,
+        "observations": 10
+      }
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "condition": "all",
+      "paired_episodes": 10,
+      "success_change": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.0,
+        "clusters": 10,
+        "observations": 10
+      },
+      "token_change": {
+        "mean": 1268.1,
+        "low": 1094.3,
+        "high": 1481.8,
+        "clusters": 10,
+        "observations": 10
+      }
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "condition": "selected",
+      "paired_episodes": 10,
+      "success_change": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.0,
+        "clusters": 10,
+        "observations": 10
+      },
+      "token_change": {
+        "mean": 453.9,
+        "low": 269.5,
+        "high": 644.3,
+        "clusters": 10,
+        "observations": 10
+      }
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "condition": "all",
+      "paired_episodes": 10,
+      "success_change": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.0,
+        "clusters": 10,
+        "observations": 10
+      },
+      "token_change": {
+        "mean": 638.2,
+        "low": 507.1,
+        "high": 782.1,
+        "clusters": 10,
+        "observations": 10
+      }
+    }
+  ],
+  "files": {
+    "results/review/baseline-advance.jsonl.gz": "6503a57ff6f00795fba44b8403e1d772f1eac2b62d4c5a61b6324e2c51900253",
+    "results/review/baseline-oracle.jsonl.gz": "8066bc3416e63dc9c707a4d51f6187133a2383adbb9613c927bf1cd7e7abf484",
+    "results/review/baseline-planner.jsonl.gz": "8b060f171b81717fce09243df8250cb0c4ec3f396b07808b57c98530af50fa30",
+    "results/review/baseline-random.jsonl.gz": "3f0663fd95d4f75bfd58b2e834b6eecd863a959cb17f0bceb7f255944a1f9172",
+    "results/review/baseline-stay.jsonl.gz": "9c4efbcf347970b2c9c0b4e6bf3c01aaec219a80759987ebccaa3d99d5238121",
+    "results/review/qwen3-1.7b-q4_K_M/A-validation/responses.jsonl.gz": "79659a44ced7c0632ac5818e2b8003b911ebb871678e2ff853f0ec64456a796a",
+    "results/review/qwen3-1.7b-q4_K_M/B-repairs-primary/responses.jsonl.gz": "198cf33fa4065341e8903b769eef987740a2f9c8f64c997c2640128bb9b8acde",
+    "results/review/qwen3-1.7b-q4_K_M/B-test/responses.jsonl.gz": "3f848d9f3709645bea24127f3e5b0dd6f556a9426c3438db4ae612a49c43bfc8",
+    "results/review/qwen3-1.7b-q4_K_M/B-validation/responses.jsonl.gz": "a55772ec8ba5ae5e6646f454435cbdbd8e76cd27ca4c3797a0f4f68e04702e28",
+    "results/review/qwen3-1.7b-q4_K_M/C-commitment/responses.jsonl.gz": "be739d96f3703f8b393206da528ec289cf66920aa150229f6ff52511d642ae69",
+    "results/review/qwen3-1.7b-q4_K_M/C-repairs-primary/responses.jsonl.gz": "70f84970df716a9fad363cf54c2901f23865785de89048895f05490b0b3a356c",
+    "results/review/qwen3-1.7b-q4_K_M/C-test/responses.jsonl.gz": "a908fc6ac25aaefdc6bdca41741ef53ef33fc52a9923908690962b96d1670b29",
+    "results/review/qwen3-1.7b-q4_K_M/C-validation/responses.jsonl.gz": "9884b3fc84c5c36414a7453c4abe54b90995bc27581ddc6b82a9bd18e6b42052",
+    "results/review/qwen3-1.7b-q4_K_M/live-all.jsonl.gz": "6362e184515bd66b3f1c8334bdfc987341ffb7c209cb904616cf3246bb3e951e",
+    "results/review/qwen3-1.7b-q4_K_M/live-base.jsonl.gz": "3442dae049d0f4c7565aa2e52ea59a22f56ba94e9d19823971f527d2b1eb1e27",
+    "results/review/qwen3-1.7b-q4_K_M/live-selected.jsonl.gz": "eac26047a8423d549c2ae2d1766bbdacf6257db201079f52774f5ee0b564dcbd",
+    "results/review/qwen3-14b-q4_K_M/A-validation/responses.jsonl.gz": "136ed8f34eb05bac6e6936a475fc4b72a927639c027e37d8f83060eec311099b",
+    "results/review/qwen3-14b-q4_K_M/B-test/responses.jsonl.gz": "aa359a68ade0d1794f8e670c3fbbc9103e3986ce91b0ef90f99a1d34bbee386c",
+    "results/review/qwen3-14b-q4_K_M/B-validation/responses.jsonl.gz": "dc739679895ef109fc7f46cd80d7b27fa338af8b46322bfb71c04835406efaa7",
+    "results/review/qwen3-14b-q4_K_M/C-validation/responses.jsonl.gz": "0a6d1f3d3951a3f5a2baae23c978aec2efc98946e877b1b20dedcd9df7bc9a0e",
+    "results/review/qwen3-4b-q4_K_M/A-validation/responses.jsonl.gz": "56c0f704ad74384f2ac5b5ee1930b5e3e98e99f41509fd0ddffbc781806c7d0e",
+    "results/review/qwen3-4b-q4_K_M/B-repairs-primary/responses.jsonl.gz": "2c082f6ff4ad1573daf2b80e3bc30896e9030e687f497893ba8bd7068012a405",
+    "results/review/qwen3-4b-q4_K_M/B-test/responses.jsonl.gz": "576ddf3c13f1a3b046e7d5f69a1f23837b58bb56261b10537087bb7e1f243358",
+    "results/review/qwen3-4b-q4_K_M/B-validation/responses.jsonl.gz": "2a77b8f1a98f095bdc422f2b5a2e102a4b01b2d88e716dd561dbede73895b9e6",
+    "results/review/qwen3-4b-q4_K_M/C-commitment/responses.jsonl.gz": "c116e4400a89c231de12492cc610d49aace3716f022945569d47f892b012fb07",
+    "results/review/qwen3-4b-q4_K_M/C-repairs-primary/responses.jsonl.gz": "3bb39a98a711fccb4c2f056a55ef42fa30cba3f7003323ae09a005d301c2c7a9",
+    "results/review/qwen3-4b-q4_K_M/C-test/responses.jsonl.gz": "664e2a65adcf31064c9e485c216aa4ec6f1238e2bccc903290eaaa672bb6f126",
+    "results/review/qwen3-4b-q4_K_M/C-validation/responses.jsonl.gz": "cc4865271736fe0659c05d6aa17ae6a35cd16fb07082b40b05815b615c1d3ed0",
+    "results/review/qwen3-4b-q4_K_M/live-all.jsonl.gz": "ed3b14d756d7ed0365884ab5f9c2190620265696574c6c2ed3c1b1ad2e51e5fe",
+    "results/review/qwen3-4b-q4_K_M/live-base.jsonl.gz": "9af5b2edb19ad258525d245366eb1c413f52325560d0a64819ac67166ba6fdfb",
+    "results/review/qwen3-4b-q4_K_M/live-selected.jsonl.gz": "775bc9843ca8b0791592b99765772783eac21742243e37feb7b54521c2aba5a4",
+    "results/review/qwen3-8b-q4_K_M/A-validation/responses.jsonl.gz": "3abc7d6bf8e6d94b778c705e7dcec7b102f9efb5a2bd793c195eb58f9aee7a9a",
+    "results/review/qwen3-8b-q4_K_M/B-test/responses.jsonl.gz": "19700c89829b42787b04c923a37fe44cca80bf917845cd0ddcc8dbd7584e75a1",
+    "results/review/qwen3-8b-q4_K_M/B-validation/responses.jsonl.gz": "d8493047cfb6485cb3154ad86886393e49de0e5c442382fadbc6c8966748fbb3",
+    "results/review/qwen3-8b-q4_K_M/C-validation/responses.jsonl.gz": "dad936275401d5fc6bf9e6705ef2da2de088969156e35546a5da035f8d24ce6c"
+  },
+  "generated_at": "2026-11-12T14:59:02.509630+00:00",
+  "bank_sha256": "0d2e1d39ada9885679dfe2f1146d4371d9ecd2fa8fe50c4652cb188178900002"
+}

@@ -1,0 +1,201 @@
+[
+  {
+    "model": "qwen3:14b-q4_K_M",
+    "thinking": false,
+    "stage": "C",
+    "representation": "prose",
+    "kind": "action",
+    "k": 3,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.125,
+      "low": 0.0,
+      "high": 0.375,
+      "clusters": 8,
+      "observations": 8
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.79375,
+    "actions": {
+      "U": 8
+    },
+    "mean_wall_seconds": 13.154398307622614,
+    "contradiction": {
+      "mean": 0.375,
+      "low": 0.125,
+      "high": 0.75,
+      "clusters": 8,
+      "observations": 8
+    },
+    "safety": {
+      "mean": 0.125,
+      "low": 0.0,
+      "high": 0.375,
+      "clusters": 8,
+      "observations": 8
+    }
+  },
+  {
+    "model": "qwen3:14b-q4_K_M",
+    "thinking": false,
+    "stage": "C",
+    "representation": "prose",
+    "kind": "combined",
+    "k": 3,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.125,
+      "low": 0.0,
+      "high": 0.375,
+      "clusters": 8,
+      "observations": 8
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.825,
+    "actions": {
+      "U": 8
+    },
+    "mean_wall_seconds": 19.524239984377346,
+    "contradiction": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 8,
+      "observations": 8
+    },
+    "safety": {
+      "mean": 0.125,
+      "low": 0.0,
+      "high": 0.375,
+      "clusters": 8,
+      "observations": 8
+    }
+  },
+  {
+    "model": "qwen3:14b-q4_K_M",
+    "thinking": false,
+    "stage": "C",
+    "representation": "prose",
+    "kind": "forecast",
+    "k": 3,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 8,
+      "observations": 8
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.95,
+    "actions": {},
+    "mean_wall_seconds": 10.420192750123533,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:14b-q4_K_M",
+    "thinking": false,
+    "stage": "C",
+    "representation": "prose",
+    "kind": "oracle",
+    "k": 3,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.5,
+      "low": 0.125,
+      "high": 0.875,
+      "clusters": 8,
+      "observations": 8
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.36250000000000004,
+    "actions": {
+      "D": 5,
+      "U": 3
+    },
+    "mean_wall_seconds": 8.179240359128016,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": 0.625,
+      "low": 0.25,
+      "high": 0.875,
+      "clusters": 8,
+      "observations": 8
+    }
+  },
+  {
+    "model": "qwen3:14b-q4_K_M",
+    "thinking": false,
+    "stage": "C",
+    "representation": "prose",
+    "kind": "own",
+    "k": 3,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.125,
+      "low": 0.0,
+      "high": 0.375,
+      "clusters": 8,
+      "observations": 8
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.70625,
+    "actions": {
+      "U": 8
+    },
+    "mean_wall_seconds": 24.307284255624836,
+    "contradiction": {
+      "mean": 0.375,
+      "low": 0.125,
+      "high": 0.75,
+      "clusters": 8,
+      "observations": 8
+    },
+    "safety": {
+      "mean": 0.125,
+      "low": 0.0,
+      "high": 0.375,
+      "clusters": 8,
+      "observations": 8
+    }
+  }
+]

@@ -383,7 +383,7 @@ def build(evidence, output, figures, root):
                                ('RIGHTPADDING', (0, 0), (-1, -1), 6),
                                ('TOPPADDING', (0, 0), (-1, -1), 6),
                                ('BOTTOMPADDING', (0, 0), (-1, -1), 6)]))
-        story.extend((t, Spacer(1, 10)))
+        story.extend((KeepTogether([t]) if len(body) <= 8 else t, Spacer(1, 10)))
         markdown.extend([' | '.join(map(str, headers)), ' | '.join('---' for _ in headers),
                          *[' | '.join(map(str, r)) for r in body]])
 
@@ -789,9 +789,13 @@ def build(evidence, output, figures, root):
               'and recording delay and all calls makes the live comparison auditable. A broader '
               'claim that diagnosis reliably selects better agents requires the pending '
               'cross-game, cost-matched and intervention controls.')
-    heading('References')
+    reference_blocks = [Paragraph('References', styles['Heading2'])]
+    markdown.append('\n## References')
     for index, (text, url) in enumerate(REFERENCES, 1):
-        paragraph(f'[{index}] {escape(text)} <link href="{url}" color="#215c8c">{escape(url)}</link>', 'SmallNote')
+        entry = f'[{index}] {escape(text)} <link href="{url}" color="#215c8c">{escape(url)}</link>'
+        reference_blocks.append(Paragraph(entry, styles['SmallNote']))
+        markdown.append(entry)
+    story.append(KeepTogether(reference_blocks))
     output.parent.mkdir(parents=True, exist_ok=True)
     doc = SimpleDocTemplate(str(output), pagesize=(612, 792), rightMargin=42, leftMargin=42,
                             topMargin=43, bottomMargin=43, title='Diagnose, Then Repair',

@@ -1,0 +1,762 @@
+[
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "ascii",
+    "kind": "collision",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.4222222222222222,
+      "low": 0.24444444444444446,
+      "high": 0.6111111111111112,
+      "clusters": 18,
+      "observations": 100
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.582,
+    "actions": {},
+    "mean_wall_seconds": 1.0022778883902357,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "ascii",
+    "kind": "collision",
+    "k": 10,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.1,
+      "low": 0.022222222222222223,
+      "high": 0.22222222222222224,
+      "clusters": 18,
+      "observations": 100
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.873,
+    "actions": {},
+    "mean_wall_seconds": 0.9865489374517347,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "ascii",
+    "kind": "collision",
+    "k": 2,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.7166666666666667,
+      "low": 0.49444444444444446,
+      "high": 0.8888888888888888,
+      "clusters": 18,
+      "observations": 100
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.20999999999999996,
+    "actions": {},
+    "mean_wall_seconds": 0.9905573804327287,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "ascii",
+    "kind": "collision",
+    "k": 3,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.7833333333333333,
+      "low": 0.6166666666666667,
+      "high": 0.9277777777777778,
+      "clusters": 18,
+      "observations": 100
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.18049999999999988,
+    "actions": {},
+    "mean_wall_seconds": 0.9954072903678752,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "ascii",
+    "kind": "collision",
+    "k": 4,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.6666666666666667,
+      "low": 0.5222222222222223,
+      "high": 0.8,
+      "clusters": 18,
+      "observations": 100
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.3015,
+    "actions": {},
+    "mean_wall_seconds": 0.9940757658609073,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "ascii",
+    "kind": "collision",
+    "k": 5,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.6777777777777778,
+      "low": 0.5222222222222223,
+      "high": 0.8222222222222222,
+      "clusters": 18,
+      "observations": 100
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.29049999999999987,
+    "actions": {},
+    "mean_wall_seconds": 0.9919348645489663,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "ascii",
+    "kind": "collision",
+    "k": 6,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.7611111111111111,
+      "low": 0.5833333333333334,
+      "high": 0.9111111111111111,
+      "clusters": 18,
+      "observations": 100
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.1904999999999999,
+    "actions": {},
+    "mean_wall_seconds": 0.9861888596296194,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "ascii",
+    "kind": "collision",
+    "k": 7,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.8666666666666667,
+      "low": 0.7,
+      "high": 0.9888888888888889,
+      "clusters": 18,
+      "observations": 100
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.0804999999999999,
+    "actions": {},
+    "mean_wall_seconds": 0.9793772225515568,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "ascii",
+    "kind": "collision",
+    "k": 8,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.21666666666666667,
+      "low": 0.10555555555555556,
+      "high": 0.3666666666666667,
+      "clusters": 18,
+      "observations": 100
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.7589999999999999,
+    "actions": {},
+    "mean_wall_seconds": 0.9784322782998788,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "ascii",
+    "kind": "collision",
+    "k": 9,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.08888888888888889,
+      "low": 0.022222222222222223,
+      "high": 0.2,
+      "clusters": 18,
+      "observations": 100
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.8805,
+    "actions": {},
+    "mean_wall_seconds": 0.9926876679217094,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "ascii",
+    "kind": "position",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.3111111111111111,
+      "low": 0.1111111111111111,
+      "high": 0.5333333333333333,
+      "clusters": 18,
+      "observations": 100
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.6559999999999999,
+    "actions": {},
+    "mean_wall_seconds": 1.3238077495701146,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "ascii",
+    "kind": "position",
+    "k": 10,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.12222222222222222,
+      "low": 0.03333333333333333,
+      "high": 0.22222222222222224,
+      "clusters": 18,
+      "observations": 100
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.8279,
+    "actions": {},
+    "mean_wall_seconds": 1.0382792133081238,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "ascii",
+    "kind": "position",
+    "k": 2,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.05555555555555555,
+      "low": 0.0,
+      "high": 0.16666666666666666,
+      "clusters": 18,
+      "observations": 100
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.887,
+    "actions": {},
+    "mean_wall_seconds": 1.0009281308678328,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "ascii",
+    "kind": "position",
+    "k": 3,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.1388888888888889,
+      "low": 0.027777777777777776,
+      "high": 0.2777777777777778,
+      "clusters": 18,
+      "observations": 100
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.8315,
+    "actions": {},
+    "mean_wall_seconds": 1.0257896179298405,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "ascii",
+    "kind": "position",
+    "k": 4,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.2,
+      "low": 0.05555555555555555,
+      "high": 0.37777777777777777,
+      "clusters": 18,
+      "observations": 100
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.8005,
+    "actions": {},
+    "mean_wall_seconds": 1.0212847625493304,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "ascii",
+    "kind": "position",
+    "k": 5,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.1,
+      "low": 0.0,
+      "high": 0.23333333333333334,
+      "clusters": 18,
+      "observations": 100
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.891,
+    "actions": {},
+    "mean_wall_seconds": 1.027067688330426,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "ascii",
+    "kind": "position",
+    "k": 6,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.12222222222222223,
+      "low": 0.022222222222222223,
+      "high": 0.25555555555555554,
+      "clusters": 18,
+      "observations": 100
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.8515,
+    "actions": {},
+    "mean_wall_seconds": 1.017598420821596,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "ascii",
+    "kind": "position",
+    "k": 7,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.15555555555555556,
+      "low": 0.05555555555555555,
+      "high": 0.26666666666666666,
+      "clusters": 18,
+      "observations": 100
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.821,
+    "actions": {},
+    "mean_wall_seconds": 1.0039249332682811,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "ascii",
+    "kind": "position",
+    "k": 8,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.18888888888888888,
+      "low": 0.08888888888888889,
+      "high": 0.2888888888888889,
+      "clusters": 18,
+      "observations": 100
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.7865,
+    "actions": {},
+    "mean_wall_seconds": 1.0119723520011759,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "ascii",
+    "kind": "position",
+    "k": 9,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.16666666666666666,
+      "low": 0.05555555555555555,
+      "high": 0.28888888888888886,
+      "clusters": 18,
+      "observations": 100
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.7685,
+    "actions": {},
+    "mean_wall_seconds": 1.0180141575215385,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  }
+]
