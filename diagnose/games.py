@@ -47,7 +47,7 @@ class Snapshot:
 
     @property
     def key(self):
-        return hashlib.sha256(self.observation.encode()).hexdigest()[:20]
+        return hashlib.sha256(json.dumps(self.to_dict(), sort_keys=True).encode()).hexdigest()[:20]
 
     def to_dict(self):
         return {'game': self.game, 'seed': self.seed, 'actions': list(self.actions),
@@ -114,7 +114,7 @@ def search(saved, horizon=3, node_budget=10000):
 
     def value(current, depth):
         nonlocal nodes, truncated
-        key = (current.observation, current.reward, current.terminal, depth)
+        key = (current.game, current.seed, current.actions, depth)
         if key in visited:
             return visited[key]
         if depth == 0 or current.terminal:
