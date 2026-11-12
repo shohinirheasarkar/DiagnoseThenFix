@@ -244,6 +244,7 @@ def analyze(root, bank_path):
             if group:
                 eligible = [r for r in group if r['score'].get('own_feasible')]
                 data['commitment'].append({'condition': name, 'accuracy': interval(group),
+                                           'forecast_accuracy_valid_only': interval(group, 'forecast_accuracy'),
                                            'inconsistency_valid_only': interval(group, 'inconsistent'),
                                            'unsafe_choice_own_feasible': interval(eligible, 'contradiction'),
                                            'trials': len(group), 'invalid': sum(not r['score']['valid'] for r in group),
@@ -595,7 +596,8 @@ def build(evidence, output, figures, root):
               'where its beliefs admit a noncolliding action; it cannot make an incorrect forecast true.')
     commitment_rows = [[name.replace('qwen3:', '').replace('-q4_K_M', ''),
                         r['condition'] + (' (UB)' if r['upper_bound'] else ''), str(r['trials']),
-                        ci(r['accuracy']), ci(r['inconsistency_valid_only']), str(r['invalid'])]
+                        ci(r['accuracy']), percent(r['forecast_accuracy_valid_only']['mean']),
+                        ci(r['inconsistency_valid_only']), str(r['invalid'])]
                        for name, m in models.items() for r in m.get('commitment', [])]
     if commitment_rows:
         heading('5.1. Commitment-matched consistency')
@@ -608,19 +610,24 @@ def build(evidence, output, figures, root):
                   'believed unsafe. This fixes the temporal mismatch of the legacy proxy, while '
                   'remaining a behavioral report-based measurement rather than a causal mechanism test.')
         table(['Model tag', 'Condition', 'Trials', 'Action accuracy [95% CI]',
-               'Inconsistency, valid forecasts', 'Invalid'], commitment_rows,
-              [55, 83, 40, 145, 153, 52])
+               'Forecast accuracy', 'Inconsistency, valid records', 'Invalid'], commitment_rows,
+              [50, 75, 34, 115, 91, 123, 40])
         paragraph('UB marks oracle information or a simulator shield. Bound selection uses model '
                   'beliefs only; zero inconsistency is a construction property and does not imply '
                   'correct dynamics. Invalid outputs count against primary accuracy; inconsistency '
-                  'is conditional on valid elicited beliefs. All action and forecast prompts use '
+                  'and mean per-action forecast accuracy condition on valid action/forecast records. '
+                  'All action and forecast prompts use '
                   'the same declared commitment horizon.', 'SmallNote')
     else:
         paragraph('The commitment-matched consistency task is implemented and tested, but no '
                   'completed empirical commitment run is included at report generation.')
     heading('6. Composed agent and live validation')
     paragraph('The composed agent selects a representation and repairs from validation diagnostics '
-              'using fixed stage cutoffs. Forecast code and forecast-bound selection use model '
+              'using fixed stage cutoffs: 0.8 for A/B and 0.9 for C/D/E. A is ASCII perception '
+              'accuracy, B is pooled forecast accuracy, and C is one minus the legacy risk-disagreement '
+              'rate. D is unprofiled and set to 1. E is set to 0.5 when the largest null-state '
+              'conditional action probability exceeds 0.6, otherwise 1. A structured-input flag '
+              'keeps ASCII when ASCII wins validation. Forecast code and forecast-bound selection use model '
               'beliefs. Prior calibration subtracts null-state from observed-state action log '
               'scores, following the contextual-calibration idea [8] and requiring all A/B/C '
               'candidates. A separate one-token action interface is '
