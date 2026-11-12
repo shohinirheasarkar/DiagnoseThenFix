@@ -257,6 +257,7 @@ def analyze(root, bank_path):
             values = [{'state_id': r['seed'], 'success': r['success']} for r in complete]
             output['live'].append({'model': profile['model'], 'condition': path.name.removesuffix('.gz').removesuffix('.jsonl')[5:],
                                   'episodes': len(complete), 'censored': len(group)-len(complete),
+                                  'successes': sum(r['success'] for r in complete),
                                   'success': bootstrap(values, 'success'),
                                   'success_wilson': wilson(sum(r['success'] for r in complete), len(complete)),
                                   'mean_tokens': statistics.mean(r['tokens'] for r in complete) if complete else None,
@@ -285,6 +286,7 @@ def analyze(root, bank_path):
         group = rows(path)
         output['live'].append({'model': 'simulator control', 'condition': path.name.removesuffix('.gz').removesuffix('.jsonl')[9:],
                               'episodes': len(group), 'censored': 0,
+                              'successes': sum(r['success'] for r in group),
                               'success': bootstrap([{'state_id': r['seed'], 'success': r['success']} for r in group], 'success'),
                               'success_wilson': wilson(sum(r['success'] for r in group),len(group)),
                               'mean_tokens': 0, 'mean_calls': 0,
@@ -388,6 +390,10 @@ def build(evidence, output, figures, root):
     finding = (f'Episode-weighted exact-head accuracy spans {percent(min(position_values))}-'
                f'{percent(max(position_values))} across the collected artifacts. '
                if position_values else '')
+    agent_live = [r for r in evidence['live'] if r['model'] != 'simulator control']
+    live_finding = (f'Live collection produced {sum(r["episodes"] for r in agent_live)} completed '
+                    f'model-condition runs ({sum(r["successes"] for r in agent_live)} goals) and '
+                    f'{sum(r["censored"] for r in agent_live)} censored runs. ' if agent_live else '')
     title = 'Diagnose, Then Repair'
     paragraph(title, 'PaperTitle')
     paragraph('A simulator-checked study of small language-model agents in real-time Freeway', 'Heading2')
@@ -400,7 +406,7 @@ def build(evidence, output, figures, root):
               f'Qwen3 model artifacts collected on a 16 GB Apple M3 laptop. The situation bank contains '
               f'500 states with disjoint source episodes across splits. We compare forecast accuracy at '
               f'horizons 1-10 against constant-velocity extrapolation, and separately evaluate consistency '
-              f'repairs and measured-delay live play where completed. {finding}Missing or malformed answers count '
+              f'repairs and measured-delay live play where completed. {finding}{live_finding}Missing or malformed answers count '
               f'as incorrect. This is an exploratory, single-game artifact; the full multi-game, '
               f'thinking-mode, and training-based study remains incomplete. We make no first-of-its-kind '
               f'or causal root-cause claim from this cycle.')
@@ -636,7 +642,8 @@ def build(evidence, output, figures, root):
               'candidates. A separate one-token action interface is '
               'used for those scores, which is a prompt-interface confound for causal attribution. '
               'History is explicitly unprofiled in this cycle. The all-repair and random '
-              'conditions are controls, not assumed improvements.')
+              'conditions are controls, not assumed improvements. Policy messages retain up '
+              'to twelve raw proposal turns, subject to the server context limit.')
     paragraph('Live decisions advance the world by ceil(measured request time / one second), with '
               'S as the default action during delay. The chosen move applies afterward if the '
               'episode has not ended. Retries and extra model calls add delay and generated tokens. '
