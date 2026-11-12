@@ -154,7 +154,7 @@ def label(state, horizon=10):
     immediate = {a: step(state, a)[1] for a in ACTIONS}
     category = ('must_retreat' if ref['safe'] == ['D'] else
                 'dangerous_advance' if 'U' not in ref['safe'] else 'safe_advance')
-    if immediate['U'] == 'collision' and immediate['S'] == 'neutral':
+    if 'S' in ref['safe'] and immediate['U'] == 'collision' and immediate['S'] == 'neutral':
         waited, _ = step(state, 'S')
         if step(waited, 'U')[1] != 'collision':
             category = 'waiting_helps'
@@ -163,8 +163,8 @@ def label(state, horizon=10):
             'category': category}
 
 
-def build_bank(count=500, seed=0, horizon=10, max_episodes=3000):
-    if count < 1:
+def build_bank(count=500, seed=0, horizon=10, max_episodes=3000, max_per_episode=2):
+    if count < 1 or max_per_episode < 1:
         raise ValueError('Count must be positive')
     rng = random.Random(seed)
     categories = ('safe_advance', 'dangerous_advance', 'waiting_helps', 'must_retreat')
@@ -177,6 +177,7 @@ def build_bank(count=500, seed=0, horizon=10, max_episodes=3000):
     for episode in range(max_episodes):
         source = seed * 100000 + episode + 1000
         s = initial(source)
+        collected = 0
         for _ in range(70):
             if s.key not in seen:
                 seen.add(s.key)
@@ -187,6 +188,9 @@ def build_bank(count=500, seed=0, horizon=10, max_episodes=3000):
                 if len(bucket) < targets[key]:
                     bucket.append({'id': s.key, 'split': split, 'state': s.to_dict(),
                                    'oracle': truth, 'upstream': UPSTREAM})
+                    collected += 1
+                    if collected >= max_per_episode:
+                        break
             s, event = step(s, rng.choice(ACTIONS))
             if event in ('goal', 'timeout'):
                 break
@@ -199,4 +203,7 @@ def build_bank(count=500, seed=0, horizon=10, max_episodes=3000):
                   'horizon': horizon, 'upstream': UPSTREAM,
                   'categories': dict(Counter(r['oracle']['category'] for r in rows)),
                   'splits': dict(Counter(r['split'] for r in rows)),
+                  'max_states_per_episode': max_per_episode,
+                  'source_episodes': {split: len({r['state']['source_seed'] for r in rows if r['split'] == split})
+                                      for split in sizes},
                   'balanced': all(len(v) >= targets[k] for k, v in buckets.items())}

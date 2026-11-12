@@ -169,7 +169,7 @@ def score(task, value, error, state, truth):
                 raise ValueError('answer type mismatch')
             result = {'valid': True, 'correct': answer == target, 'confidence': confidence}
             if type(target) in (int, float):
-                result['signed_error'] = answer - target
+                result['signed_error' if task['kind'] == 'position' else 'numeric_error'] = answer - target
             return result
         if task['stage'] == 'C' and task['kind'] == 'forecast':
             beliefs = value['collision']
@@ -183,6 +183,9 @@ def score(task, value, error, state, truth):
         if task['stage'] == 'C' and task['kind'] in ('action', 'own', 'oracle'):
             return {'valid': True, 'correct': action in truth['optimal'],
                     'safe': action in truth['safe'], 'action': action, 'confidence': confidence}
+        if task['stage'] == 'E' and task['kind'] == 'null':
+            return {'valid': True, 'correct': False, 'action': action, 'confidence': confidence,
+                    'not_accuracy_task': True}
         collision = value['collision']
         if set(collision) != set(ACTIONS) or any(type(v) is not bool for v in collision.values()):
             raise ValueError('collision forecast must contain three booleans')

@@ -1,5 +1,5 @@
 """This summarizes repeated trials without pretending that repeats are independent boards."""
-from collections import defaultdict
+from collections import Counter, defaultdict
 import math
 import random
 import statistics
@@ -74,15 +74,17 @@ def summarize(rows):
         key = (row['model'], row['thinking'], t['stage'], t['representation'], t['kind'],
                t['k'], t['repair'], t['history_kind'], t['history_length'],
                t['skin'], t['labels'])
-        groups[key].append({**row['score'], 'state_id': row['state_id'],
+        groups[key].append({**row['score'], 'state_id': row.get('source_seed', row['state_id']),
                             'wall_seconds': row['response']['wall_seconds']})
     output = []
     for key, values in sorted(groups.items(), key=lambda x: str(x[0])):
         fields = ('model', 'thinking', 'stage', 'representation', 'kind', 'k', 'repair',
                   'history_kind', 'history_length', 'skin', 'labels')
-        output.append({**dict(zip(fields, key)), 'accuracy': bootstrap(values),
+        is_null = key[2] == 'E' and key[4] == 'null'
+        output.append({**dict(zip(fields, key)), 'accuracy': None if is_null else bootstrap(values),
                        'invalid': sum(not v['valid'] for v in values),
-                       'ece_valid_only': ece(values),
+                       'ece_valid_only': None if is_null else ece(values),
+                       'actions': dict(Counter(v['action'] for v in values if 'action' in v)),
                        'mean_wall_seconds': statistics.mean(v['wall_seconds'] for v in values),
                        'contradiction': bootstrap(values, 'contradiction'),
                        'safety': bootstrap(values, 'safe')})
