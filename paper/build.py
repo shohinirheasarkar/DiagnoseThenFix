@@ -604,9 +604,10 @@ def build(evidence, output, figures, root):
               'the model marks noncolliding. It removes that measured contradiction by construction '
               'where its beliefs admit a noncolliding action; it cannot make an incorrect forecast true.')
     commitment_rows = [[name.replace('qwen3:', '').replace('-q4_K_M', ''),
-                        r['condition'] + (' (UB)' if r['upper_bound'] else ''), str(r['trials']),
+                        r['condition'] + (' (UB)' if r['upper_bound'] else ''), f'{r["states"]}/{r["trials"]}',
                         ci(r['accuracy']), percent(r['forecast_accuracy_valid_only']['mean']),
-                        ci(r['inconsistency_valid_only']), str(r['invalid'])]
+                        ci(r['inconsistency_valid_only']) + f' (n={r["inconsistency_valid_only"]["observations"]})',
+                        str(r['invalid'])]
                        for name, m in models.items() for r in m.get('commitment', [])]
     if commitment_rows:
         heading('5.1. Commitment-matched consistency')
@@ -618,13 +619,14 @@ def build(evidence, output, figures, root):
                   'skipped believed-safe progress, and failure to abstain when all commitments are '
                   'believed unsafe. This fixes the temporal mismatch of the legacy proxy, while '
                   'remaining a behavioral report-based measurement rather than a causal mechanism test.')
-        table(['Model tag', 'Condition', 'Trials', 'Action accuracy [95% CI]',
+        table(['Model tag', 'Condition', 'Boards / trials', 'Action accuracy [95% CI]',
                'Forecast accuracy', 'Inconsistency, valid records', 'Invalid'], commitment_rows,
-              [50, 75, 34, 115, 91, 123, 40])
+              [50, 75, 44, 115, 81, 123, 40])
         paragraph('UB marks oracle information or a simulator shield. Bound selection uses model '
                   'beliefs only; zero inconsistency is a construction property and does not imply '
                   'correct dynamics. Invalid outputs count against primary accuracy; inconsistency '
                   'and mean per-action forecast accuracy condition on valid action/forecast records. '
+                  'The parenthesized n is that conditional record count. '
                   'All action and forecast prompts use '
                   'the same declared commitment horizon.', 'SmallNote')
     else:
@@ -654,7 +656,7 @@ def build(evidence, output, figures, root):
               'so costs describe logical policy requests in the replay. Fixed null-prior scores '
               'are charged at every calibration decision even if cached. This replays observed latency; '
               'it is not an asynchronous deployment benchmark. Episodes cut short by the time '
-              'cap are censored. Simulator baselines have zero inference delay and therefore '
+              'cap or a shortened decision budget are censored. Simulator baselines have zero inference delay and therefore '
               'provide reference controls rather than latency-matched competitors.')
     if evidence['live']:
         body = [[r['model'].replace('qwen3:', '').replace('-q4_K_M', ''), r['condition'],
