@@ -61,3 +61,22 @@ The existing `contradiction` log field is a repeated-action risk-disagreement
 proxy: it compares a one-tick chosen action with a forecast about repeating that
 action. It is not a logically sufficient belief-action-gap metric. Report it
 under that narrower name and leave commitment-matched gap claims open.
+
+## Separate commitment diagnostic
+
+A follow-up diagnostic corrects the temporal mismatch rather than changing the
+legacy logs. Each action is explicitly repeated for three ticks; beliefs and
+choices refer to that same commitment. It uses twenty held-out states, five
+sampling seeds and eight conditions: no injection, own forecast, oracle forecast,
+combined answer, generic check, bound selection, one retry, and oracle shield.
+Oracle injection and shielding are upper bounds. Record unsafe choices, skipped
+believed-safe progress, and failure to abstain separately. Queue this after the
+main batch, one local model at a time, stopping by 14:55 UTC. Any partial run keeps
+its actual condition counts. This correction is motivated by task semantics,
+not by a favorable observed result.
+
+The report also includes descriptive linear/exponential/cliff fits, valid-answer
+cell errors, and paired live changes on shared uncensored seeds. In-sample fit
+error does not confirm the preregistered curve-shape hypothesis. The extra cliff
+parameter is explicitly disclosed. No adjusted significance or causal claim is
+made from these exploratory summaries.
