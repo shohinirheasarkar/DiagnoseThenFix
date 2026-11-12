@@ -89,3 +89,41 @@ def test_archive_audit_checks_decompressed_hash(tmp_path):
     (destination / 'archive.json').write_text(json.dumps(manifest))
     with pytest.raises(ValueError, match='round-trip mismatch'):
         check(destination)
+
+
+def test_frozen_terminal_display_requires_explicit_source_compatibility(tmp_path):
+    from dataclasses import replace
+    modern = episode(baseline('advance'), seed=50000)
+    assert modern['trace'][-1]['events'][-1] == 'collision'
+    assert modern['trace'][-1]['after']['turn'] == 100
+    verify_live(modern)
+    legacy = deepcopy(modern)
+    legacy['trace'][-1]['after'] = replace(initial(50000), turn=100).to_dict()
+    verify_live(legacy, legacy_terminal_reset=True)
+    with pytest.raises(ValueError, match='after-state mismatch'):
+        verify_live(legacy)
+    (tmp_path / 'baseline.jsonl').write_text(json.dumps(legacy)+'\n')
+    with pytest.raises(ValueError, match='after-state mismatch'):
+        check(tmp_path)
+    cycle = tmp_path / 'cycle.json'
+    cycle.write_text(json.dumps({'source_commit': 'f71b9259abd055291c7c865659363aa1b3d9ec0f'}))
+    assert check(tmp_path)['live_episodes'] == 1
+    cycle.write_text(json.dumps({'source_commit': 'a different source'}))
+    with pytest.raises(ValueError, match='after-state mismatch'):
+        check(tmp_path)
+
+
+def test_audit_catches_physics_error_shared_by_logger_and_replay(monkeypatch):
+    from dataclasses import replace
+    from diagnose import live, world
+    from scripts import check_evidence
+    original = world.step
+    def wrong_step(state, action):
+        following, event = original(state, action)
+        cars = (replace(following.cars[0], x=following.cars[0].x+1), *following.cars[1:])
+        return replace(following, cars=cars), event
+    monkeypatch.setattr(live, 'step', wrong_step)
+    monkeypatch.setattr(check_evidence, 'step', wrong_step)
+    record = live.episode(baseline('stay'), seed=50000, max_decisions=1)
+    with pytest.raises(ValueError, match='Upstream trajectory mismatch'):
+        verify_live(record)

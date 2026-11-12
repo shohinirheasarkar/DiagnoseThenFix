@@ -80,3 +80,15 @@ cell errors, and paired live changes on shared uncensored seeds. In-sample fit
 error does not confirm the preregistered curve-shape hypothesis. The extra cliff
 parameter is explicitly disclosed. No adjusted significance or causal claim is
 made from these exploratory summaries.
+
+## Terminal-state correction during the evidence audit
+
+An audit found that the frozen replay redraws the initial board after a collision
+on tick 100. Upstream retains the moved cars on that terminal tick. The current
+engine is corrected and tested against upstream for both sides of this boundary,
+all actions, and both slow/fast directions. The frozen study keeps its original
+source and logs. Success, elapsed ticks, collisions, and all subsequent decisions
+are unchanged because no action follows a terminal state. The offline audit uses
+this display convention only when cycle.json declares the exact frozen source
+commit above; other sources must match the corrected engine. Do not silently
+rewrite the raw terminal boards or call them literal upstream observations.

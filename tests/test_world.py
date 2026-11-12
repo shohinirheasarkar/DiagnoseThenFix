@@ -155,3 +155,28 @@ def test_bank_reserves_each_split_before_filling_categories():
     assert report['actual'] == 10
     assert {r['split'] for r in rows} == {'train', 'validation', 'test'}
     assert report['splits'] == {'train': 6, 'validation': 2, 'test': 2}
+
+
+@pytest.mark.parametrize('turn', [98, 99])
+@pytest.mark.parametrize('action,lane', [('U', 9), ('S', 8), ('D', 7)])
+@pytest.mark.parametrize('x,p,length', [(3, 1, 1), (5, -1, 1), (0, .25, 4), (8, -.25, 4)])
+def test_collision_reset_matches_upstream_at_terminal_boundary(turn, action, lane, x, p, length):
+    from realtimegym.environments.freeway import FreewayEnv
+    env = FreewayEnv()
+    env.set_seed(1000)
+    env.reset()
+    car = Car(x, 8, 0, p, length)
+    env.cars = [[car.x, car.lane, car.timer, car.speed, car.length]]
+    env.pos, env.game_turn, env.reward = lane, turn, 100-turn
+    current = State((car,), lane=lane, turn=turn, source_seed=1000)
+    _, terminal, _, collision = env.step(action)
+    following, event = step(current, action)
+    assert collision and event == 'collision'
+    assert terminal == (turn == 99)
+    assert following.lane == env.pos == 9
+    assert following.turn == env.game_turn == turn+1
+    assert following.cars == tuple(Car(*c) for c in env.cars if c[3] is not None)
+    if terminal:
+        assert following.cars == (car.tick(),)
+    else:
+        assert following.cars == initial(1000).cars
