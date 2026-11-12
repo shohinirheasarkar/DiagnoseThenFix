@@ -147,3 +147,11 @@ def test_validation_and_terminal_oracle():
     from diagnose.world import build_bank
     with pytest.raises(ValueError):
         build_bank(0)
+
+
+def test_bank_reserves_each_split_before_filling_categories():
+    from diagnose.world import build_bank
+    rows, report = build_bank(10, max_episodes=10, horizon=1)
+    assert report['actual'] == 10
+    assert {r['split'] for r in rows} == {'train', 'validation', 'test'}
+    assert report['splits'] == {'train': 6, 'validation': 2, 'test': 2}

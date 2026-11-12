@@ -167,8 +167,12 @@ def build_bank(count=500, seed=0, horizon=10, max_episodes=3000):
     if count < 1:
         raise ValueError('Count must be positive')
     rng = random.Random(seed)
-    quota = (count + 3) // 4
-    buckets = {k: [] for k in ('safe_advance', 'dangerous_advance', 'waiting_helps', 'must_retreat')}
+    categories = ('safe_advance', 'dangerous_advance', 'waiting_helps', 'must_retreat')
+    sizes = {'train': int(count * .6), 'validation': int(count * .2)}
+    sizes['test'] = count - sum(sizes.values())
+    targets = {(split, category): size // 4 + (i < size % 4)
+               for split, size in sizes.items() for i, category in enumerate(categories)}
+    buckets = {key: [] for key in targets}
     seen = set()
     for episode in range(max_episodes):
         source = seed * 100000 + episode + 1000
@@ -177,15 +181,16 @@ def build_bank(count=500, seed=0, horizon=10, max_episodes=3000):
             if s.key not in seen:
                 seen.add(s.key)
                 truth = label(s, horizon)
-                bucket = buckets[truth['category']]
-                if len(bucket) < quota:
-                    split = 'train' if episode % 10 < 6 else 'validation' if episode % 10 < 8 else 'test'
+                split = 'train' if episode % 10 < 6 else 'validation' if episode % 10 < 8 else 'test'
+                key = (split, truth['category'])
+                bucket = buckets[key]
+                if len(bucket) < targets[key]:
                     bucket.append({'id': s.key, 'split': split, 'state': s.to_dict(),
                                    'oracle': truth, 'upstream': UPSTREAM})
             s, event = step(s, rng.choice(ACTIONS))
             if event in ('goal', 'timeout'):
                 break
-        if all(len(v) >= quota for v in buckets.values()):
+        if all(len(v) >= targets[k] for k, v in buckets.items()):
             break
     rows = [row for bucket in buckets.values() for row in bucket]
     rng.shuffle(rows)
@@ -194,4 +199,4 @@ def build_bank(count=500, seed=0, horizon=10, max_episodes=3000):
                   'horizon': horizon, 'upstream': UPSTREAM,
                   'categories': dict(Counter(r['oracle']['category'] for r in rows)),
                   'splits': dict(Counter(r['split'] for r in rows)),
-                  'balanced': all(len(v) >= quota for v in buckets.values())}
+                  'balanced': all(len(v) >= targets[k] for k, v in buckets.items())}
