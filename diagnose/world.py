@@ -85,6 +85,8 @@ def step(state, action):
     hit = any(c.lane == lane and 4 in c.cells() for c in cars)
     next_state = replace(state, cars=cars, lane=lane, turn=state.turn + 1)
     if hit:
+        if next_state.turn == 100:
+            return replace(next_state, lane=9), 'collision'
         reset = initial(state.source_seed)
         return replace(reset, turn=next_state.turn), 'collision'
     return next_state, 'timeout' if next_state.turn == 100 else 'neutral'

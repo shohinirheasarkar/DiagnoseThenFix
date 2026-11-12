@@ -1,6 +1,6 @@
 """This checks saved forecast scores and replays live episodes, without calling a model."""
 import argparse
-from dataclasses import asdict
+from dataclasses import asdict, replace
 import gzip
 import hashlib
 import json
@@ -10,7 +10,7 @@ from pathlib import Path
 from diagnose.model import canonical, parse_reply
 from diagnose.probes import score
 from diagnose.repairs import ArithmeticProgram
-from diagnose.world import State, futures, initial, repeated_outcome, step
+from diagnose.world import Car, State, futures, initial, repeated_outcome, step
 from diagnose.commitment import score as commitment_score, truth as commitment_truth, validate_beliefs
 from diagnose.repairs import bound_action
 
@@ -23,9 +23,27 @@ def read(path):
                 yield number, json.loads(line)
 
 
-def verify_live(record):
+def verify_live(record, legacy_terminal_reset=False):
+    from realtimegym.environments.freeway import FreewayEnv
+    reference = FreewayEnv()
+    reference.set_seed(record['seed'])
+    reference.reset()
     current = initial(record['seed'])
     collisions = ticks = calls = tokens = 0
+
+    def advance(state, action):
+        goal = reference.pos == 1 and action == 'U'
+        _, terminal, _, collision = reference.step(action)
+        expected_event = 'goal' if goal else 'collision' if collision else 'timeout' if terminal else 'neutral'
+        following, event = step(state, action)
+        reference_cars = tuple(Car(*car) for car in reference.cars if car[3] is not None)
+        if (event != expected_event or following.turn != reference.game_turn or
+                following.lane != (0 if goal else reference.pos) or following.cars != reference_cars):
+            raise ValueError('Upstream trajectory mismatch')
+        if legacy_terminal_reset and following.turn == 100 and event == 'collision':
+            following = replace(initial(state.source_seed), turn=100)
+        return following, event
+
     for frame in record['trace']:
         if canonical(asdict(current)) != canonical(frame['before']):
             raise ValueError('Live before-state mismatch')
@@ -43,13 +61,13 @@ def verify_live(record):
         if frame['delay_ticks'] < 0:
             raise ValueError('Negative delay')
         for _ in range(frame['delay_ticks']):
-            current, event = step(current, 'S')
+            current, event = advance(current, 'S')
             events.append(event)
             if current.lane == 0 or current.turn == 100:
                 break
         applied = current.lane != 0 and current.turn < 100
         if applied:
-            current, event = step(current, frame['response']['action'])
+            current, event = advance(current, frame['response']['action'])
             events.append(event)
         if applied != frame['action_applied'] or events != frame['events']:
             raise ValueError('Live action or event mismatch')
@@ -142,6 +160,10 @@ def check(root, bank_path=Path('data/freeway.json')):
     bank = {r['id']: r for r in json.loads(Path(bank_path).read_text())['situations']}
     counts = {'forecast_trials': 0, 'commitment_trials': 0, 'live_episodes': 0, 'files': 0}
     archive = root / 'archive.json'
+    cycle_path = root / 'cycle.json'
+    legacy_terminal_reset = (cycle_path.exists() and
+                            json.loads(cycle_path.read_text()).get('source_commit') ==
+                            'f71b9259abd055291c7c865659363aa1b3d9ec0f')
     if archive.exists():
         for record in json.loads(archive.read_text())['files']:
             path = (root / record['artifact']).resolve()
@@ -175,7 +197,7 @@ def check(root, bank_path=Path('data/freeway.json')):
                     verify_commitment(record, bank[record['state_id']])
                     counts['commitment_trials'] += 1
                 elif 'trace' in record:
-                    verify_live(record)
+                    verify_live(record, legacy_terminal_reset)
                     counts['live_episodes'] += 1
             except (ValueError, KeyError, TypeError) as error:
                 raise ValueError(f'{path}:{number}: {error}') from error
