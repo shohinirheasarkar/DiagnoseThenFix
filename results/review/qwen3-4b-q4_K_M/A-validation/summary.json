@@ -1,0 +1,1142 @@
+[
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "ascii",
+    "kind": "count",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.96,
+    "actions": {},
+    "mean_wall_seconds": 0.9910747334972256,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "ascii",
+    "kind": "motion",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 1.0,
+      "low": 1.0,
+      "high": 1.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.0,
+    "actions": {},
+    "mean_wall_seconds": 0.950770274802926,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "ascii",
+    "kind": "nearest",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.1,
+      "low": 0.0,
+      "high": 0.3,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.895,
+    "actions": {},
+    "mean_wall_seconds": 0.9371068584034219,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "ascii",
+    "kind": "occupancy",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 1.0,
+      "low": 1.0,
+      "high": 1.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.0,
+    "actions": {},
+    "mean_wall_seconds": 2.7513411083025856,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "ascii",
+    "kind": "position",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 1.0,
+      "low": 1.0,
+      "high": 1.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.0,
+    "actions": {},
+    "mean_wall_seconds": 0.8821192833973328,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "coordinates",
+    "kind": "count",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.965,
+    "actions": {},
+    "mean_wall_seconds": 1.0259779584041098,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "coordinates",
+    "kind": "motion",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 1.0,
+      "low": 1.0,
+      "high": 1.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.0,
+    "actions": {},
+    "mean_wall_seconds": 1.004450741794426,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "coordinates",
+    "kind": "nearest",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.975,
+    "actions": {},
+    "mean_wall_seconds": 0.947768891704618,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "coordinates",
+    "kind": "occupancy",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 1.0,
+      "low": 1.0,
+      "high": 1.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.0,
+    "actions": {},
+    "mean_wall_seconds": 1.9764592709980207,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "coordinates",
+    "kind": "position",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 1.0,
+      "low": 1.0,
+      "high": 1.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.0,
+    "actions": {},
+    "mean_wall_seconds": 0.8550043332041242,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "json",
+    "kind": "count",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.97,
+    "actions": {},
+    "mean_wall_seconds": 1.0013942124001916,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "json",
+    "kind": "motion",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.9,
+      "low": 0.7,
+      "high": 1.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.09999999999999998,
+    "actions": {},
+    "mean_wall_seconds": 0.9936887958989246,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "json",
+    "kind": "nearest",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.995,
+    "actions": {},
+    "mean_wall_seconds": 0.859930024901405,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "json",
+    "kind": "occupancy",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.9,
+      "low": 0.7,
+      "high": 1.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.09999999999999998,
+    "actions": {},
+    "mean_wall_seconds": 2.19821167489863,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "json",
+    "kind": "position",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 1.0,
+      "low": 1.0,
+      "high": 1.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.0,
+    "actions": {},
+    "mean_wall_seconds": 1.0803146000980632,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "lanes",
+    "kind": "count",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.95,
+    "actions": {},
+    "mean_wall_seconds": 0.9811368958966341,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "lanes",
+    "kind": "motion",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 1.0,
+      "low": 1.0,
+      "high": 1.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.0,
+    "actions": {},
+    "mean_wall_seconds": 0.9330595457984601,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "lanes",
+    "kind": "nearest",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.985,
+    "actions": {},
+    "mean_wall_seconds": 0.940318054400268,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "lanes",
+    "kind": "occupancy",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.2,
+      "low": 0.0,
+      "high": 0.5,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.8,
+    "actions": {},
+    "mean_wall_seconds": 1.681215158395935,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "lanes",
+    "kind": "position",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 1.0,
+    "actions": {},
+    "mean_wall_seconds": 0.8577849623019574,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "prose",
+    "kind": "count",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.965,
+    "actions": {},
+    "mean_wall_seconds": 1.0467182543012314,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "prose",
+    "kind": "motion",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 1.0,
+      "low": 1.0,
+      "high": 1.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.0,
+    "actions": {},
+    "mean_wall_seconds": 0.9577381626062561,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "prose",
+    "kind": "nearest",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.97,
+    "actions": {},
+    "mean_wall_seconds": 0.9400057085062145,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "prose",
+    "kind": "occupancy",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.3,
+      "low": 0.0,
+      "high": 0.6,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.7,
+    "actions": {},
+    "mean_wall_seconds": 2.1102403373952257,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "prose",
+    "kind": "position",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 1.0,
+      "low": 1.0,
+      "high": 1.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.0,
+    "actions": {},
+    "mean_wall_seconds": 0.8601970624004025,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "relations",
+    "kind": "count",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.98,
+    "actions": {},
+    "mean_wall_seconds": 0.999390433402732,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "relations",
+    "kind": "motion",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 1.0,
+      "low": 1.0,
+      "high": 1.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.0,
+    "actions": {},
+    "mean_wall_seconds": 0.9395127664989559,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "relations",
+    "kind": "nearest",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.2,
+      "low": 0.0,
+      "high": 0.5,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.79,
+    "actions": {},
+    "mean_wall_seconds": 0.9429686001036316,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "relations",
+    "kind": "occupancy",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.9,
+      "low": 0.7,
+      "high": 1.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.09999999999999998,
+    "actions": {},
+    "mean_wall_seconds": 2.176466550200712,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:4b-q4_K_M",
+    "thinking": false,
+    "stage": "A",
+    "representation": "relations",
+    "kind": "position",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 10,
+      "observations": 10
+    },
+    "invalid": 0,
+    "ece_valid_only": 1.0,
+    "actions": {},
+    "mean_wall_seconds": 0.8752043040003628,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  }
+]

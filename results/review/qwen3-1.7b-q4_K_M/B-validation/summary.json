@@ -1,0 +1,230 @@
+[
+  {
+    "model": "qwen3:1.7b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "coordinates",
+    "kind": "collision",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.25,
+      "low": 0.0,
+      "high": 0.625,
+      "clusters": 8,
+      "observations": 8
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.75,
+    "actions": {},
+    "mean_wall_seconds": 0.44404972925258335,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:1.7b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "coordinates",
+    "kind": "collision",
+    "k": 10,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 8,
+      "observations": 8
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.975,
+    "actions": {},
+    "mean_wall_seconds": 0.4215965938692534,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:1.7b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "coordinates",
+    "kind": "collision",
+    "k": 5,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 8,
+      "observations": 8
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.98125,
+    "actions": {},
+    "mean_wall_seconds": 0.5023705625026196,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:1.7b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "coordinates",
+    "kind": "position",
+    "k": 1,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.375,
+      "low": 0.0,
+      "high": 0.75,
+      "clusters": 8,
+      "observations": 8
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.625,
+    "actions": {},
+    "mean_wall_seconds": 0.7107100315006392,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:1.7b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "coordinates",
+    "kind": "position",
+    "k": 10,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 8,
+      "observations": 8
+    },
+    "invalid": 0,
+    "ece_valid_only": 1.0,
+    "actions": {},
+    "mean_wall_seconds": 0.6444335104970378,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:1.7b-q4_K_M",
+    "thinking": false,
+    "stage": "B",
+    "representation": "coordinates",
+    "kind": "position",
+    "k": 5,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 8,
+      "observations": 8
+    },
+    "invalid": 0,
+    "ece_valid_only": 1.0,
+    "actions": {},
+    "mean_wall_seconds": 0.44618691162577306,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  }
+]

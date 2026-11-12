@@ -99,3 +99,25 @@ published queue uses 100 decisions with at least one world tick per decision,
 so that budget cannot truncate a fresh episode before the game's 100-tick limit.
 Its collected labels do not change. The audit checks censoring and final-lane
 summaries against the replayed state as well as checking success and costs.
+
+## Live coverage adjustment at 13:44 UTC
+
+Observed episode throughput would leave the entire remaining live window on
+1.7B. Finish its tenth shared seed, then prioritize the already-planned 4B
+conditions. The collector resumes with 4B first in the model queue; the four
+forecast tests are already complete and are not changed or repeated. The current
+interrupted seed is reconstructed with the same frozen policy and cached raw
+replies before switching models. Completed records are retained. Conditions,
+cases, decoding, seeds and scoring are unchanged; only scheduling changes. Keep
+the 50-seed targets and report the actual partial counts. The reason is model
+coverage within the fixed time cap, not selection on a favorable live outcome.
+
+## Closed local cycle
+
+The four-model main forecast matrix completed 8,000 held-out trials. Each of the
+two live models completed ten shared seeds in base/selected/all: 60 completed
+model-condition runs, zero goals, and one additional censored 4B base attempt.
+All 250 simulator-control episodes completed. Commitment trials completed at 800/800 for 1.7B (20 boards) and 436/800 for 4B
+(11 boards).
+Collection stopped at 14:55 UTC. The paper and lossless archive report these
+actual cohorts; the full multi-game research plan remains unfinished.

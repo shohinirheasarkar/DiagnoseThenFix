@@ -84,6 +84,9 @@ def test_paired_live_estimates_exclude_unshared_and_censored_episodes(tmp_path):
                 'calls': 1, 'collisions': 0, 'trace': []}
     base = [row(1, False, 10), row(2, True, 20), row(3, False, 10)]
     selected = [row(1, True, 15), row(2, False, 50, True), row(4, True, 100)]
+    base[0]['trace'] = [{'response': {'error': 'program failed'}}]
+    base[1]['trace'] = [{'response': {'error': None}}]
+    selected[1]['trace'] = [{'response': {'error': 'censored failure'}}]
     for name, records in (('base', base), ('selected', selected)):
         (folder / f'live-{name}.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in records))
     result = analyze(root, Path('data/freeway.json'))
@@ -92,3 +95,31 @@ def test_paired_live_estimates_exclude_unshared_and_censored_episodes(tmp_path):
     assert paired['success_change']['mean'] == 1
     assert paired['token_change']['mean'] == 5
     assert next(r for r in result['live'] if r['condition'] == 'selected')['censored'] == 1
+    assert next(r for r in result['live'] if r['condition'] == 'selected')['error_decisions'] == 0
+    baseline = next(r for r in result['live'] if r['condition'] == 'base')
+    assert baseline['error_decisions'] == 1 and baseline['decisions'] == 2
+    assert baseline['successes'] == 1
+    assert next(r for r in result['live'] if r['condition'] == 'selected')['successes'] == 2
+    assert next(r for r in result['live'] if r['condition'] == 'selected')['episode_seeds'] == [1, 4]
+
+
+def test_error_onset_uses_delayed_wrap_and_keeps_partial_sequences_separate():
+    from paper.build import first_error_events, motion_events
+    s = State((Car(8, 1, 0, 1, 1),))
+    assert motion_events(s, 3) == ['timer_move', 'wrap', 'timer_move']
+    fast = State((Car(8, 1, 0, .25, 4),))
+    assert motion_events(fast, 2) == ['fast_step', 'wrap']
+    waiting = State((Car(0, 1, 2, 3, 1),))
+    assert motion_events(waiting, 3) == ['timer_wait', 'timer_wait', 'timer_move']
+    bank = {'s': {'state': s.to_dict()}}
+    def trial(seed, k, correct):
+        return {'state_id': 's', 'task': {'kind': 'position', 'seed': seed, 'k': k},
+                'score': {'correct': correct}}
+    records = [trial(0, k, k != 2) for k in range(1, 11)]
+    records += [trial(1, k, True) for k in range(1, 11)]
+    records += [trial(2, 1, False)]
+    result = first_error_events(records, bank)
+    assert result['complete_sequences'] == 2 and result['incomplete_sequences'] == 1
+    assert result['all_correct'] == 1
+    assert result['first_error_event']['wrap'] == 1
+    assert result['first_error_after_any_wrap'] == 1

@@ -121,6 +121,42 @@ def shape_fits(curve):
                       'rmse': math.sqrt(cliff_error)}}
 
 
+def motion_events(state, horizon=10):
+    car = state.cars[0]
+    events = []
+    for _ in range(horizon):
+        following = car.tick()
+        event = ('wrap' if car.x < 0 or car.x > 8 else 'fast_step' if abs(car.speed) < 1
+                 else 'timer_move' if following.x != car.x else 'timer_wait')
+        events.append(event)
+        car = following
+    return events
+
+
+def first_error_events(records, bank):
+    sequences = {}
+    for record in records:
+        if record['task']['kind'] == 'position':
+            key = record['state_id'], record['task']['seed']
+            sequences.setdefault(key, {})[record['task']['k']] = record['score']['correct']
+    result = {'complete_sequences': 0, 'incomplete_sequences': 0, 'all_correct': 0,
+              'first_error_event': dict.fromkeys(('wrap', 'fast_step', 'timer_move', 'timer_wait'), 0),
+              'first_error_after_any_wrap': 0}
+    for (state_id, seed), sequence in sequences.items():
+        if set(sequence) != set(range(1, 11)):
+            result['incomplete_sequences'] += 1
+            continue
+        result['complete_sequences'] += 1
+        first = next((k for k in range(1, 11) if not sequence[k]), None)
+        if first is None:
+            result['all_correct'] += 1
+            continue
+        events = motion_events(State.from_dict(bank[state_id]['state']))
+        result['first_error_event'][events[first-1]] += 1
+        result['first_error_after_any_wrap'] += int('wrap' in events[:first])
+    return result
+
+
 def analyze(root, bank_path):
     bank_data = json.loads(Path(bank_path).read_text())
     bank = {r['id']: r for r in bank_data['situations']}
@@ -163,6 +199,7 @@ def analyze(root, bank_path):
                 'collision_accuracy': interval([r for r in test if r['task']['kind'] == 'collision']),
                 'invalid': sum(not r['score']['valid'] for r in test)}
         data['position_shape_fits'] = shape_fits(pos_curve)
+        data['first_error_events'] = first_error_events(test, bank)
         data['position_signed_error_valid'] = interval(
             [r for r in test if r['task']['kind'] == 'position'], 'signed_error')
         data['position_absolute_error_valid'] = interval(
@@ -207,18 +244,24 @@ def analyze(root, bank_path):
             if group:
                 eligible = [r for r in group if r['score'].get('own_feasible')]
                 data['commitment'].append({'condition': name, 'accuracy': interval(group),
+                                           'forecast_accuracy_valid_only': interval(group, 'forecast_accuracy'),
                                            'inconsistency_valid_only': interval(group, 'inconsistent'),
+                                           'skipped_progress_valid_only': interval(group, 'skipped_progress'),
+                                           'failed_abstention_valid_only': interval(group, 'failed_abstention'),
                                            'unsafe_choice_own_feasible': interval(eligible, 'contradiction'),
                                            'trials': len(group), 'invalid': sum(not r['score']['valid'] for r in group),
                                            'states': len({r['state_id'] for r in group}),
                                            'upper_bound': name in ('oracle', 'shield')})
         output['models'][profile['model']] = data
-        for path in folder.glob('live-*.jsonl*'):
+        for path in sorted(folder.glob('live-*.jsonl*'), key=lambda p: (
+                {'base': 0, 'selected': 1, 'all': 2}.get(p.name.split('.')[0][5:], 3), p.name)):
             group = rows(path)
             complete = [r for r in group if not r.get('censored')]
             values = [{'state_id': r['seed'], 'success': r['success']} for r in complete]
             output['live'].append({'model': profile['model'], 'condition': path.name.removesuffix('.gz').removesuffix('.jsonl')[5:],
                                   'episodes': len(complete), 'censored': len(group)-len(complete),
+                                  'episode_seeds': sorted(r['seed'] for r in complete),
+                                  'successes': sum(r['success'] for r in complete),
                                   'success': bootstrap(values, 'success'),
                                   'success_wilson': wilson(sum(r['success'] for r in complete), len(complete)),
                                   'mean_tokens': statistics.mean(r['tokens'] for r in complete) if complete else None,
@@ -247,9 +290,12 @@ def analyze(root, bank_path):
         group = rows(path)
         output['live'].append({'model': 'simulator control', 'condition': path.name.removesuffix('.gz').removesuffix('.jsonl')[9:],
                               'episodes': len(group), 'censored': 0,
+                              'episode_seeds': sorted(r['seed'] for r in group),
+                              'successes': sum(r['success'] for r in group),
                               'success': bootstrap([{'state_id': r['seed'], 'success': r['success']} for r in group], 'success'),
                               'success_wilson': wilson(sum(r['success'] for r in group),len(group)),
                               'mean_tokens': 0, 'mean_calls': 0,
+                              'error_decisions': 0, 'decisions': sum(len(r['trace']) for r in group),
                               'mean_collisions': statistics.mean(r['collisions'] for r in group) if group else None})
     return output
 
@@ -260,7 +306,7 @@ def curves_figure(evidence, output):
         return None
     plt.rcParams.update({'font.size': 9, 'axes.spines.top': False, 'axes.spines.right': False,
                          'font.family': 'DejaVu Sans'})
-    figure, axes = plt.subplots(2, len(models), figsize=(3.05*len(models), 5.1), squeeze=False,
+    figure, axes = plt.subplots(2, len(models), figsize=(7.33, 4.1), squeeze=False,
                                 sharex=True, sharey=True, layout='constrained')
     for col, name in enumerate(models):
         model = evidence['models'][name]
@@ -279,11 +325,11 @@ def curves_figure(evidence, output):
             ax.grid(alpha=.15)
             if row == 0:
                 ax.set_title(name.replace('qwen3:', '').replace('-q4_K_M', '') + f' | {model["states"]} boards')
-            if row == 1:
-                ax.set_xlabel('Forecast horizon (car ticks)')
             if col == 0:
                 ax.set_ylabel(('Exact head position' if row == 0 else 'Collision prediction') + '\nAccuracy')
-    axes[0][0].legend(loc='lower left', fontsize=7)
+    handles, labels = axes[0][0].get_legend_handles_labels()
+    figure.legend(handles, labels, loc='outside upper center', ncol=4, fontsize=8)
+    figure.supxlabel('Forecast horizon (car ticks)', fontsize=9)
     figure.savefig(output, dpi=180, bbox_inches='tight')
     plt.close(figure)
     return output
@@ -293,10 +339,11 @@ def percent(value):
     return 'unavailable' if value is None else f'{100*value:.1f}%'
 
 
-def ci(value):
+def ci(value, difference=False):
     if value['mean'] is None:
         return 'unavailable'
-    return f'{percent(value["mean"])} [{100*value["low"]:.1f}, {100*value["high"]:.1f}]'
+    mean = f'{100*value["mean"]:.1f}' if difference else percent(value['mean'])
+    return f'{mean} [{100*value["low"]:.1f}, {100*value["high"]:.1f}]'
 
 
 def build(evidence, output, figures, root):
@@ -336,13 +383,24 @@ def build(evidence, output, figures, root):
                                ('RIGHTPADDING', (0, 0), (-1, -1), 6),
                                ('TOPPADDING', (0, 0), (-1, -1), 6),
                                ('BOTTOMPADDING', (0, 0), (-1, -1), 6)]))
-        story.extend((t, Spacer(1, 10)))
+        story.extend((KeepTogether([t]) if len(body) <= 8 else t, Spacer(1, 10)))
         markdown.extend([' | '.join(map(str, headers)), ' | '.join('---' for _ in headers),
                          *[' | '.join(map(str, r)) for r in body]])
 
     models = evidence['models']
     total = sum(m['trials'] for m in models.values())
     complete = all(m['trials'] == 2000 for m in models.values()) and len(models) == 4
+    position_values = [m['position_accuracy']['mean'] for m in models.values()
+                       if m['position_accuracy']['mean'] is not None]
+    finding = (f'Episode-weighted exact-head accuracy spans {percent(min(position_values))}-'
+               f'{percent(max(position_values))} across the collected artifacts. '
+               if position_values else '')
+    agent_live = [r for r in evidence['live'] if r['model'] != 'simulator control']
+    live_seed_count = len({seed for r in agent_live for seed in r['episode_seeds']})
+    live_finding = (f'Live collection produced {sum(r["episodes"] for r in agent_live)} completed '
+                    f'model-condition runs over {live_seed_count} environment seeds '
+                    f'({sum(r["successes"] for r in agent_live)} goals) and '
+                    f'{sum(r["censored"] for r in agent_live)} censored runs. ' if agent_live else '')
     title = 'Diagnose, Then Repair'
     paragraph(title, 'PaperTitle')
     paragraph('A simulator-checked study of small language-model agents in real-time Freeway', 'Heading2')
@@ -355,7 +413,7 @@ def build(evidence, output, figures, root):
               f'Qwen3 model artifacts collected on a 16 GB Apple M3 laptop. The situation bank contains '
               f'500 states with disjoint source episodes across splits. We compare forecast accuracy at '
               f'horizons 1-10 against constant-velocity extrapolation, and separately evaluate consistency '
-              f'repairs and measured-delay live play where completed. Missing or malformed answers count '
+              f'repairs and measured-delay live play where completed. {finding}{live_finding}Missing or malformed answers count '
               f'as incorrect. This is an exploratory, single-game artifact; the full multi-game, '
               f'thinking-mode, and training-based study remains incomplete. We make no first-of-its-kind '
               f'or causal root-cause claim from this cycle.')
@@ -408,8 +466,10 @@ def build(evidence, output, figures, root):
               'timing and software fingerprints are logged. Requests are cached by all decoding '
               'settings and model identity. Malformed outputs, truncations, and timeouts remain in '
               'the primary denominator. Calibration error is conditional on valid confidence reports. '
+              'Accuracy and mean confidence weight source episodes equally; ECE pools valid trials. '
               'Intervals are percentile 95% bootstrap intervals over source episodes, with 2,000 '
-              'resamples; sampling repeats do not become independent boards.')
+              'resamples; sampling repeats do not become independent boards. Boundary estimates '
+              'can yield degenerate resampling intervals, which do not establish certainty on new states.')
     representation_rows = [[name.replace('qwen3:', '').replace('-q4_K_M', ''),
                             *[percent(m['profile'].get('representation_accuracy', {}).get(rep))
                               for rep in ('ascii', 'coordinates', 'prose', 'lanes', 'relations', 'json')]]
@@ -437,6 +497,20 @@ def build(evidence, output, figures, root):
                'Collision [95% CI] / always collision', 'Invalid'], body, [56, 68, 46, 153, 153, 52])
     else:
         paragraph('No held-out forecast trials completed at report generation. No forecast result is claimed.')
+    measured = [m for m in models.values() if m['position_accuracy']['mean'] is not None]
+    if measured:
+        position_means = [m['position_accuracy']['mean'] for m in measured]
+        paragraph(f'On the sampled held-out boards, episode-weighted position accuracy ranges '
+                  f'from {percent(min(position_means))} to {percent(max(position_means))} across '
+                  'the collected artifacts. These are aggregate descriptive results for the '
+                  'selected input formats, not estimates over a natural gameplay distribution.')
+        comparisons = [(r['accuracy']['mean'], r['linear']['mean'])
+                       for m in measured for r in m['curve'] if r['kind'] == 'position']
+        ahead = sum(linear > model for model, linear in comparisons)
+        paragraph(f'The declared linear control has higher point accuracy in {ahead} of '
+                  f'{len(comparisons)} collected model-by-horizon position comparisons. '
+                  'This count does not test statistical significance and does not explain which '
+                  'internal stage produced the errors.')
     paragraph('Intervals in the table aggregate across horizons. Per-horizon curves below are the '
               'primary diagnostic. A periodic or nonmonotone curve is not automatically evidence '
               'of compounding error: wrap and timer phase can make individual horizons easier. '
@@ -486,9 +560,26 @@ def build(evidence, output, figures, root):
                       'one breakpoint. RMSE is in-sample accuracy error. The cliff has an extra '
                       'selected parameter; lower RMSE is not evidence that it generalizes or that '
                       'compounding error caused the curve. No confirmatory shape test is claimed.', 'SmallNote')
+        event_rows = [[name.replace('qwen3:', '').replace('-q4_K_M', ''),
+                       m['first_error_events']['complete_sequences'],
+                       *[m['first_error_events']['first_error_event'][kind]
+                         for kind in ('timer_wait', 'timer_move', 'fast_step', 'wrap')],
+                       m['first_error_events']['all_correct']]
+                      for name, m in models.items() if m['first_error_events']['complete_sequences']]
+        if event_rows:
+            table(['Model tag', 'Sequences', 'Timer wait', 'Timer move', 'Fast step', 'Wrap tick', 'No error'],
+                  event_rows, [70, 70, 80, 80, 80, 78, 70])
+            paragraph('Earliest incorrect direct-forecast horizon, grouped by the actual object-0 '
+                      'transition at that horizon. A sequence is one board and sampling seed with '
+                      'all ten horizons; repeats are not independent boards. These are separately '
+                      'asked predictions, not one chained rollout. Counts do not adjust for event '
+                      'exposure and cannot establish that wrap causes errors. Freeway objects keep '
+                      'their lane and direction, so direction-change onset is not an event in this '
+                      'simulator. Incomplete sequences are excluded here and retained in accuracy.', 'SmallNote')
     heading('5. Targeted repairs and consistency')
-    paragraph('We compare direct answers with rule reminders, scratchpad tables, chained tables, '
-              'model-written code, and a supplied deterministic forecast. Code is interpreted in '
+    paragraph('Implemented forecast conditions include direct answers, rule reminders, scratchpad '
+              'tables, chained tables, model-written code, and a supplied deterministic forecast. '
+              'The table reports only completed contrasts. Code is interpreted in '
               'a bounded arithmetic subset with no imports, attributes, or arbitrary Python '
               'execution. Invalid programs count as wrong. The supplied forecast and simulator '
               'shield are upper-bound conditions, excluded from model-only claims.')
@@ -497,16 +588,25 @@ def build(evidence, output, figures, root):
         for r in m['repairs']:
             delta = r['difference_from_base']
             body.append([name.replace('qwen3:', '').replace('-q4_K_M', ''), r['name'],
-                         f'{r["states"]} / {r["trials"]}', ci(r['accuracy']), ci(delta)])
+                         f'{r["states"]} / {r["trials"]}', ci(r['accuracy']), ci(delta, difference=True),
+                         str(r['invalid'])])
     if body:
         table(['Model', 'Position repair', 'Boards / trials', 'Accuracy [95% CI]',
-               'Paired change [pp]'], body, [60, 85, 75, 173, 135])
+               'Paired change [pp]', 'Invalid'], body, [60, 80, 75, 132, 130, 51])
         paragraph('Repair intervals are exploratory and unadjusted; no significance claim is made. '
                   'The paired change column is candidate minus base in percentage points. The '
                   'small repair bank limits external validity. Intervals condition on the five '
                   'decoding seeds; cached programs are reused across states rather than counted '
                   'as fresh program samples. Base and repaired trials are paired '
-                  'on the same source episodes, prompts and sampling seeds where available.', 'SmallNote')
+                  'on the same source episodes, target horizons and sampling seeds where available.', 'SmallNote')
+        code_conditions = [r for m in models.values() for r in m['repairs'] if r['name'] == 'code']
+        if code_conditions:
+            paragraph(f'The restricted-code condition has {sum(r["invalid"] for r in code_conditions)} '
+                      f'invalid executions out of {sum(r["trials"] for r in code_conditions)} '
+                      'reported position trials. Program reuse makes these correlated failures. '
+                      'The contrast measures compatibility with the declared grammar as well as '
+                      'program specification; it cannot settle the usefulness of more permissive '
+                      'forecast offloading.')
     else:
         paragraph('No isolated-repair test completed at report generation. The implementation exists, '
                   'but this cycle supplies no repair-effect estimate yet.')
@@ -522,8 +622,10 @@ def build(evidence, output, figures, root):
               'the model marks noncolliding. It removes that measured contradiction by construction '
               'where its beliefs admit a noncolliding action; it cannot make an incorrect forecast true.')
     commitment_rows = [[name.replace('qwen3:', '').replace('-q4_K_M', ''),
-                        r['condition'] + (' (UB)' if r['upper_bound'] else ''), str(r['trials']),
-                        ci(r['accuracy']), ci(r['inconsistency_valid_only']), str(r['invalid'])]
+                        r['condition'] + (' (UB)' if r['upper_bound'] else ''), f'{r["states"]}/{r["trials"]}',
+                        ci(r['accuracy']), percent(r['forecast_accuracy_valid_only']['mean']),
+                        ci(r['inconsistency_valid_only']) + f' (n={r["inconsistency_valid_only"]["observations"]})',
+                        str(r['invalid'])]
                        for name, m in models.items() for r in m.get('commitment', [])]
     if commitment_rows:
         heading('5.1. Commitment-matched consistency')
@@ -535,51 +637,87 @@ def build(evidence, output, figures, root):
                   'skipped believed-safe progress, and failure to abstain when all commitments are '
                   'believed unsafe. This fixes the temporal mismatch of the legacy proxy, while '
                   'remaining a behavioral report-based measurement rather than a causal mechanism test.')
-        table(['Model tag', 'Condition', 'Trials', 'Action accuracy [95% CI]',
-               'Inconsistency, valid forecasts', 'Invalid'], commitment_rows,
-              [55, 83, 40, 145, 153, 52])
+        paragraph('None uses a fresh action prompt with a separately elicited forecast for '
+                  'comparison; own/oracle inject model/reference forecasts. Combined jointly '
+                  'reports action and forecast, and generic adds a check instruction. Bound '
+                  'selects from model beliefs. Retry makes one extra action call after an unsafe '
+                  'choice or failed abstention, retaining the initial beliefs. Shield applies '
+                  'the priority selector to oracle beliefs, making it a construction ceiling. '
+                  'Action accuracy enforces the full preference rule; inconsistency reports '
+                  'the three events defined above. This follow-up diagnostic does not refit '
+                  'the already-frozen live policy.')
+        table(['Model tag', 'Condition', 'Boards / trials', 'Action accuracy [95% CI]',
+               'Forecast accuracy', 'Inconsistency, valid records', 'Invalid'], commitment_rows,
+              [50, 75, 44, 115, 81, 123, 40])
         paragraph('UB marks oracle information or a simulator shield. Bound selection uses model '
                   'beliefs only; zero inconsistency is a construction property and does not imply '
                   'correct dynamics. Invalid outputs count against primary accuracy; inconsistency '
-                  'is conditional on valid elicited beliefs. All action and forecast prompts use '
+                  'and mean per-action forecast accuracy condition on valid action/forecast records. '
+                  'The parenthesized n is that conditional record count. '
+                  'Separate component rates are retained in the evidence JSON. '
+                  'All action and forecast prompts use '
                   'the same declared commitment horizon.', 'SmallNote')
     else:
         paragraph('The commitment-matched consistency task is implemented and tested, but no '
                   'completed empirical commitment run is included at report generation.')
     heading('6. Composed agent and live validation')
     paragraph('The composed agent selects a representation and repairs from validation diagnostics '
-              'using fixed stage cutoffs. Forecast code and forecast-bound selection use model '
+              'using fixed stage cutoffs: 0.8 for A/B and 0.9 for C/D/E. A is ASCII perception '
+              'accuracy, B is pooled forecast accuracy, and C is one minus the legacy risk-disagreement '
+              'rate. D is unprofiled and set to 1. E is set to 0.5 when the largest null-state '
+              'conditional action probability exceeds 0.6, otherwise 1. A structured-input flag '
+              'keeps ASCII when ASCII wins validation. Forecast code and forecast-bound selection use model '
               'beliefs. Prior calibration subtracts null-state from observed-state action log '
               'scores, following the contextual-calibration idea [8] and requiring all A/B/C '
               'candidates. A separate one-token action interface is '
               'used for those scores, which is a prompt-interface confound for causal attribution. '
-              'History is explicitly unprofiled in this cycle. The all-repair and random '
-              'conditions are controls, not assumed improvements.')
+              'History is explicitly unprofiled in this cycle. The all-repair condition is a '
+              'control; random same-count and leave-one-out variants are implemented for '
+              'subsequent tests. Policy messages retain up '
+              'to twelve raw proposal turns, subject to the server context limit.')
     paragraph('Live decisions advance the world by ceil(measured request time / one second), with '
               'S as the default action during delay. The chosen move applies afterward if the '
               'episode has not ended. Retries and extra model calls add delay and generated tokens. '
-              'Local Python parsing and arithmetic time is not included in this replay. Reused '
-              'forecast programs are generated once per episode. This replays observed latency; '
+              'Local Python parsing and arithmetic time is not included in this replay. A '
+              'successfully constructed forecast program is reused within its episode; failed '
+              'generation or construction can be attempted again on later decisions. Every '
+              'attempt is counted. Cache hits reuse recorded durations and generated-token counts, '
+              'so costs describe logical policy requests in the replay. Fixed null-prior scores '
+              'are charged at every calibration decision even if cached. This replays observed latency; '
               'it is not an asynchronous deployment benchmark. Episodes cut short by the time '
-              'cap are censored. Simulator baselines have zero inference delay and therefore '
+              'cap or a shortened decision budget are censored. Simulator baselines have zero inference delay and therefore '
               'provide reference controls rather than latency-matched competitors.')
     if evidence['live']:
         body = [[r['model'].replace('qwen3:', '').replace('-q4_K_M', ''), r['condition'],
-                 str(r['episodes']), ci(r['success_wilson']),
+                 f'{r["episodes"]}/{r["censored"]}', ci(r['success_wilson']),
                  '-' if r['mean_tokens'] is None else f'{r["mean_tokens"]:.0f}',
-                 '-' if r['mean_collisions'] is None else f'{r["mean_collisions"]:.1f}']
+                 '-' if r['mean_collisions'] is None else f'{r["mean_collisions"]:.1f}',
+                 f'{r.get("error_decisions", 0)}/{r.get("decisions", 0)}']
                 for r in evidence['live']]
-        table(['Model', 'Condition', 'Episodes', 'Success [Wilson 95% CI]', 'Generated tokens / ep.', 'Collisions / ep.'],
-              body, [90, 60, 50, 148, 90, 90])
+        table(['Model', 'Condition', 'Done / censored', 'Success [Wilson 95% CI]',
+               'Generated tokens / ep.', 'Collisions / ep.', 'Error decisions / total'],
+              body, [70, 50, 45, 135, 80, 68, 80])
+        paragraph('Costs, collisions and errors summarize completed episodes. Errors are parse, '
+                  'controller or program failures, counted once per decision; the controller '
+                  'falls back to S on those errors. Incorrect forecasts that parse successfully '
+                  'are not counted as controller errors.', 'SmallNote')
         paragraph('Live success intervals use the Wilson score interval to avoid degenerate bounds '
                   'when every episode succeeds or fails. The requested bootstrap intervals are '
                   'also retained in the evidence JSON. These methods agree on the point estimate '
                   'but quantify uncertainty differently.', 'SmallNote')
+        model_live = [r for r in evidence['live'] if r['model'] != 'simulator control' and r['episodes']]
+        if model_live:
+            success_rates = [r['success']['mean'] for r in model_live]
+            paragraph(f'Completed model conditions have observed success rates from '
+                      f'{percent(min(success_rates))} to {percent(max(success_rates))}. '
+                      'Paired repair contrasts use shared episode seeds where available. '
+                      'Partial conditions and timing differences limit comparisons across models; '
+                      'a failed repair remains part of the evidence.')
         if evidence.get('live_paired'):
             table(['Model', 'Repair vs base', 'Shared episodes', 'Success change [pp, 95% CI]',
                    'Generated-token change / ep.'],
                   [[r['model'].replace('qwen3:', '').replace('-q4_K_M', ''), r['condition'],
-                    str(r['paired_episodes']), ci(r['success_change']),
+                    str(r['paired_episodes']), ci(r['success_change'], difference=True),
                     f'{r["token_change"]["mean"]:.0f}'] for r in evidence['live_paired']],
                   [70, 90, 75, 183, 110])
             paragraph('Paired changes use only shared, uncensored episode seeds and percentile '
@@ -618,6 +756,15 @@ def build(evidence, output, figures, root):
               'action-only baseline and execution-corrected history remain future controls. No '
               'novelty priority, venue readiness, or broad model-size law is claimed.')
     heading('8. Reproducibility and review status')
+    paragraph('The main collector loads frozen source commit '
+              'f71b9259abd055291c7c865659363aa1b3d9ec0f; commitment-test manifests record their '
+              'separate module hashes. Canonical wins use lane 0, although upstream redraws the '
+              'player at lane 9 in its terminal observation. The frozen collector also redraws '
+              'initial cars after a collision on tick 100; current code retains the upstream '
+              'terminal cars. This last-board display difference changes no success label, '
+              'collision count, elapsed tick or later decision. The offline audit checks each '
+              'physical tick against upstream and applies the frozen display convention only '
+              'for that declared source revision.')
     paragraph('The repository contains the preregistration, execution-plan deviations, pinned '
               'upstream revision, labeled bank, tests, runner, raw response logs or losslessly '
               'compressed copies, and this paper generator. The evidence JSON records the '
@@ -628,9 +775,27 @@ def build(evidence, output, figures, root):
     paragraph(f'At report generation, the main four-model forecast target is '
               f'{"complete" if complete else "incomplete"}. This PDF is a review artifact for '
               'the completed local cycle, not a claim that the full proposed project is done.', 'SmallNote')
-    heading('References')
+    heading('9. Conclusion')
+    if sum(r['episodes'] for r in agent_live) and not sum(r['successes'] for r in agent_live):
+        paragraph(f'None of the {sum(r["episodes"] for r in agent_live)} completed model-condition '
+                  f'runs reached the goal. These runs reuse {live_seed_count} environment seeds '
+                  'across models and conditions. This cycle does not demonstrate a goal-completion '
+                  'benefit from diagnosis-selected repairs under the chosen latency setting. '
+                  'Small live cohorts and wide Wilson bounds limit this negative result.')
+    paragraph('The artifact makes stage probes and repair decisions inspectable against a pinned '
+              'simulator. The completed results describe the tested prompts, states and local '
+              'model artifacts; they do not establish that a weak probe score uniquely identifies '
+              'an internal failure cause. Commitment matching removes one measurement ambiguity, '
+              'and recording delay and all calls makes the live comparison auditable. A broader '
+              'claim that diagnosis reliably selects better agents requires the pending '
+              'cross-game, cost-matched and intervention controls.')
+    reference_blocks = [Paragraph('References', styles['Heading2'])]
+    markdown.append('\n## References')
     for index, (text, url) in enumerate(REFERENCES, 1):
-        paragraph(f'[{index}] {escape(text)} <link href="{url}" color="#215c8c">{escape(url)}</link>', 'SmallNote')
+        entry = f'[{index}] {escape(text)} <link href="{url}" color="#215c8c">{escape(url)}</link>'
+        reference_blocks.append(Paragraph(entry, styles['SmallNote']))
+        markdown.append(entry)
+    story.append(KeepTogether(reference_blocks))
     output.parent.mkdir(parents=True, exist_ok=True)
     doc = SimpleDocTemplate(str(output), pagesize=(612, 792), rightMargin=42, leftMargin=42,
                             topMargin=43, bottomMargin=43, title='Diagnose, Then Repair',

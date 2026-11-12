@@ -1,0 +1,200 @@
+[
+  {
+    "model": "qwen3:1.7b-q4_K_M",
+    "thinking": false,
+    "stage": "C",
+    "representation": "coordinates",
+    "kind": "action",
+    "k": 3,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.125,
+      "low": 0.0,
+      "high": 0.375,
+      "clusters": 8,
+      "observations": 8
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.825,
+    "actions": {
+      "U": 8
+    },
+    "mean_wall_seconds": 1.5897996826261078,
+    "contradiction": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 8,
+      "observations": 8
+    },
+    "safety": {
+      "mean": 0.125,
+      "low": 0.0,
+      "high": 0.375,
+      "clusters": 8,
+      "observations": 8
+    }
+  },
+  {
+    "model": "qwen3:1.7b-q4_K_M",
+    "thinking": false,
+    "stage": "C",
+    "representation": "coordinates",
+    "kind": "combined",
+    "k": 3,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.125,
+      "low": 0.0,
+      "high": 0.375,
+      "clusters": 8,
+      "observations": 8
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.825,
+    "actions": {
+      "U": 8
+    },
+    "mean_wall_seconds": 0.9071652237489616,
+    "contradiction": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 8,
+      "observations": 8
+    },
+    "safety": {
+      "mean": 0.125,
+      "low": 0.0,
+      "high": 0.375,
+      "clusters": 8,
+      "observations": 8
+    }
+  },
+  {
+    "model": "qwen3:1.7b-q4_K_M",
+    "thinking": false,
+    "stage": "C",
+    "representation": "coordinates",
+    "kind": "forecast",
+    "k": 3,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 8,
+      "observations": 8
+    },
+    "invalid": 0,
+    "ece_valid_only": 1.0,
+    "actions": {},
+    "mean_wall_seconds": 1.134582609496647,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    }
+  },
+  {
+    "model": "qwen3:1.7b-q4_K_M",
+    "thinking": false,
+    "stage": "C",
+    "representation": "coordinates",
+    "kind": "oracle",
+    "k": 3,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.125,
+      "low": 0.0,
+      "high": 0.375,
+      "clusters": 8,
+      "observations": 8
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.7875,
+    "actions": {
+      "U": 8
+    },
+    "mean_wall_seconds": 0.8074404896233318,
+    "contradiction": {
+      "mean": null,
+      "low": null,
+      "high": null,
+      "clusters": 0,
+      "observations": 0
+    },
+    "safety": {
+      "mean": 0.125,
+      "low": 0.0,
+      "high": 0.375,
+      "clusters": 8,
+      "observations": 8
+    }
+  },
+  {
+    "model": "qwen3:1.7b-q4_K_M",
+    "thinking": false,
+    "stage": "C",
+    "representation": "coordinates",
+    "kind": "own",
+    "k": 3,
+    "repair": "base",
+    "history_kind": "none",
+    "history_length": 0,
+    "skin": "cars",
+    "labels": "standard",
+    "accuracy": {
+      "mean": 0.125,
+      "low": 0.0,
+      "high": 0.375,
+      "clusters": 8,
+      "observations": 8
+    },
+    "invalid": 0,
+    "ece_valid_only": 0.8125,
+    "actions": {
+      "U": 8
+    },
+    "mean_wall_seconds": 1.97216810437385,
+    "contradiction": {
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "clusters": 8,
+      "observations": 8
+    },
+    "safety": {
+      "mean": 0.125,
+      "low": 0.0,
+      "high": 0.375,
+      "clusters": 8,
+      "observations": 8
+    }
+  }
+]
