@@ -80,11 +80,9 @@ def episode(policy, seed=1000, tick_seconds=1., start=None, prior_history=(),
     history = list(prior_history)
     trace = []
     collisions = tokens = calls = stays = longest = elapsed_ticks = 0
-    success = False
-    censored = False
+    success = state.lane == 0
     for decision in range(max_decisions):
         if stop_at is not None and time.time() >= stop_at:
-            censored = True
             break
         if state.lane == 0 or state.turn >= 100:
             break
@@ -132,7 +130,8 @@ def episode(policy, seed=1000, tick_seconds=1., start=None, prior_history=(),
             break
     return {'seed': seed, 'success': success, 'collisions': collisions, 'tokens': tokens,
             'calls': calls, 'ticks': elapsed_ticks, 'longest_stay_loop': longest,
-            'final_lane': state.lane, 'trace': trace, 'tick_seconds': tick_seconds, 'censored': censored}
+            'final_lane': state.lane, 'trace': trace, 'tick_seconds': tick_seconds,
+            'censored': not success and state.turn < 100}
 
 
 def critical_step(failed, replay):

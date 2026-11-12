@@ -77,6 +77,10 @@ def verify_live(record, legacy_terminal_reset=False):
         ticks += len(events)
     if record['success'] != (current.lane == 0):
         raise ValueError('Live success label mismatch')
+    if record['censored'] != (current.lane != 0 and current.turn < 100):
+        raise ValueError('Live censoring label mismatch')
+    if record['final_lane'] != current.lane:
+        raise ValueError('Live final-lane mismatch')
     if record['calls'] != calls or record['tokens'] != tokens:
         raise ValueError('Live cost totals mismatch')
     if record['collisions'] != collisions or record['ticks'] != ticks:

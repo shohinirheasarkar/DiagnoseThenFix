@@ -92,3 +92,10 @@ are unchanged because no action follows a terminal state. The offline audit uses
 this display convention only when cycle.json declares the exact frozen source
 commit above; other sources must match the corrected engine. Do not silently
 rewrite the raw terminal boards or call them literal upstream observations.
+
+The current harness also censors episodes stopped by a shortened decision budget
+and preserves outcomes when an episode starts in a terminal state. The frozen
+published queue uses 100 decisions with at least one world tick per decision,
+so that budget cannot truncate a fresh episode before the game's 100-tick limit.
+Its collected labels do not change. The audit checks censoring and final-lane
+summaries against the replayed state as well as checking success and costs.

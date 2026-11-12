@@ -147,3 +147,21 @@ def test_live_model_policy_preserves_belief_binding_and_errors(tmp_path):
     fake.reply = {'bad': 'reply'}
     result = model_policy(model, seed=1)(s, [])
     assert result['action'] == 'S' and result['error']
+
+
+@pytest.mark.parametrize('decisions', [0, 1, 7])
+def test_decision_budget_truncation_is_censored(decisions):
+    result = episode(baseline('stay'), seed=50000, max_decisions=decisions)
+    assert result['censored'] and not result['success']
+    assert result['ticks'] == decisions and len(result['trace']) == decisions
+
+
+@pytest.mark.parametrize('kind', ['goal', 'timeout'])
+def test_already_terminal_start_is_not_censored_by_an_expired_clock(kind):
+    from diagnose.world import initial
+    state = replace(initial(1000), lane=0 if kind == 'goal' else 9, turn=10 if kind == 'goal' else 100)
+    def forbidden(state, history):
+        raise AssertionError('A terminal episode cannot ask for another decision')
+    result = episode(forbidden, start=state, stop_at=0)
+    assert result['success'] == (kind == 'goal')
+    assert not result['censored'] and not result['trace'] and result['calls'] == 0
