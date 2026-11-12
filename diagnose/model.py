@@ -2,6 +2,7 @@
 from datetime import datetime, timezone
 import hashlib
 import json
+import math
 from pathlib import Path
 import time
 from urllib.error import HTTPError, URLError
@@ -60,7 +61,7 @@ class LocalModel:
             return json.load(response)
 
     def ask(self, prompt, seed=0, thinking=False, max_tokens=512, schema=None,
-            temperature=.7, history=(), use_cache=True):
+            temperature=.7, history=(), use_cache=True, logprobs=False):
         supported = self.info.get('thinking', {}).get('values')
         if supported is not None and thinking not in supported:
             raise ValueError(f'Unsupported thinking value {thinking}')
@@ -69,6 +70,8 @@ class LocalModel:
                    'options': {'seed': seed, 'temperature': temperature,
                                'num_predict': max_tokens, 'num_ctx': 8192},
                    'keep_alive': '5m'}
+        if logprobs:
+            request.update(logprobs=True, top_logprobs=20)
         if schema is not None:
             request['format'] = schema
         identity = {'digest': self.digest, 'version': self.version, 'request': request}
@@ -93,6 +96,24 @@ class LocalModel:
             temporary.write_text(canonical(result))
             temporary.replace(path)
         return result
+
+    def action_scores(self, prompt, seed=0):
+        result = self.ask(prompt + '\nReply with exactly one token: A for U, B for S, C for D.',
+                          seed=seed, thinking=False, max_tokens=1, temperature=1., logprobs=True)
+        try:
+            first = result['raw']['logprobs'][0]
+            candidates = list(first['top_logprobs']) + [first]
+            unique = {r['token']: float(r['logprob']) for r in candidates}
+            scores = {}
+            for action, token in (('U', 'A'), ('S', 'B'), ('D', 'C')):
+                values = [p for t, p in unique.items() if t.strip() == token]
+                if not values:
+                    raise ValueError(f'{token} missing from top log probabilities')
+                peak = max(values)
+                scores[action] = peak + math.log(sum(math.exp(v-peak) for v in values))
+            return {'scores': scores, 'response': result, 'error': None}
+        except (KeyError, IndexError, TypeError, ValueError) as exc:
+            return {'scores': None, 'response': result, 'error': f'logprobs unavailable: {exc}'}
 
 
 def parse_reply(result, required):

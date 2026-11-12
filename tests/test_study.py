@@ -147,3 +147,60 @@ def test_runner_resumes_without_duplicate_calls_and_rejects_design_drift(tmp_pat
     path.write_text('{bad json\n')
     with pytest.raises(ValueError, match='Broken JSONL'):
         read_jsonl(path)
+
+
+def test_logprob_calibration_never_fills_missing_actions(tmp_path):
+    fake = FakeOllama()
+    def transport(route, payload):
+        result = fake(route, payload)
+        if route == '/api/chat':
+            result['logprobs'] = [{'token': 'A', 'logprob': -1., 'top_logprobs': [
+                {'token': 'A', 'logprob': -1.}, {'token': 'B', 'logprob': -2.},
+                {'token': 'C', 'logprob': -3.}]}]
+        return result
+    model = LocalModel('test', tmp_path, transport=transport)
+    assert model.action_scores('board')['scores'] == {'U': -1., 'S': -2., 'D': -3.}
+    missing = LocalModel('test', tmp_path / 'missing', transport=fake)
+    assert missing.action_scores('board')['scores'] is None
+
+
+def test_forecast_injection_keeps_state_fixed():
+    s = initial(1000)
+    beliefs = {'U': True, 'S': False, 'D': True}
+    own = make_task(s, 'C', kind='own', injected=beliefs)
+    base = make_task(s, 'C', kind='action')
+    assert 'Forecast (repeated-action' in own['prompt']
+    assert 'Forecast (repeated-action' not in base['prompt']
+    value = {'action': 'U', 'confidence': 1}
+    assert score(own, value, None, s, label(s))['valid']
+    forecast = make_task(s, 'C', kind='forecast')
+    assert score(forecast, {'collision': beliefs, 'confidence': 1}, None, s, label(s))['valid']
+
+
+def test_offload_runner_preserves_code_and_scores_execution(tmp_path):
+    fake = FakeOllama()
+    fake.reply = {'code': 'def forecast(x, timer, p, k):\n return x', 'confidence': .5}
+    model = LocalModel('test', tmp_path / 'cache', transport=fake)
+    s = initial(1000)
+    bank = [{'id': s.key, 'state': s.to_dict(), 'oracle': label(s), 'split': 'test'}]
+    rows = run(bank, model, tmp_path / 'run', stages=('B',), horizons=(1,), repairs=('code',))
+    assert len(rows) == 1
+    assert rows[0]['parsed']['answer'] == s.cars[0].x
+    assert rows[0]['proposal']['code'].startswith('def forecast')
+
+
+def test_separated_consistency_runner_and_bound_selection(tmp_path):
+    fake = FakeOllama()
+    fake.reply = {'action': 'D', 'collision': {'U': False, 'S': False, 'D': True}, 'confidence': .5}
+    model = LocalModel('test', tmp_path / 'cache', transport=fake)
+    s = initial(1000)
+    bank = [{'id': s.key, 'state': s.to_dict(), 'oracle': label(s), 'split': 'test'}]
+    rows = run(bank, model, tmp_path / 'separated', stages=('C',), horizons=(1,))
+    assert {r['task']['kind'] for r in rows} == {'forecast', 'action', 'own', 'oracle', 'combined'}
+    assert all(r['score']['valid'] for r in rows)
+    own = next(r for r in rows if r['task']['kind'] == 'own')
+    assert own['score']['contradiction']
+    assert own['response']['auxiliary']
+    bound = run(bank, model, tmp_path / 'bound', stages=('C',), horizons=(1,), repairs=('bound',))
+    assert len(bound) == 1 and bound[0]['score']['action'] == 'U'
+    assert bound[0]['proposal']['action'] == 'D'
