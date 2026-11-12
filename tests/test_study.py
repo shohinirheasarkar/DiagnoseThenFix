@@ -204,3 +204,19 @@ def test_separated_consistency_runner_and_bound_selection(tmp_path):
     bound = run(bank, model, tmp_path / 'bound', stages=('C',), horizons=(1,), repairs=('bound',))
     assert len(bound) == 1 and bound[0]['score']['action'] == 'U'
     assert bound[0]['proposal']['action'] == 'D'
+
+
+def test_deadline_and_null_state_are_not_performance_results(tmp_path):
+    from diagnose.analysis import summarize
+    fake = FakeOllama()
+    model = LocalModel('test', tmp_path / 'cache', transport=fake)
+    s = initial(1000)
+    bank = [{'id': s.key, 'state': s.to_dict(), 'oracle': label(s), 'split': 'test'}]
+    assert run(bank, model, tmp_path / 'stopped', stages=('B',), stop_at=0) == []
+    assert not fake.calls
+    fake.reply = {'action': 'U', 'collision': {'U': False, 'S': False, 'D': False}, 'confidence': 1}
+    rows = run(bank, model, tmp_path / 'null', stages=('E',), horizons=(1,), limit=1)
+    summary = summarize(rows)
+    null = next(r for r in summary if r['kind'] == 'null')
+    assert null['accuracy'] is None and null['ece_valid_only'] is None
+    assert null['actions'] == {'U': 1}

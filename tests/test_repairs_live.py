@@ -125,3 +125,8 @@ def test_critical_step_reports_earliest_successful_intervention():
     found = critical_step(failed, replay)
     assert found['decision'] == 1 and found['stage'] == 'C'
     assert calls[-1] == (1, 'C')
+
+
+def test_time_cap_censors_an_episode_without_inventing_a_failure():
+    result = episode(baseline('advance'), start=State(()), stop_at=0)
+    assert result['censored'] and not result['trace'] and result['calls'] == 0

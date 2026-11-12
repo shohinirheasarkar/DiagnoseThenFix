@@ -2,6 +2,7 @@
 from dataclasses import asdict
 import math
 import random
+import time
 
 from .model import parse_reply
 from .probes import make_task
@@ -72,7 +73,7 @@ def model_policy(model, seed=0, thinking=False, representation='coordinates',
 
 
 def episode(policy, seed=1000, tick_seconds=1., start=None, prior_history=(),
-            intervention=None, max_decisions=100):
+            intervention=None, max_decisions=100, stop_at=None):
     if tick_seconds <= 0:
         raise ValueError('Tick duration must be positive')
     state = start or initial(seed)
@@ -80,7 +81,11 @@ def episode(policy, seed=1000, tick_seconds=1., start=None, prior_history=(),
     trace = []
     collisions = tokens = calls = stays = longest = elapsed_ticks = 0
     success = False
+    censored = False
     for decision in range(max_decisions):
+        if stop_at is not None and time.time() >= stop_at:
+            censored = True
+            break
         if state.lane == 0 or state.turn >= 100:
             break
         observation = state
@@ -127,7 +132,7 @@ def episode(policy, seed=1000, tick_seconds=1., start=None, prior_history=(),
             break
     return {'seed': seed, 'success': success, 'collisions': collisions, 'tokens': tokens,
             'calls': calls, 'ticks': elapsed_ticks, 'longest_stay_loop': longest,
-            'final_lane': state.lane, 'trace': trace, 'tick_seconds': tick_seconds}
+            'final_lane': state.lane, 'trace': trace, 'tick_seconds': tick_seconds, 'censored': censored}
 
 
 def critical_step(failed, replay):

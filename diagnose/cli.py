@@ -16,7 +16,7 @@ def main():
     bank.add_argument('--count', type=int, default=500)
     bank.add_argument('--seed', type=int, default=0)
     bank.add_argument('--horizon', type=int, default=10)
-    bank.add_argument('--max-episodes', type=int, default=100)
+    bank.add_argument('--max-episodes', type=int, default=3000)
     bank.add_argument('--output', type=Path, default=Path('data/freeway.json'))
     probe = commands.add_parser('probe')
     probe.add_argument('--bank', type=Path, default=Path('data/freeway.json'))

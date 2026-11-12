@@ -2,6 +2,8 @@
 from datetime import datetime, timezone
 import hashlib
 import itertools
+from functools import lru_cache
+import time
 import json
 from pathlib import Path
 import platform
@@ -14,6 +16,7 @@ from .world import ACTIONS, State, repeated_outcome
 from .repairs import ArithmeticProgram, bound_action
 
 
+@lru_cache(maxsize=1)
 def source_fingerprint():
     files = sorted(Path(__file__).parent.glob('*.py'))
     return hashlib.sha256(b''.join(p.name.encode() + p.read_bytes() for p in files)).hexdigest()
@@ -22,7 +25,10 @@ def source_fingerprint():
 def run(bank, model, output, stages=('A', 'B', 'C'), representations=('coordinates',),
         seeds=(0,), thinking=False, horizons=(1, 5, 10), paraphrases=(0,),
         repairs=('base',), split='test', limit=10, max_tokens=512,
-        history_kinds=('none',), history_lengths=(0,), skins=('cars',), labels=('standard',)):
+        history_kinds=('none',), history_lengths=(0,), skins=('cars',), labels=('standard',),
+        stop_at=None):
+    if limit < 1 or max_tokens < 1:
+        raise ValueError('Limit and token budget must be positive')
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
     selected = sorted((r for r in bank if r['split'] == split), key=lambda r: r['id'])[:limit]
@@ -61,6 +67,16 @@ def run(bank, model, output, stages=('A', 'B', 'C'), representations=('coordinat
                 continue
             if stage == 'C' and repair in ('bound', 'retry', 'oracle_shield', 'forecast_then_act') and kind != 'combined':
                 continue
+            trial = hashlib.sha256(canonical({'design': design, 'id': row['id'],
+                'stage': stage, 'representation': rep, 'seed': seed, 'paraphrase': paraphrase,
+                'repair': repair, 'kind': kind, 'k': k, 'diary': diary, 'length': length,
+                'skin': skin, 'labels': label_set}).encode()).hexdigest()
+            if trial in done:
+                continue
+            if stop_at is not None and time.time() >= stop_at:
+                results = read_jsonl(results_path)
+                (output / 'summary.json').write_text(json.dumps(summarize(results), indent=2))
+                return results
             auxiliary = []
             injected = None
             forecast_value = None
@@ -81,9 +97,6 @@ def run(bank, model, output, stages=('A', 'B', 'C'), representations=('coordinat
             task = make_task(state, stage, rep, k, seed, paraphrase, kind=kind, repair=repair,
                              history_kind=diary, history_length=length, skin=skin, labels=label_set,
                              injected=injected)
-            trial = hashlib.sha256(canonical({'design': design, 'id': row['id'], 'task': task}).encode()).hexdigest()
-            if trial in done:
-                continue
             response = model.ask(task['prompt'], seed, thinking, max_tokens, schema='json')
             required = (('code', 'confidence') if repair == 'code' else
                         ('answer', 'confidence') if stage in ('A', 'B') else
