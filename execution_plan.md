@@ -99,3 +99,15 @@ published queue uses 100 decisions with at least one world tick per decision,
 so that budget cannot truncate a fresh episode before the game's 100-tick limit.
 Its collected labels do not change. The audit checks censoring and final-lane
 summaries against the replayed state as well as checking success and costs.
+
+## Live coverage adjustment at 13:44 UTC
+
+Observed episode throughput would leave the entire remaining live window on
+1.7B. Finish its tenth shared seed, then prioritize the already-planned 4B
+conditions. The collector resumes with 4B first in the model queue; the four
+forecast tests are already complete and are not changed or repeated. The current
+interrupted seed is reconstructed with the same frozen policy and cached raw
+replies before switching models. Completed records are retained. Conditions,
+cases, decoding, seeds and scoring are unchanged; only scheduling changes. Keep
+the 50-seed targets and report the actual partial counts. The reason is model
+coverage within the fixed time cap, not selection on a favorable live outcome.

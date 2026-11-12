@@ -569,8 +569,9 @@ def build(evidence, output, figures, root):
                       'their lane and direction, so direction-change onset is not an event in this '
                       'simulator. Incomplete sequences are excluded here and retained in accuracy.', 'SmallNote')
     heading('5. Targeted repairs and consistency')
-    paragraph('We compare direct answers with rule reminders, scratchpad tables, chained tables, '
-              'model-written code, and a supplied deterministic forecast. Code is interpreted in '
+    paragraph('Implemented forecast conditions include direct answers, rule reminders, scratchpad '
+              'tables, chained tables, model-written code, and a supplied deterministic forecast. '
+              'The table reports only completed contrasts. Code is interpreted in '
               'a bounded arithmetic subset with no imports, attributes, or arbitrary Python '
               'execution. Invalid programs count as wrong. The supplied forecast and simulator '
               'shield are upper-bound conditions, excluded from model-only claims.')
@@ -579,16 +580,25 @@ def build(evidence, output, figures, root):
         for r in m['repairs']:
             delta = r['difference_from_base']
             body.append([name.replace('qwen3:', '').replace('-q4_K_M', ''), r['name'],
-                         f'{r["states"]} / {r["trials"]}', ci(r['accuracy']), ci(delta, difference=True)])
+                         f'{r["states"]} / {r["trials"]}', ci(r['accuracy']), ci(delta, difference=True),
+                         str(r['invalid'])])
     if body:
         table(['Model', 'Position repair', 'Boards / trials', 'Accuracy [95% CI]',
-               'Paired change [pp]'], body, [60, 85, 75, 173, 135])
+               'Paired change [pp]', 'Invalid'], body, [60, 80, 75, 132, 130, 51])
         paragraph('Repair intervals are exploratory and unadjusted; no significance claim is made. '
                   'The paired change column is candidate minus base in percentage points. The '
                   'small repair bank limits external validity. Intervals condition on the five '
                   'decoding seeds; cached programs are reused across states rather than counted '
                   'as fresh program samples. Base and repaired trials are paired '
-                  'on the same source episodes, prompts and sampling seeds where available.', 'SmallNote')
+                  'on the same source episodes, target horizons and sampling seeds where available.', 'SmallNote')
+        code_conditions = [r for m in models.values() for r in m['repairs'] if r['name'] == 'code']
+        if code_conditions:
+            paragraph(f'The restricted-code condition has {sum(r["invalid"] for r in code_conditions)} '
+                      f'invalid executions out of {sum(r["trials"] for r in code_conditions)} '
+                      'reported position trials. Program reuse makes these correlated failures. '
+                      'The contrast measures compatibility with the declared grammar as well as '
+                      'program specification; it cannot settle the usefulness of more permissive '
+                      'forecast offloading.')
     else:
         paragraph('No isolated-repair test completed at report generation. The implementation exists, '
                   'but this cycle supplies no repair-effect estimate yet.')
@@ -643,8 +653,9 @@ def build(evidence, output, figures, root):
               'scores, following the contextual-calibration idea [8] and requiring all A/B/C '
               'candidates. A separate one-token action interface is '
               'used for those scores, which is a prompt-interface confound for causal attribution. '
-              'History is explicitly unprofiled in this cycle. The all-repair and random '
-              'conditions are controls, not assumed improvements. Policy messages retain up '
+              'History is explicitly unprofiled in this cycle. The all-repair condition is a '
+              'control; random same-count and leave-one-out variants are implemented for '
+              'subsequent tests. Policy messages retain up '
               'to twelve raw proposal turns, subject to the server context limit.')
     paragraph('Live decisions advance the world by ceil(measured request time / one second), with '
               'S as the default action during delay. The chosen move applies afterward if the '
