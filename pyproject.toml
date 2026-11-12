@@ -13,6 +13,8 @@ dependencies = ["numpy==2.2.6", "pygame==2.6.1"]
 test = ["pytest==8.3.5", "pytest-cov==6.1.1", "ruff==0.11.13"]
 paper = ["reportlab==4.4.1", "matplotlib==3.10.3", "pypdf==5.6.0"]
 
+games = ["gym==0.26.2", "scipy==1.15.3", "tqdm==4.67.1", "imageio==2.37.0", "matplotlib==3.10.3", "networkx==3.4.2", "ipython==9.2.0", "ipywidgets==8.1.7"]
+
 [project.scripts]
 diagnose = "diagnose.cli:main"
 

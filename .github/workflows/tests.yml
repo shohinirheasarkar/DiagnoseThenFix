@@ -13,7 +13,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - run: pip install -e '.[test]'
-      - run: pip install --no-deps 'git+https://github.com/SALT-NLP/RealtimeGym.git@3d5b3ef37dafee25ca2e8d2e8d71f5fe842eda7b'
+      - uses: actions/checkout@v4
+        with:
+          repository: SALT-NLP/RealtimeGym
+          ref: 3d5b3ef37dafee25ca2e8d2e8d71f5fe842eda7b
+          path: .cache/realtimegym
+          persist-credentials: false
+      - run: pip install -e '.[test,games]'
+      - run: pip install --no-deps -e .cache/realtimegym
       - run: pytest --cov=diagnose --cov-report=term-missing
-      - run: ruff check diagnose tests
+      - run: ruff check diagnose tests scripts
