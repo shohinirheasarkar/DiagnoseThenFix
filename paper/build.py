@@ -23,7 +23,7 @@ import numpy as np
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-from reportlab.platypus import (Image, Paragraph, SimpleDocTemplate,
+from reportlab.platypus import (Image, KeepTogether, Paragraph, SimpleDocTemplate,
                                Spacer, Table, TableStyle)
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -304,7 +304,7 @@ def build(evidence, output, figures, root):
     styles.add(ParagraphStyle('PaperTitle', fontName='Helvetica-Bold', fontSize=21, leading=25,
                               spaceAfter=12, textColor=colors.HexColor('#193b55')))
     styles.add(ParagraphStyle('PaperBody', fontName='Helvetica', fontSize=10, leading=14,
-                              spaceAfter=8))
+                              spaceAfter=8, allowWidows=0, allowOrphans=0))
     styles.add(ParagraphStyle('SmallNote', fontName='Helvetica', fontSize=8.2, leading=11,
                               spaceAfter=7, textColor=colors.HexColor('#465361')))
     styles.add(ParagraphStyle('TableText', fontName='Helvetica', fontSize=8, leading=10))
@@ -316,7 +316,8 @@ def build(evidence, output, figures, root):
     markdown = []
 
     def paragraph(text, style='PaperBody'):
-        story.append(Paragraph(text, styles[style]))
+        block = Paragraph(text, styles[style])
+        story.append(KeepTogether([block]) if style == 'SmallNote' else block)
         markdown.append(text.replace('<b>', '**').replace('</b>', '**'))
 
     def heading(text):
