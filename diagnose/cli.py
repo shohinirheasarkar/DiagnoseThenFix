@@ -51,7 +51,9 @@ def main():
     if args.command == 'bank':
         rows, report = build_bank(args.count, args.seed, args.horizon, args.max_episodes)
         args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(json.dumps({'manifest': report, 'situations': rows}, indent=2))
+        args.output.write_text('{"manifest": ' + json.dumps(report, sort_keys=True) +
+                               ', "situations": [\n' +
+                               ',\n'.join(json.dumps(r, sort_keys=True) for r in rows) + '\n]}\n')
         print(json.dumps(report, indent=2))
     elif args.command == 'probe':
         data = json.loads(args.bank.read_text())
