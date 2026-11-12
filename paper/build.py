@@ -121,6 +121,42 @@ def shape_fits(curve):
                       'rmse': math.sqrt(cliff_error)}}
 
 
+def motion_events(state, horizon=10):
+    car = state.cars[0]
+    events = []
+    for _ in range(horizon):
+        following = car.tick()
+        event = ('wrap' if car.x < 0 or car.x > 8 else 'fast_step' if abs(car.speed) < 1
+                 else 'timer_move' if following.x != car.x else 'timer_wait')
+        events.append(event)
+        car = following
+    return events
+
+
+def first_error_events(records, bank):
+    sequences = {}
+    for record in records:
+        if record['task']['kind'] == 'position':
+            key = record['state_id'], record['task']['seed']
+            sequences.setdefault(key, {})[record['task']['k']] = record['score']['correct']
+    result = {'complete_sequences': 0, 'incomplete_sequences': 0, 'all_correct': 0,
+              'first_error_event': dict.fromkeys(('wrap', 'fast_step', 'timer_move', 'timer_wait'), 0),
+              'first_error_after_any_wrap': 0}
+    for (state_id, seed), sequence in sequences.items():
+        if set(sequence) != set(range(1, 11)):
+            result['incomplete_sequences'] += 1
+            continue
+        result['complete_sequences'] += 1
+        first = next((k for k in range(1, 11) if not sequence[k]), None)
+        if first is None:
+            result['all_correct'] += 1
+            continue
+        events = motion_events(State.from_dict(bank[state_id]['state']))
+        result['first_error_event'][events[first-1]] += 1
+        result['first_error_after_any_wrap'] += int('wrap' in events[:first])
+    return result
+
+
 def analyze(root, bank_path):
     bank_data = json.loads(Path(bank_path).read_text())
     bank = {r['id']: r for r in bank_data['situations']}
@@ -163,6 +199,7 @@ def analyze(root, bank_path):
                 'collision_accuracy': interval([r for r in test if r['task']['kind'] == 'collision']),
                 'invalid': sum(not r['score']['valid'] for r in test)}
         data['position_shape_fits'] = shape_fits(pos_curve)
+        data['first_error_events'] = first_error_events(test, bank)
         data['position_signed_error_valid'] = interval(
             [r for r in test if r['task']['kind'] == 'position'], 'signed_error')
         data['position_absolute_error_valid'] = interval(
@@ -343,6 +380,11 @@ def build(evidence, output, figures, root):
     models = evidence['models']
     total = sum(m['trials'] for m in models.values())
     complete = all(m['trials'] == 2000 for m in models.values()) and len(models) == 4
+    position_values = [m['position_accuracy']['mean'] for m in models.values()
+                       if m['position_accuracy']['mean'] is not None]
+    finding = (f'Episode-weighted exact-head accuracy spans {percent(min(position_values))}-'
+               f'{percent(max(position_values))} across the collected artifacts. '
+               if position_values else '')
     title = 'Diagnose, Then Repair'
     paragraph(title, 'PaperTitle')
     paragraph('A simulator-checked study of small language-model agents in real-time Freeway', 'Heading2')
@@ -355,7 +397,7 @@ def build(evidence, output, figures, root):
               f'Qwen3 model artifacts collected on a 16 GB Apple M3 laptop. The situation bank contains '
               f'500 states with disjoint source episodes across splits. We compare forecast accuracy at '
               f'horizons 1-10 against constant-velocity extrapolation, and separately evaluate consistency '
-              f'repairs and measured-delay live play where completed. Missing or malformed answers count '
+              f'repairs and measured-delay live play where completed. {finding}Missing or malformed answers count '
               f'as incorrect. This is an exploratory, single-game artifact; the full multi-game, '
               f'thinking-mode, and training-based study remains incomplete. We make no first-of-its-kind '
               f'or causal root-cause claim from this cycle.')
@@ -437,6 +479,20 @@ def build(evidence, output, figures, root):
                'Collision [95% CI] / always collision', 'Invalid'], body, [56, 68, 46, 153, 153, 52])
     else:
         paragraph('No held-out forecast trials completed at report generation. No forecast result is claimed.')
+    measured = [m for m in models.values() if m['position_accuracy']['mean'] is not None]
+    if measured:
+        position_means = [m['position_accuracy']['mean'] for m in measured]
+        paragraph(f'On the sampled held-out boards, episode-weighted position accuracy ranges '
+                  f'from {percent(min(position_means))} to {percent(max(position_means))} across '
+                  'the collected artifacts. These are aggregate descriptive results for the '
+                  'selected input formats, not estimates over a natural gameplay distribution.')
+        comparisons = [(r['accuracy']['mean'], r['linear']['mean'])
+                       for m in measured for r in m['curve'] if r['kind'] == 'position']
+        ahead = sum(linear > model for model, linear in comparisons)
+        paragraph(f'The declared linear control has higher point accuracy in {ahead} of '
+                  f'{len(comparisons)} collected model-by-horizon position comparisons. '
+                  'This count does not test statistical significance and does not explain which '
+                  'internal stage produced the errors.')
     paragraph('Intervals in the table aggregate across horizons. Per-horizon curves below are the '
               'primary diagnostic. A periodic or nonmonotone curve is not automatically evidence '
               'of compounding error: wrap and timer phase can make individual horizons easier. '
@@ -486,6 +542,22 @@ def build(evidence, output, figures, root):
                       'one breakpoint. RMSE is in-sample accuracy error. The cliff has an extra '
                       'selected parameter; lower RMSE is not evidence that it generalizes or that '
                       'compounding error caused the curve. No confirmatory shape test is claimed.', 'SmallNote')
+        event_rows = [[name.replace('qwen3:', '').replace('-q4_K_M', ''),
+                       m['first_error_events']['complete_sequences'],
+                       *[m['first_error_events']['first_error_event'][kind]
+                         for kind in ('timer_wait', 'timer_move', 'fast_step', 'wrap')],
+                       m['first_error_events']['all_correct']]
+                      for name, m in models.items() if m['first_error_events']['complete_sequences']]
+        if event_rows:
+            table(['Model tag', 'Sequences', 'Timer wait', 'Timer move', 'Fast step', 'Wrap tick', 'No error'],
+                  event_rows, [70, 70, 80, 80, 80, 78, 70])
+            paragraph('Earliest incorrect direct-forecast horizon, grouped by the actual object-0 '
+                      'transition at that horizon. A sequence is one board and sampling seed with '
+                      'all ten horizons; repeats are not independent boards. These are separately '
+                      'asked predictions, not one chained rollout. Counts do not adjust for event '
+                      'exposure and cannot establish that wrap causes errors. Freeway objects keep '
+                      'their lane and direction, so direction-change onset is not an event in this '
+                      'simulator. Incomplete sequences are excluded here and retained in accuracy.', 'SmallNote')
     heading('5. Targeted repairs and consistency')
     paragraph('We compare direct answers with rule reminders, scratchpad tables, chained tables, '
               'model-written code, and a supplied deterministic forecast. Code is interpreted in '
@@ -558,8 +630,12 @@ def build(evidence, output, figures, root):
     paragraph('Live decisions advance the world by ceil(measured request time / one second), with '
               'S as the default action during delay. The chosen move applies afterward if the '
               'episode has not ended. Retries and extra model calls add delay and generated tokens. '
-              'Local Python parsing and arithmetic time is not included in this replay. Reused '
-              'forecast programs are generated once per episode. This replays observed latency; '
+              'Local Python parsing and arithmetic time is not included in this replay. A '
+              'successfully constructed forecast program is reused within its episode; failed '
+              'generation or construction can be attempted again on later decisions. Every '
+              'attempt is counted. Cache hits reuse recorded durations and generated-token counts, '
+              'so costs describe logical policy requests in the replay. Fixed null-prior scores '
+              'are charged at every calibration decision even if cached. This replays observed latency; '
               'it is not an asynchronous deployment benchmark. Episodes cut short by the time '
               'cap are censored. Simulator baselines have zero inference delay and therefore '
               'provide reference controls rather than latency-matched competitors.')
@@ -575,6 +651,14 @@ def build(evidence, output, figures, root):
                   'when every episode succeeds or fails. The requested bootstrap intervals are '
                   'also retained in the evidence JSON. These methods agree on the point estimate '
                   'but quantify uncertainty differently.', 'SmallNote')
+        model_live = [r for r in evidence['live'] if r['model'] != 'simulator control' and r['episodes']]
+        if model_live:
+            success_rates = [r['success']['mean'] for r in model_live]
+            paragraph(f'Completed model conditions have observed success rates from '
+                      f'{percent(min(success_rates))} to {percent(max(success_rates))}. '
+                      'Paired repair contrasts use shared episode seeds where available. '
+                      'Partial conditions and timing differences limit comparisons across models; '
+                      'a failed repair remains part of the evidence.')
         if evidence.get('live_paired'):
             table(['Model', 'Repair vs base', 'Shared episodes', 'Success change [pp, 95% CI]',
                    'Generated-token change / ep.'],
@@ -628,6 +712,14 @@ def build(evidence, output, figures, root):
     paragraph(f'At report generation, the main four-model forecast target is '
               f'{"complete" if complete else "incomplete"}. This PDF is a review artifact for '
               'the completed local cycle, not a claim that the full proposed project is done.', 'SmallNote')
+    heading('9. Conclusion')
+    paragraph('The artifact makes stage probes and repair decisions inspectable against a pinned '
+              'simulator. The completed results describe the tested prompts, states and local '
+              'model artifacts; they do not establish that a weak probe score uniquely identifies '
+              'an internal failure cause. Commitment matching removes one measurement ambiguity, '
+              'and recording delay and all calls makes the live comparison auditable. A broader '
+              'claim that diagnosis reliably selects better agents requires the pending '
+              'cross-game, cost-matched and intervention controls.')
     heading('References')
     for index, (text, url) in enumerate(REFERENCES, 1):
         paragraph(f'[{index}] {escape(text)} <link href="{url}" color="#215c8c">{escape(url)}</link>', 'SmallNote')
