@@ -84,6 +84,9 @@ def test_paired_live_estimates_exclude_unshared_and_censored_episodes(tmp_path):
                 'calls': 1, 'collisions': 0, 'trace': []}
     base = [row(1, False, 10), row(2, True, 20), row(3, False, 10)]
     selected = [row(1, True, 15), row(2, False, 50, True), row(4, True, 100)]
+    base[0]['trace'] = [{'response': {'error': 'program failed'}}]
+    base[1]['trace'] = [{'response': {'error': None}}]
+    selected[1]['trace'] = [{'response': {'error': 'censored failure'}}]
     for name, records in (('base', base), ('selected', selected)):
         (folder / f'live-{name}.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in records))
     result = analyze(root, Path('data/freeway.json'))
@@ -92,6 +95,9 @@ def test_paired_live_estimates_exclude_unshared_and_censored_episodes(tmp_path):
     assert paired['success_change']['mean'] == 1
     assert paired['token_change']['mean'] == 5
     assert next(r for r in result['live'] if r['condition'] == 'selected')['censored'] == 1
+    assert next(r for r in result['live'] if r['condition'] == 'selected')['error_decisions'] == 0
+    baseline = next(r for r in result['live'] if r['condition'] == 'base')
+    assert baseline['error_decisions'] == 1 and baseline['decisions'] == 2
 
 
 def test_error_onset_uses_delayed_wrap_and_keeps_partial_sequences_separate():

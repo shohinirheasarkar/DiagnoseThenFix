@@ -288,6 +288,7 @@ def analyze(root, bank_path):
                               'success': bootstrap([{'state_id': r['seed'], 'success': r['success']} for r in group], 'success'),
                               'success_wilson': wilson(sum(r['success'] for r in group),len(group)),
                               'mean_tokens': 0, 'mean_calls': 0,
+                              'error_decisions': 0, 'decisions': sum(len(r['trace']) for r in group),
                               'mean_collisions': statistics.mean(r['collisions'] for r in group) if group else None})
     return output
 
@@ -331,10 +332,11 @@ def percent(value):
     return 'unavailable' if value is None else f'{100*value:.1f}%'
 
 
-def ci(value):
+def ci(value, difference=False):
     if value['mean'] is None:
         return 'unavailable'
-    return f'{percent(value["mean"])} [{100*value["low"]:.1f}, {100*value["high"]:.1f}]'
+    mean = f'{100*value["mean"]:.1f}' if difference else percent(value['mean'])
+    return f'{mean} [{100*value["low"]:.1f}, {100*value["high"]:.1f}]'
 
 
 def build(evidence, output, figures, root):
@@ -452,7 +454,8 @@ def build(evidence, output, figures, root):
               'settings and model identity. Malformed outputs, truncations, and timeouts remain in '
               'the primary denominator. Calibration error is conditional on valid confidence reports. '
               'Intervals are percentile 95% bootstrap intervals over source episodes, with 2,000 '
-              'resamples; sampling repeats do not become independent boards.')
+              'resamples; sampling repeats do not become independent boards. Boundary estimates '
+              'can yield degenerate resampling intervals, which do not establish certainty on new states.')
     representation_rows = [[name.replace('qwen3:', '').replace('-q4_K_M', ''),
                             *[percent(m['profile'].get('representation_accuracy', {}).get(rep))
                               for rep in ('ascii', 'coordinates', 'prose', 'lanes', 'relations', 'json')]]
@@ -570,7 +573,7 @@ def build(evidence, output, figures, root):
         for r in m['repairs']:
             delta = r['difference_from_base']
             body.append([name.replace('qwen3:', '').replace('-q4_K_M', ''), r['name'],
-                         f'{r["states"]} / {r["trials"]}', ci(r['accuracy']), ci(delta)])
+                         f'{r["states"]} / {r["trials"]}', ci(r['accuracy']), ci(delta, difference=True)])
     if body:
         table(['Model', 'Position repair', 'Boards / trials', 'Accuracy [95% CI]',
                'Paired change [pp]'], body, [60, 85, 75, 173, 135])
@@ -648,12 +651,18 @@ def build(evidence, output, figures, root):
               'provide reference controls rather than latency-matched competitors.')
     if evidence['live']:
         body = [[r['model'].replace('qwen3:', '').replace('-q4_K_M', ''), r['condition'],
-                 str(r['episodes']), ci(r['success_wilson']),
+                 f'{r["episodes"]}/{r["censored"]}', ci(r['success_wilson']),
                  '-' if r['mean_tokens'] is None else f'{r["mean_tokens"]:.0f}',
-                 '-' if r['mean_collisions'] is None else f'{r["mean_collisions"]:.1f}']
+                 '-' if r['mean_collisions'] is None else f'{r["mean_collisions"]:.1f}',
+                 f'{r.get("error_decisions", 0)}/{r.get("decisions", 0)}']
                 for r in evidence['live']]
-        table(['Model', 'Condition', 'Episodes', 'Success [Wilson 95% CI]', 'Generated tokens / ep.', 'Collisions / ep.'],
-              body, [90, 60, 50, 148, 90, 90])
+        table(['Model', 'Condition', 'Complete / censored', 'Success [Wilson 95% CI]',
+               'Generated tokens / ep.', 'Collisions / ep.', 'Error decisions / total'],
+              body, [70, 50, 45, 135, 80, 68, 80])
+        paragraph('Costs, collisions and errors summarize completed episodes. Errors are parse, '
+                  'controller or program failures, counted once per decision; the controller '
+                  'falls back to S on those errors. Incorrect forecasts that parse successfully '
+                  'are not counted as controller errors.', 'SmallNote')
         paragraph('Live success intervals use the Wilson score interval to avoid degenerate bounds '
                   'when every episode succeeds or fails. The requested bootstrap intervals are '
                   'also retained in the evidence JSON. These methods agree on the point estimate '
@@ -670,7 +679,7 @@ def build(evidence, output, figures, root):
             table(['Model', 'Repair vs base', 'Shared episodes', 'Success change [pp, 95% CI]',
                    'Generated-token change / ep.'],
                   [[r['model'].replace('qwen3:', '').replace('-q4_K_M', ''), r['condition'],
-                    str(r['paired_episodes']), ci(r['success_change']),
+                    str(r['paired_episodes']), ci(r['success_change'], difference=True),
                     f'{r["token_change"]["mean"]:.0f}'] for r in evidence['live_paired']],
                   [70, 90, 75, 183, 110])
             paragraph('Paired changes use only shared, uncensored episode seeds and percentile '
