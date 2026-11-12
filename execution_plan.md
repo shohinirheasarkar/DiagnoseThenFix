@@ -42,3 +42,22 @@ second-family models, three-paraphrase robustness, full diary/framing tests,
 leave-one-out live comparisons, cost matching, curve-shape confirmation,
 counterfactual causal attribution and conditional fine-tuning remain pending
 unless separately completed and documented. Do not turn those into paper claims.
+
+## Queue adjustment at 08:36 UTC
+
+The observed 4B throughput threatens the live-play time budget. Preserve all
+frozen model code, cases, requests and decoding settings in a source snapshot
+of merge commit f71b9259abd055291c7c865659363aa1b3d9ec0f; its fingerprint was
+verified against the running manifests. Resume completed trials without repeats.
+After all four main forecast runs, prioritize C tests and base/code/tool forecast
+contrasts plus base/generic/bound consistency contrasts on 1.7B and 4B. Then run
+base/selected/all live conditions, alternating conditions within each shared
+seed rather than finishing one whole condition first. Broader repair sweeps
+follow only if time remains. Random/monitor empirical comparisons are now
+optional, and remain pending if not run. This scheduling change uses throughput,
+not test outcomes, to protect the frozen-to-live comparison.
+
+The existing `contradiction` log field is a repeated-action risk-disagreement
+proxy: it compares a one-tick chosen action with a forecast about repeating that
+action. It is not a logically sufficient belief-action-gap metric. Report it
+under that narrower name and leave commitment-matched gap claims open.

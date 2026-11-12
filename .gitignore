@@ -9,3 +9,6 @@ htmlcov/
 .cache/
 tmp/
 vislogs/
+results/cycle/
+results/local-pilot/
+results/throughput-pilot/

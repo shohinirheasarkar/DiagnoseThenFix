@@ -130,3 +130,20 @@ def test_critical_step_reports_earliest_successful_intervention():
 def test_time_cap_censors_an_episode_without_inventing_a_failure():
     result = episode(baseline('advance'), start=State(()), stop_at=0)
     assert result['censored'] and not result['trace'] and result['calls'] == 0
+
+
+def test_live_model_policy_preserves_belief_binding_and_errors(tmp_path):
+    from diagnose.live import model_policy
+    from diagnose.model import LocalModel
+    from test_study import FakeOllama
+    fake = FakeOllama()
+    fake.reply = {'action': 'D', 'collision': {'U': False, 'S': True, 'D': True}, 'confidence': 1}
+    model = LocalModel('test', tmp_path, transport=fake)
+    s = State(())
+    from diagnose.world import initial
+    s = initial(1000)
+    result = model_policy(model, repair='bound')(s, [])
+    assert result['action'] == 'U' and result['error'] is None
+    fake.reply = {'bad': 'reply'}
+    result = model_policy(model, seed=1)(s, [])
+    assert result['action'] == 'S' and result['error']

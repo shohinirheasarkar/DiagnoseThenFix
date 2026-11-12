@@ -3,15 +3,16 @@ import argparse
 from datetime import datetime, timezone
 import json
 import math
+import os
+import sys
 from pathlib import Path
 import statistics
 import time
 
-from diagnose.composed import ComposedPolicy
-from diagnose.live import baseline, episode
-from diagnose.model import LocalModel, append_jsonl, read_jsonl
-from diagnose.render import FORMATS, RULES
-from diagnose.runner import run
+REPO_ROOT = Path(__file__).resolve().parents[1]
+SOURCE_ROOT = Path(os.environ.get('DIAGNOSE_SOURCE_ROOT', REPO_ROOT)).resolve()
+sys.path.insert(0, str(SOURCE_ROOT))
+
 
 MODELS = ('qwen3:1.7b-q4_K_M', 'qwen3:4b-q4_K_M', 'qwen3:8b-q4_K_M', 'qwen3:14b-q4_K_M')
 
@@ -22,6 +23,7 @@ def save(path, value):
 
 
 def profile_from(rows_a, rows_b, rows_c, model, seed=0):
+    from diagnose.render import FORMATS, RULES
     by_rep = {rep: [r['score']['correct'] for r in rows_a if r['task']['representation'] == rep]
               for rep in FORMATS}
     accuracy = {rep: statistics.mean(values) for rep, values in by_rep.items() if values}
@@ -45,18 +47,28 @@ def profile_from(rows_a, rows_b, rows_c, model, seed=0):
 
 
 def main():
+    from diagnose.composed import ComposedPolicy
+    from diagnose.live import baseline, episode
+    from diagnose.model import LocalModel, append_jsonl, read_jsonl
+    from diagnose.render import FORMATS
+    from diagnose.runner import run
     parser = argparse.ArgumentParser()
     parser.add_argument('--deadline', required=True, help='UTC ISO timestamp; reserve time for paper')
     parser.add_argument('--output', type=Path, default=Path('results/cycle'))
     parser.add_argument('--models', nargs='+', default=MODELS)
     args = parser.parse_args()
     stop = datetime.fromisoformat(args.deadline.replace('Z', '+00:00')).timestamp()
-    bank = json.loads(Path('data/freeway.json').read_text())['situations']
-    root = args.output
+    bank = json.loads((SOURCE_ROOT / 'data/freeway.json').read_text())['situations']
+    root = (REPO_ROOT / args.output).resolve()
     root.mkdir(parents=True, exist_ok=True)
-    save(root / 'cycle.json', {'started_at': datetime.now(timezone.utc).isoformat(),
-                             'deadline': args.deadline, 'models': args.models,
-                             'status': 'running', 'scope': 'time-capped exploratory Freeway study'})
+    previous = json.loads((root / 'cycle.json').read_text()) if (root / 'cycle.json').exists() else {}
+    save(root / 'cycle.json', {**previous,
+                             'started_at': previous.get('started_at', datetime.now(timezone.utc).isoformat()),
+                             'resumed_at': datetime.now(timezone.utc).isoformat(),
+                             'deadline': args.deadline, 'models': args.models, 'status': 'running',
+                             'source_commit': (SOURCE_ROOT / 'SOURCE_REVISION').read_text().strip() if (SOURCE_ROOT / 'SOURCE_REVISION').exists() else None,
+                             'queue_revision': 'protect-paired-live-comparison',
+                             'scope': 'time-capped exploratory Freeway study'})
 
     def remaining():
         return time.time() < stop
@@ -64,7 +76,7 @@ def main():
     for model_name in args.models:
         if not remaining():
             break
-        model = LocalModel(model_name, timeout=120)
+        model = LocalModel(model_name, cache=REPO_ROOT / '.cache/model', timeout=120)
         path = root / model_name.replace(':', '-')
         common = {'thinking': False, 'max_tokens': 512, 'stop_at': stop}
         a = run(bank, model, path / 'A-validation', stages=('A',), representations=FORMATS,
@@ -85,45 +97,56 @@ def main():
             horizons=tuple(range(1, 11)), seeds=tuple(range(5)), split='test', limit=20, **common)
         model.transport('/api/generate', {'model': model.name, 'keep_alive': 0})
 
-    for model_name in args.models:
+    for model_name in args.models[:2]:
         if not remaining():
             break
-        model = LocalModel(model_name, timeout=120)
+        model = LocalModel(model_name, cache=REPO_ROOT / '.cache/model', timeout=120)
         path = root / model_name.replace(':', '-')
         profile_path = path / 'profile.json'
         if not profile_path.exists():
             continue
         profile = json.loads(profile_path.read_text())
-        best = profile['best_representation']
         common = {'thinking': False, 'max_tokens': 512, 'stop_at': stop,
-                  'representations': (best,), 'seeds': tuple(range(5)), 'split': 'test'}
+                  'representations': (profile['best_representation'],),
+                  'seeds': tuple(range(5)), 'split': 'test'}
         run(bank, model, path / 'C-test', stages=('C',), horizons=(3,), limit=10, **common)
+        run(bank, model, path / 'B-repairs-primary', stages=('B',), horizons=(1, 5, 10), limit=5,
+            repairs=('base', 'code', 'tool'), **common)
+        run(bank, model, path / 'C-repairs-primary', stages=('C',), horizons=(3,), limit=5,
+            repairs=('base', 'generic', 'bound'), **common)
+        conditions = ('base', 'selected', 'all')
+        completed = {condition: {r['seed'] for r in read_jsonl(path / f'live-{condition}.jsonl')}
+                     for condition in conditions}
+        for seed in range(50000, 50050):
+            for condition in conditions:
+                if not remaining():
+                    break
+                if seed in completed[condition]:
+                    continue
+                policy = ComposedPolicy(model, profile, condition, seed=seed, max_tokens=512)
+                result = episode(policy, seed, tick_seconds=1., stop_at=stop)
+                append_jsonl(path / f'live-{condition}.jsonl', {'condition': condition, **result})
+                print(f'LIVE {model_name} {condition} {seed} success={result["success"]}', flush=True)
+            if not remaining():
+                break
+        model.transport('/api/generate', {'model': model.name, 'keep_alive': 0})
+
+    for model_name in args.models:
+        if not remaining():
+            break
+        model = LocalModel(model_name, cache=REPO_ROOT / '.cache/model', timeout=120)
+        path = root / model_name.replace(':', '-')
+        profile_path = path / 'profile.json'
+        if not profile_path.exists():
+            continue
+        profile = json.loads(profile_path.read_text())
+        common = {'thinking': False, 'max_tokens': 512, 'stop_at': stop,
+                  'representations': (profile['best_representation'],),
+                  'seeds': tuple(range(5)), 'split': 'test'}
         run(bank, model, path / 'B-repairs', stages=('B',), horizons=(1, 5, 10), limit=5,
             repairs=('base', 'rule', 'scratchpad', 'chained', 'code', 'tool'), **common)
         run(bank, model, path / 'C-repairs', stages=('C',), horizons=(3,), limit=5,
             repairs=('base', 'generic', 'forecast_then_act', 'bound', 'retry', 'oracle_shield'), **common)
-        model.transport('/api/generate', {'model': model.name, 'keep_alive': 0})
-
-    for model_name in args.models[:2]:
-        if not remaining():
-            break
-        model = LocalModel(model_name, timeout=120)
-        path = root / model_name.replace(':', '-')
-        profile = json.loads((path / 'profile.json').read_text())
-        for condition in ('base', 'selected', 'all', 'random', 'monitor'):
-            if not remaining():
-                break
-            result_path = path / f'live-{condition}.jsonl'
-            completed = {r['seed'] for r in read_jsonl(result_path)}
-            for seed in range(50000, 50050):
-                if not remaining():
-                    break
-                if seed in completed:
-                    continue
-                policy = ComposedPolicy(model, profile, condition, seed=seed, max_tokens=512)
-                result = episode(policy, seed, tick_seconds=1., stop_at=stop)
-                append_jsonl(result_path, {'condition': condition, **result})
-                print(f'LIVE {model_name} {condition} {seed} success={result["success"]}', flush=True)
         model.transport('/api/generate', {'model': model.name, 'keep_alive': 0})
 
     for name in ('random', 'stay', 'advance', 'planner', 'oracle'):
