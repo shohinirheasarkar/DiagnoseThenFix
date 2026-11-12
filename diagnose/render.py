@@ -43,14 +43,14 @@ def render(state, representation='coordinates', skin='cars'):
     return heading + '\n' + body
 
 
-RULES = '''Freeway rules: U moves one lane toward 0, D toward 9, S stays. Column stays 4.
-The player moves first. Reaching lane 0 wins before cars update.
-Each car is [head x, lane, timer, speed_parameter p, length].
+RULES = '''Game rules: U moves one lane toward 0, D toward 9, S stays. Column stays 4.
+The player moves first. Reaching lane 0 wins before objects update.
+Each object is [head x, lane, timer, speed_parameter p, length].
 If x<0 set x=8; if x>8 set x=0; either wrap uses the whole tick.
 Otherwise if abs(p)>=1: decrease timer by 1; only if timer becomes -1,
 increase timer by abs(p) and move head by sign(p).
 If abs(p)<1: move head by int(1/p). No same-tick modulo wrap.
-A car occupies x, x-sign(p), ... for its length. After cars move, contact
+An object occupies x, x-sign(p), ... for its length. After objects move, contact
 with column 4 in the player's lane causes a collision and resets the board.
 Only occupied cells at tick endpoints collide; no swept collision rule.
 At tick 100 the game ends. Prefer safe progress to the goal; don't wait forever.'''
