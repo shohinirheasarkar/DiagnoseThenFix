@@ -1,0 +1,130 @@
+"""This checks saved forecast scores and replays live episodes, without calling a model."""
+import argparse
+from dataclasses import asdict
+import gzip
+import hashlib
+import json
+import math
+from pathlib import Path
+
+from diagnose.model import canonical, parse_reply
+from diagnose.probes import score
+from diagnose.repairs import ArithmeticProgram
+from diagnose.world import State, futures, initial, repeated_outcome, step
+
+
+def read(path):
+    opener = gzip.open if path.suffix == '.gz' else open
+    with opener(path, 'rt') as handle:
+        for number, line in enumerate(handle, 1):
+            if line.strip():
+                yield number, json.loads(line)
+
+
+def verify_live(record):
+    current = initial(record['seed'])
+    collisions = ticks = calls = tokens = 0
+    for frame in record['trace']:
+        if canonical(asdict(current)) != canonical(frame['before']):
+            raise ValueError('Live before-state mismatch')
+        response = frame['response']
+        expected_delay = math.ceil(max(0., response.get('seconds', 0.))/record['tick_seconds'])
+        if frame['delay_ticks'] != expected_delay:
+            raise ValueError('Live delay mismatch')
+        raw_calls = response.get('responses', [response['response']] if 'response' in response else [])
+        generated = sum(r['raw'].get('eval_count', 0) for r in raw_calls)
+        if response.get('calls', 0) != len(raw_calls) or response.get('tokens', 0) != generated:
+            raise ValueError('Live request-cost mismatch')
+        calls += len(raw_calls)
+        tokens += generated
+        events = []
+        if frame['delay_ticks'] < 0:
+            raise ValueError('Negative delay')
+        for _ in range(frame['delay_ticks']):
+            current, event = step(current, 'S')
+            events.append(event)
+            if current.lane == 0 or current.turn == 100:
+                break
+        applied = current.lane != 0 and current.turn < 100
+        if applied:
+            current, event = step(current, frame['response']['action'])
+            events.append(event)
+        if applied != frame['action_applied'] or events != frame['events']:
+            raise ValueError('Live action or event mismatch')
+        if canonical(asdict(current)) != canonical(frame['after']):
+            raise ValueError('Live after-state mismatch')
+        collisions += events.count('collision')
+        ticks += len(events)
+    if record['success'] != (current.lane == 0):
+        raise ValueError('Live success label mismatch')
+    if record['calls'] != calls or record['tokens'] != tokens:
+        raise ValueError('Live cost totals mismatch')
+    if record['collisions'] != collisions or record['ticks'] != ticks:
+        raise ValueError('Live episode totals mismatch')
+
+
+def verify_forecast(record, situation):
+    task = record['task']
+    state = State.from_dict(situation['state'])
+    expected = (futures(state, task['k'])[-1][0] if task['kind'] == 'position'
+                else repeated_outcome(state, 'U', task['k']) == 'collision')
+    if task['truth'] != expected:
+        raise ValueError('Forecast target mismatch')
+    required = ('code', 'confidence') if task['repair'] == 'code' else ('answer', 'confidence')
+    value, error = parse_reply(record['response'], required)
+    if not error and task['repair'] == 'code':
+        try:
+            c = state.cars[0]
+            answer = ArithmeticProgram(value['code'])(c.x, c.timer, c.speed, task['k'])
+            value = {**value, 'answer': answer}
+        except (ValueError, KeyError, TypeError, SyntaxError, ArithmeticError) as exc:
+            error = str(exc)
+    computed = score(task, value, error, state, situation['oracle'])
+    if any(computed[key] != record['score'][key] for key in ('valid', 'correct')):
+        raise ValueError('Forecast score mismatch')
+
+
+def check(root, bank_path=Path('data/freeway.json')):
+    root = Path(root)
+    bank = {r['id']: r for r in json.loads(Path(bank_path).read_text())['situations']}
+    counts = {'forecast_trials': 0, 'live_episodes': 0, 'files': 0}
+    archive = root / 'archive.json'
+    if archive.exists():
+        for record in json.loads(archive.read_text())['files']:
+            path = (root / record['artifact']).resolve()
+            if not path.is_relative_to(root.resolve()):
+                raise ValueError('Archive path escapes its root')
+            if hashlib.sha256(path.read_bytes()).hexdigest() != record['artifact_sha256']:
+                raise ValueError(f'Archive hash mismatch: {path}')
+    for path in sorted(root.rglob('*')):
+        if not path.name.endswith(('.jsonl', '.jsonl.gz')):
+            continue
+        counts['files'] += 1
+        identifiers = set()
+        for number, record in read(path):
+            try:
+                if 'trial_id' in record:
+                    if record['trial_id'] in identifiers:
+                        raise ValueError('Duplicate trial ID')
+                    identifiers.add(record['trial_id'])
+                if 'task' in record and record['task']['stage'] == 'B':
+                    verify_forecast(record, bank[record['state_id']])
+                    counts['forecast_trials'] += 1
+                elif 'trace' in record:
+                    verify_live(record)
+                    counts['live_episodes'] += 1
+            except (ValueError, KeyError, TypeError) as error:
+                raise ValueError(f'{path}:{number}: {error}') from error
+    return counts
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('results', type=Path)
+    parser.add_argument('--bank', type=Path, default=Path('data/freeway.json'))
+    args = parser.parse_args()
+    print(json.dumps(check(args.results, args.bank), indent=2))
+
+
+if __name__ == '__main__':
+    main()

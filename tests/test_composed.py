@@ -48,3 +48,27 @@ def test_monitor_changes_a_contradictory_action_without_an_oracle():
     result = policy(initial(1000), [])
     assert result['action'] == 'U' and result['repairs'] == ['bound']
     assert result['calls'] == 1
+
+
+def test_calibration_failure_is_logged_without_an_oracle_fallback():
+    class MissingScores(Model):
+        def action_scores(self, prompt, seed):
+            return {'scores': None, 'error': 'missing candidate', 'response': self.ask(prompt)}
+    policy = ComposedPolicy(MissingScores(), {'split': 'validation', 'E': .1})
+    result = policy(initial(1000), [])
+    assert result['error'].startswith('Calibration unavailable')
+    assert result['action'] == 'S' and result['collision'] is None
+    assert result['calls'] == 3 and result['tokens'] == 30
+
+
+def test_all_repairs_count_scoring_calls_and_history_filtering():
+    class Scores(Model):
+        def action_scores(self, prompt, seed):
+            return {'scores': {'U': -2., 'S': -1., 'D': -3.}, 'error': None,
+                    'response': self.ask(prompt)}
+    model = Scores()
+    policy = ComposedPolicy(model, {'split': 'validation'}, condition='all')
+    result = policy(initial(1000), [{'observation': 'old', 'answer': 'old', 'action': 'S'}])
+    assert result['error'] is None and result['calls'] == 4
+    assert result['seconds'] == .4 and result['tokens'] == 40
+    assert result['repairs'] == ['bound', 'calibrate', 'code', 'no_history', 'structured']

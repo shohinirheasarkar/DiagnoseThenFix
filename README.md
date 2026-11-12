@@ -1,34 +1,40 @@
 # Diagnose, then fix
 
 Where do small language models get stuck in real-time games? We separate reading
-the board, predicting motion, choosing an action, copying history, and following
-priors. Then we test whether fixing the diagnosed stage helps.
+the board, forecasting motion, choosing an action, copying history, and following
+priors, then test fixes against simulator labels.
+
+This cycle focuses on Freeway and four local Qwen3 artifacts. The full multi-game
+study is still in progress; [the execution plan](execution_plan.md) records the
+scope, time cap, and unfinished experiments. Snake and Overcooked have tested
+snapshot/replay adapters.
 
 ## Run locally
 
-Python 3.11+:
+Use Python 3.12 and a running Ollama server with your chosen model installed.
+The upstream checkout needs editable installation because its wheel omits assets.
 
 ```sh
-python -m venv .venv
+python3.12 -m venv .venv
 source .venv/bin/activate
-pip install -e '.[test,paper]'
-pip install --no-deps 'git+https://github.com/SALT-NLP/RealtimeGym.git@3d5b3ef37dafee25ca2e8d2e8d71f5fe842eda7b'
-pytest
+pip install -e '.[test,games,paper]'
+git clone https://github.com/SALT-NLP/RealtimeGym.git .cache/realtimegym
+git -C .cache/realtimegym checkout 3d5b3ef37dafee25ca2e8d2e8d71f5fe842eda7b
+pip install --no-deps -e .cache/realtimegym
+python -m pytest
 ```
 
-We use the actual Freeway timer, long-car, collision, and wrap rules. The compact
-replay engine is checked against upstream trajectories. The oracle's safe set
-means a collision-free continuation exists through its stated horizon; it isn't
-an unlimited-horizon safety guarantee. Empty safe sets stay empty.
+```sh
+diagnose probe --model qwen3:1.7b-q4_K_M --output results/my-run --stages B --limit 5
+python -m diagnose.commitment --model qwen3:1.7b-q4_K_M --output results/my-commitments
+```
 
-The six renderers share one immutable state. All retain object identities, motion
-parameters and timer phase. Our lane table and relative list retain every object
-so perception comparisons don't silently change available information.
+Requests include exact model hashes and prompts; completed trials resume without
+being repeated. Missing models trigger an error, never an automatic download.
+The finite-horizon oracle labels safe continuations, not indefinite safety.
+Commitment tests explicitly match the chosen action to its forecast horizon;
+older one-tick/repeated-action logs are only a risk-disagreement proxy.
 
-See [the preregistration](preregistration.md) for hypotheses, splits, controls,
-and what counts as evidence. Model collection has not started. Full multi-game
-experiments and the paper are still in progress.
-
-Built on [RealtimeGym](https://github.com/SALT-NLP/RealtimeGym) and
-[Wen et al.](https://arxiv.org/abs/2511.04898). The research framing also builds on
-[Okcu et al.](https://arxiv.org/abs/2610.17444); stage diagnosis itself is not new.
+See [the preregistration](preregistration.md). Built on
+[RealtimeGym](https://github.com/SALT-NLP/RealtimeGym) and
+[Wen et al.](https://arxiv.org/abs/2511.04898). Stage diagnosis itself is not new.
