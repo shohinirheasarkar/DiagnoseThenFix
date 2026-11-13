@@ -1,7 +1,9 @@
 # Second-cycle evidence
 
 This snapshot contains closed probes and offline replays from November 13.
-Neural live episodes are still collecting and are excluded for now. The full
+It includes the complete 1.7B live cohort: fifty seeds per condition for
+base/selected/all, 150 completed runs, no censored runs and no goals. The 4B live
+cohort is still collecting and is excluded for now. The full
 research plan remains unfinished. The first study stays in `results/review`.
 
 - Root model folders: 1,386 held-out diary trials, 680 framing trials, 336 diary

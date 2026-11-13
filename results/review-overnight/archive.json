@@ -1,5 +1,5 @@
 {
-  "created_at": "2026-11-13T11:04:33.689788+00:00",
+  "created_at": "2026-11-13T13:44:35.908234+00:00",
   "files": [
     {
       "source": "baseline-advance.jsonl",
@@ -40,6 +40,14 @@
       "artifact_sha256": "a22071ada9346efd72843f532d762e3fc79c275f03afc2fda64f0fbac3b9aa20",
       "source_bytes": 7892908,
       "artifact_bytes": 182455
+    },
+    {
+      "source": "collector-restart.json",
+      "artifact": "collector-restart.json",
+      "source_sha256": "a7676d33429ba95bfacb6d6e189dd19d8324ba02c1752360408a4920060a71fc",
+      "artifact_sha256": "a7676d33429ba95bfacb6d6e189dd19d8324ba02c1752360408a4920060a71fc",
+      "source_bytes": 1533,
+      "artifact_bytes": 1533
     },
     {
       "source": "compiled/native/qwen3-1.7b-q4_K_M/episodes.jsonl",
@@ -108,10 +116,10 @@
     {
       "source": "cycle.json",
       "artifact": "cycle.json",
-      "source_sha256": "adc383786ef47565193b42b7750a11266fa023c6b034e42bec9581315800b066",
-      "artifact_sha256": "adc383786ef47565193b42b7750a11266fa023c6b034e42bec9581315800b066",
-      "source_bytes": 2374,
-      "artifact_bytes": 2374
+      "source_sha256": "04aa39e2b00e5fc965af0ada31bb5aa8b599516cad1e51435732c53c7245319d",
+      "artifact_sha256": "04aa39e2b00e5fc965af0ada31bb5aa8b599516cad1e51435732c53c7245319d",
+      "source_bytes": 2591,
+      "artifact_bytes": 2591
     },
     {
       "source": "grammar/collection.json",
@@ -274,6 +282,38 @@
       "artifact_bytes": 22637
     },
     {
+      "source": "qwen3-1.7b-q4_K_M/live-all.jsonl",
+      "artifact": "qwen3-1.7b-q4_K_M/live-all.jsonl.gz",
+      "source_sha256": "3ff026acadbe1d1a6eac8911cc94663b83cbfe9f39b6172267efda10e12919dd",
+      "artifact_sha256": "b21c020f790d14d004b512157793b9fbfca64190c5be85f1859c04c0820b097b",
+      "source_bytes": 12034836,
+      "artifact_bytes": 604561
+    },
+    {
+      "source": "qwen3-1.7b-q4_K_M/live-base.jsonl",
+      "artifact": "qwen3-1.7b-q4_K_M/live-base.jsonl.gz",
+      "source_sha256": "1544aec3f63db3d91a690787a4e8f84031e5eab6835cc14116f982a72033e099",
+      "artifact_sha256": "1af9490db0a8d435a21b4c76a6a3906282b70e1e24a6f064d34257dd92e58c17",
+      "source_bytes": 12203485,
+      "artifact_bytes": 295399
+    },
+    {
+      "source": "qwen3-1.7b-q4_K_M/live-design.json",
+      "artifact": "qwen3-1.7b-q4_K_M/live-design.json",
+      "source_sha256": "1977cbb3fe0993bb37f16759dd29093a7dfa1a90858114bfdbf1734fd3d39376",
+      "artifact_sha256": "1977cbb3fe0993bb37f16759dd29093a7dfa1a90858114bfdbf1734fd3d39376",
+      "source_bytes": 8063,
+      "artifact_bytes": 8063
+    },
+    {
+      "source": "qwen3-1.7b-q4_K_M/live-selected.jsonl",
+      "artifact": "qwen3-1.7b-q4_K_M/live-selected.jsonl.gz",
+      "source_sha256": "320795af2624e6268403e27efaf2ffb7236feec4343b89a5a10c448ed3cd30da",
+      "artifact_sha256": "7c5d9615079364dd320d3b601536a1f5f4318124ed9eab8a5b051a3529120f88",
+      "source_bytes": 15312344,
+      "artifact_bytes": 747195
+    },
+    {
       "source": "qwen3-1.7b-q4_K_M/profile.json",
       "artifact": "qwen3-1.7b-q4_K_M/profile.json",
       "source_sha256": "be4e86f0cbc82c095b4b8f6078e06e15001702b76d252206586e7434922dd5af",
@@ -396,10 +436,10 @@
     {
       "source": "snapshot.json",
       "artifact": "snapshot.json",
-      "source_sha256": "64dfc0d672a60acad7ada7b8dd94a1518112c2fde72a514394223c98c0253a0d",
-      "artifact_sha256": "64dfc0d672a60acad7ada7b8dd94a1518112c2fde72a514394223c98c0253a0d",
-      "source_bytes": 284,
-      "artifact_bytes": 284
+      "source_sha256": "2c88521dae4e854e9d61387b7a34c62db370f6d1daab436be6e09b035a9bb690",
+      "artifact_sha256": "2c88521dae4e854e9d61387b7a34c62db370f6d1daab436be6e09b035a9bb690",
+      "source_bytes": 280,
+      "artifact_bytes": 280
     }
   ],
   "lossless": true,

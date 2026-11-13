@@ -39,7 +39,7 @@ These commands use [saved evidence](results/review), with no model calls:
 ```sh
 python scripts/check_evidence.py results/review
 python scripts/check_evidence.py --bank-search
-python paper/build.py --results results/review --output output/pdf/diagnose-then-repair.pdf
+python paper/build.py --results results/review --followup results/review-overnight --output output/pdf/diagnose-then-repair.pdf
 ```
 
 Requests include exact model hashes and prompts; completed trials resume without
@@ -57,7 +57,8 @@ See [the preregistration](preregistration.md). Built on
 
 [The plan checklist](requirements.md) shows what still needs work.
 [Closed follow-up evidence](results/review-overnight) is saved separately;
-neural live collection is still running, and the PDF update follows at the cap.
+the 1.7B model finished 50 seeds each for base/selected/all, with no goals.
+The 4B live cohort is still collecting; the paper reports closed cohorts only.
 The follow-up adds paired diary/story tests and an opt-in v2 agent that checks generated code,
 retries once, and keeps its own forecast when a repair fails. Old results stay
 separate. To rescore a local context run without calling a model:
