@@ -128,5 +128,33 @@ def test_v2_counts_both_code_attempts_when_feedback_repairs_the_program():
             return raw
     model = Fixable()
     result = ComposedPolicy(model, {'split': 'validation', 'B': .1}, revision='v2')(initial(2222), [])
-    assert result['error'] is None and result['calls'] == 3 and model.attempts == 2
-    assert result['tokens'] == 30
+    assert result['error'] is None and result['calls'] == 4 and model.attempts == 2
+    assert result['tokens'] == 40
+
+
+def test_code_forecast_reaches_action_readout_when_binding_is_off():
+    class Routes(Model):
+        def ask(self, prompt, **kwargs):
+            raw = super().ask(prompt, **kwargs)
+            if 'Forecast (repeated-action collision' in prompt:
+                assert 'Choose an action.' in prompt
+                raw['raw']['message']['content'] = json.dumps({'action': 'S', 'confidence': 1})
+            return raw
+    model = Routes()
+    result = ComposedPolicy(model, {'split': 'validation', 'B': .1}, revision='v2')(initial(2222), [])
+    assert result['action'] == 'S' and result['calls'] == 3
+    assert result['program_validated'] and result['cpu_seconds'] > 0
+    assert result['seconds'] >= .3
+
+
+def test_calibrated_readout_conditions_on_repaired_forecast():
+    class Scores(Model):
+        prompts = []
+        def action_scores(self, prompt, seed):
+            self.prompts.append(prompt)
+            return {'scores': {'U': -1., 'S': -2., 'D': -3.}, 'error': None, 'response': self.ask(prompt)}
+    model = Scores()
+    result = ComposedPolicy(model, {'split': 'validation', 'B': .1, 'E': .1}, revision='v2')(initial(2222), [])
+    assert result['error'] is None
+    assert 'collision forecast at horizon 3' in model.prompts[0]
+    assert 'collision forecast' not in model.prompts[1] and 'BOARD MASKED' in model.prompts[1]

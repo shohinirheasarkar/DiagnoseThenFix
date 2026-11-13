@@ -3,6 +3,7 @@ from dataclasses import asdict
 import time
 
 from .model import parse_reply
+from .model import canonical
 from .probes import make_task
 from .render import RULES, render
 from .repairs import ArithmeticProgram, ablations, bound_action, calibrate, choose_repairs, monitor
@@ -175,6 +176,15 @@ class ComposedPolicy:
                                             '\nIt failed a fixed training-only check: ' + str(exc) +
                                             '\nFix the program. No test-board labels are supplied.')
                     beliefs = compute(forecast_with_code, state, self.program, self.horizon)
+                    if self.revision == 'v2' and 'bound' not in enabled:
+                        injected = make_task(state, 'C', representation, k=self.horizon,
+                                             kind='own', injected=beliefs)
+                        routed = ask(injected['prompt'])
+                        selected, failed = parse_reply(routed, ('action', 'confidence'))
+                        if failed or selected.get('action') not in ACTIONS:
+                            repair_errors.append('Forecast action readout failed: ' + str(failed or selected))
+                        else:
+                            action = selected['action']
                 except (ValueError, KeyError, TypeError, SyntaxError, ArithmeticError) as exc:
                     if self.revision == 'v1':
                         raise
@@ -182,7 +192,10 @@ class ComposedPolicy:
                     repair_errors.append(str(exc))
             if 'calibrate' in enabled:
                 common = RULES + '\nA means U, B means S, C means D.\n'
-                state_scores = self.model.action_scores(common + render(state, representation), self.seed)
+                forecast_context = ('\nRepeated-action collision forecast at horizon '
+                                    f'{self.horizon}: ' + canonical(beliefs) + '\n'
+                                    if self.revision == 'v2' else '')
+                state_scores = self.model.action_scores(common + forecast_context + render(state, representation), self.seed)
                 null_scores = self.model.action_scores(common + 'BOARD MASKED.', self.seed)
                 responses.extend((state_scores['response'], null_scores['response']))
                 if state_scores['error'] or null_scores['error']:
