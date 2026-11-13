@@ -308,3 +308,11 @@ Packaging now refuses a nonempty destination and detects source files changing
 while copied. The audit checks that every JSON evidence file is listed exactly
 once in the hash manifest. This prevents an old leftover file from quietly entering
 a new paper cohort without its own manifest entry. Use a fresh archive folder.
+
+### Stable failed-repair logs
+
+A disabled code repair was adding the same prefix to its saved failure on every
+later turn. New code keeps the original failure and adds that prefix once in the
+turn's message. It still makes no further generation attempts, and keeps the same
+fallback beliefs and action. The running study's frozen code and raw messages
+remain unchanged. Repeated prefixes in those records are a logging issue.

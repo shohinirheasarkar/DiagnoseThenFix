@@ -102,6 +102,13 @@ def test_v2_retries_bad_code_once_then_uses_its_own_beliefs():
     second = policy(initial(2223), [])
     assert second['calls'] == 1 and second['action'] == 'U'
     assert 'disabled' in second['error']
+    original_failure = first['program_failure']
+    for seed in range(2224, 2234):
+        later = policy(initial(seed), [])
+        assert later['calls'] == 1 and later['action'] == 'U'
+        assert later['program_failure'] == original_failure
+        assert later['error'] == second['error']
+    assert model.calls == 14
 
 
 def test_v2_calibration_failure_keeps_the_proposed_action_and_logs_failure():
