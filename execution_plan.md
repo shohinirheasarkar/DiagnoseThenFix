@@ -129,3 +129,22 @@ for the full plan audit and the second cycle's fixed deadline. New studies are
 exploratory follow-ups. The old arithmetic contract remains the default; an
 explicit `code_v2` condition adds bounded conditional expressions and `sign`.
 This fixes an interface limitation, not the model's understanding of motion.
+
+### Paired context follow-up
+
+Stage D now has six diary sources, lengths 0/3/6/12, action-only versus
+observed-outcome versions, and five repairs. Diaries are explicitly transplanted
+from other episodes. This holds the current board fixed without pretending those
+old actions happened on that board. Synthetic outcomes are replayed, not guessed.
+Real diaries preserve whether the model's proposed action was actually applied.
+The outcome repair includes oracle feedback about the source board and is labeled
+as assisted feedback. Delta summaries concern the source episode, not a hidden
+previous frame of the test board. These choices limit claims about natural live
+memory, but make the controlled manipulation honest.
+
+Stage E pairs three label sets, four skins, game naming, a strategy hint, three
+paraphrases and a small contact-rule reversal. Reversal changes the scored physics;
+ordinary skin and label changes do not. The paired analysis reports invalid replies,
+all-trial accuracy differences, valid-pair action/forecast flips, and safe-to-unsafe
+flips. Intervals resample source episodes. Cluster sign-flip tests and Holm correction
+are exploratory; small cohorts have very limited power.
