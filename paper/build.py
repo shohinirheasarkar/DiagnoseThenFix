@@ -1093,27 +1093,27 @@ def build(evidence, output, figures, root):
             (r['condition']['length'] == 12 and r['condition']['kind'] in ('stay', 'own') and
              (r['condition']['kind'] == 'stay' or not r['condition']['outcomes'])))]
         if diary_rows:
-            table(['Model', 'Diary / repair', 'Boards / trials', 'Accuracy [95% CI]', 'Action flip', 'Unsafe flip'],
+            table(['Model', 'Diary / repair', 'Boards / valid / all', 'Accuracy [95% CI]', 'Action flip', 'Unsafe flip'],
                   [[r['model'].replace('qwen3:', '').replace('-q4_K_M', ''),
                     ('No diary' if r['condition']['length'] == 0 else
                      r['condition']['kind'] + ' / ' + r['condition']['repair'] +
                      (' + outcomes' if r['condition']['outcomes'] else '')),
-                    f'{r["states"]}/{r["trials"]}', ci(r['accuracy']),
+                    f'{r["states"]}/{r["trials"]-r["invalid"]}/{r["trials"]}', ci(r['accuracy']),
                     percent(r['action_change']['mean']), ci(r['harmful_flip'])] for r in diary_rows],
-                  [42, 130, 64, 112, 65, 115])
+                  [42, 116, 88, 102, 65, 115])
         framing_rows = [r for r in followup['context'] if r['stage'] == 'E' and
                         r['condition']['paraphrase'] == 0 and
                         (r['condition']['skin'] == 'cars' or r['condition']['labels'] == 'standard')]
         if framing_rows:
-            table(['Model', 'Story / labels', 'Boards / trials', 'Accuracy [95% CI]', 'Action flip', 'Forecast flip'],
+            table(['Model', 'Story / labels', 'Boards / valid / all', 'Accuracy [95% CI]', 'Action flip', 'Forecast flip'],
                   [[r['model'].replace('qwen3:', '').replace('-q4_K_M', ''),
                     'Safe object 0' if r['condition']['reversal'] else
                     'Named game' if r['condition']['name_leak'] else
                     'Strategy hint' if r['condition']['repair'] == 'strategy' else
                     r['condition']['skin'] + ' / ' + r['condition']['labels'],
-                    f'{r["states"]}/{r["trials"]}', ci(r['accuracy']),
+                    f'{r["states"]}/{r["trials"]-r["invalid"]}/{r["trials"]}', ci(r['accuracy']),
                     percent(r['action_change']['mean']), percent(r['forecast_change']['mean'])]
-                   for r in framing_rows], [42, 130, 64, 112, 65, 115])
+                   for r in framing_rows], [42, 116, 88, 102, 65, 115])
         if diary_rows or framing_rows:
             paragraph('Accuracy counts malformed replies as wrong. Flip rates use valid paired '
                       'answers only: same board and decoding seed, compared with the no-diary or '
@@ -1122,7 +1122,10 @@ def build(evidence, output, figures, root):
                       'changed. Contact reversal changes the rules and reference labels, so it is '
                       'a different task, not a pure framing effect. Full conditions, invalid counts, '
                       '95% episode-cluster intervals and exploratory Holm-adjusted sign-flip tests '
-                      'are saved in JSON. The tiny cohort limits generalization.', 'SmallNote')
+                      'are saved in JSON. Labels also change the required action tokens, so accuracy '
+                      'mixes decision quality and output-format compliance. No valid paired answers '
+                      'means a flip rate is unavailable, not zero. The tiny cohort limits '
+                      'generalization.', 'SmallNote')
         if followup['live']:
             table(['Model', 'V2 condition', 'Complete / censored', 'Goals', 'Success [95% Wilson]', 'Tokens / run'],
                   [[r['model'].replace('qwen3:', '').replace('-q4_K_M', ''), r['condition'],

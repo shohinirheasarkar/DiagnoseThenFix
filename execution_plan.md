@@ -176,3 +176,8 @@ values are not. The saved report ties the check to bank and source-file hashes.
 This checks search logic using shared replay physics; upstream differential tests
 remain a separate check of physics. A node-budget limit raises an error rather
 than issuing a partial certificate. No model requests are involved.
+
+The context tables show valid answers alongside total trials. Action-label changes
+also change the required output vocabulary, so their accuracy mixes decision
+quality with format compliance. A condition with no valid pairs has an unavailable
+flip rate, not zero evidence of an effect. Raw records and scoring stay unchanged.
