@@ -201,3 +201,34 @@ def test_extended_contract_can_express_delayed_wrap_without_an_oracle():
             for k in range(11):
                 assert program(car.x, car.timer, car.speed, k) == current.x
                 current = current.tick()
+
+
+@pytest.mark.parametrize('dtype', ['float32', 'float64', 'int64'])
+def test_numeric_input_wrappers_do_not_change_program_semantics(dtype):
+    import numpy as np
+    wrap = getattr(np, dtype)
+    program = ArithmeticProgram('def forecast(x,timer,p,k):\n return x + k/p')
+    assert program(wrap(1), wrap(0), wrap(1), np.int64(2)) == program(1, 0, 1, 2) == 3
+
+
+def test_old_numeric_boundary_is_only_available_for_exact_legacy_replay():
+    import numpy as np
+    code = 'def forecast(x,timer,p,k):\n return x + k/p'
+    with pytest.raises(ValueError, match='integer cell'):
+        ArithmeticProgram(code, native_inputs=False)(1, 0, np.float64(.5), 2)
+    assert ArithmeticProgram(code)(1, 0, np.float64(.5), 2) == 5
+
+
+@pytest.mark.parametrize('value', [float('nan'), float('inf'), 1000001, '1'])
+def test_numeric_boundary_rejects_nonfinite_or_non_numeric_inputs(value):
+    with pytest.raises(ValueError):
+        ArithmeticProgram('def forecast(x,timer,p,k):\n return 0')(value, 0, 1, 2)
+
+
+def test_program_semantics_match_before_and_after_real_state_json_roundtrip():
+    import json
+    from diagnose.world import initial
+    program = ArithmeticProgram('def forecast(x,timer,p,k):\n return x + 0*p')
+    for car in initial(60000).cars:
+        inputs = [car.x, car.timer, car.speed, 3]
+        assert program(*inputs) == program(*json.loads(json.dumps(inputs)))

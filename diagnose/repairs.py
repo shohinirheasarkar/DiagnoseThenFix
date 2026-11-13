@@ -3,6 +3,7 @@ import ast
 import math
 import operator
 import random
+from numbers import Integral, Real
 
 from .world import ACTIONS
 
@@ -68,12 +69,13 @@ def monitor(stays=0, collision=None, action=None, forecast_error=None, perceptio
 
 
 class ArithmeticProgram:
-    def __init__(self, source, extended=False):
+    def __init__(self, source, extended=False, native_inputs=True):
         tree = ast.parse(source)
         if len(tree.body) != 1 or not isinstance(tree.body[0], ast.FunctionDef):
             raise ValueError('Expected one forecast(x, timer, p, k) function')
         self.function = tree.body[0]
         self.extended = extended
+        self.native_inputs = native_inputs
         if ([a.arg for a in self.function.args.args] != ['x', 'timer', 'p', 'k']
                 or self.function.decorator_list or self.function.args.defaults
                 or self.function.args.vararg or self.function.args.kwarg
@@ -95,6 +97,18 @@ class ArithmeticProgram:
             raise ValueError('Program too large')
 
     def __call__(self, x, timer, p, k):
+        if self.native_inputs:
+            def native(value):
+                if isinstance(value, Integral):
+                    result = int(value)
+                elif isinstance(value, Real):
+                    result = float(value)
+                else:
+                    raise ValueError('Forecast inputs must be real numbers')
+                if abs(result) > 1000000 or not math.isfinite(result):
+                    raise ValueError('Numeric input budget exceeded')
+                return result
+            x, timer, p, k = map(native, (x, timer, p, k))
         if not 0 <= k <= 10:
             raise ValueError('Forecast horizon must be 0-10')
         env = dict(x=x, timer=timer, p=p, k=k)

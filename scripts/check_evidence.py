@@ -237,7 +237,7 @@ def check(root, bank_path=Path('data/freeway.json')):
                     counts['commitment_trials'] += 1
                 elif 'trace' in record:
                     verify_live(record, legacy_terminal_reset)
-                    if record.get('protocol') == 'compiled-controller-v1':
+                    if record.get('protocol') in ('compiled-controller-v1', 'compiled-controller-v2'):
                         from diagnose.compiled import verify
                         verify(record)
                         if archive.exists():
