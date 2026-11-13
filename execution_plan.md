@@ -301,3 +301,10 @@ answers and source-episode bootstrap intervals. Malformed replies still count as
 wrong in accuracy, but have no numeric error. Zero mean error can hide opposite
 mistakes. This is ordinary x-coordinate error, not circular distance or progress
 along travel; wrap can create large jumps. Missing horizons stay blank.
+
+### Archive completeness guard
+
+Packaging now refuses a nonempty destination and detects source files changing
+while copied. The audit checks that every JSON evidence file is listed exactly
+once in the hash manifest. This prevents an old leftover file from quietly entering
+a new paper cohort without its own manifest entry. Use a fresh archive folder.

@@ -200,7 +200,15 @@ def check(root, bank_path=Path('data/freeway.json')):
                             json.loads(cycle_path.read_text()).get('source_commit') ==
                             'f71b9259abd055291c7c865659363aa1b3d9ec0f')
     if archive.exists():
-        for record in json.loads(archive.read_text())['files']:
+        entries = json.loads(archive.read_text())['files']
+        listed = [(root / record['artifact']).resolve() for record in entries]
+        actual = {p.resolve() for p in root.rglob('*') if p.is_file()
+                  and p != archive and p.name.endswith(('.json', '.jsonl', '.jsonl.gz'))}
+        if len(set(listed)) != len(listed):
+            raise ValueError('Duplicate archive artifact')
+        if set(listed) != actual:
+            raise ValueError('Archive manifest does not cover the evidence files')
+        for record in entries:
             path = (root / record['artifact']).resolve()
             if not path.is_relative_to(root.resolve()):
                 raise ValueError('Archive path escapes its root')

@@ -11,10 +11,13 @@ def package(source, destination):
     source, destination = Path(source).resolve(), Path(destination).resolve()
     if destination.is_relative_to(source) or source == destination:
         raise ValueError('Put the archive outside the source folder')
+    if destination.exists() and any(destination.iterdir()):
+        raise ValueError('Archive destination must be empty; use a new folder')
     records = []
     for path in sorted(source.rglob('*')):
         if not path.is_file() or path.suffix not in ('.json', '.jsonl'):
             continue
+        before = path.stat()
         relative = path.relative_to(source)
         target = destination / relative
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -32,6 +35,9 @@ def package(source, destination):
             content = path.read_bytes()
             digest.update(content)
             target.write_bytes(content)
+        after = path.stat()
+        if (before.st_ino, before.st_size, before.st_mtime_ns) != (after.st_ino, after.st_size, after.st_mtime_ns):
+            raise ValueError(f'Source changed during packaging: {path}')
         records.append({'source': str(relative), 'artifact': str(target.relative_to(destination)),
                         'source_sha256': digest.hexdigest(),
                         'artifact_sha256': hashlib.sha256(target.read_bytes()).hexdigest(),

@@ -1,6 +1,7 @@
 """These tests make the evidence checker reject changed scores and impossible episode histories."""
 from copy import deepcopy
 import json
+from pathlib import Path
 
 import pytest
 
@@ -164,3 +165,48 @@ def test_context_archive_replays_prompts_and_flags_request_tampering(tmp_path):
     path.write_text('\n'.join(json.dumps(r) for r in records)+'\n')
     with pytest.raises(ValueError, match='identity'):
         check(output, bank)
+
+
+def test_archive_rejects_unlisted_evidence_and_duplicate_manifest_entries(tmp_path):
+    from scripts.package_results import package
+    source, destination = tmp_path/'source', tmp_path/'archive'
+    source.mkdir()
+    (source/'example.json').write_text('{}')
+    manifest = package(source, destination)
+    extra = destination/'unlisted.json'
+    extra.write_text('{}')
+    with pytest.raises(ValueError, match='cover'):
+        check(destination)
+    extra.unlink()
+    manifest['files'].append(deepcopy(manifest['files'][0]))
+    (destination/'archive.json').write_text(json.dumps(manifest))
+    with pytest.raises(ValueError, match='Duplicate archive artifact'):
+        check(destination)
+
+
+def test_packaging_never_leaves_stale_evidence_in_an_existing_archive(tmp_path):
+    from scripts.package_results import package
+    source, destination = tmp_path/'source', tmp_path/'archive'
+    source.mkdir()
+    (source/'example.json').write_text('{}')
+    package(source, destination)
+    with pytest.raises(ValueError, match='must be empty'):
+        package(source, destination)
+
+
+def test_packaging_detects_a_source_that_changes_while_being_read(tmp_path, monkeypatch):
+    from scripts.package_results import package
+    source, destination = tmp_path/'source', tmp_path/'archive'
+    source.mkdir()
+    incoming = source/'example.json'
+    incoming.write_text('{}')
+    original = Path.read_bytes
+    def changing(path):
+        content = original(path)
+        if path == incoming:
+            path.write_text('{"changed": true}')
+        return content
+    monkeypatch.setattr(Path, 'read_bytes', changing)
+    with pytest.raises(ValueError, match='Source changed'):
+        package(source, destination)
+    assert not (destination/'archive.json').exists()
