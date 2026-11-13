@@ -168,9 +168,10 @@ def test_published_controller_archive_requires_the_original_generation_logs(tmp_
     package(source_root, published)
     assert check(published, bank)['compiled_episodes'] == 20
     missing = tmp_path/'missing-source'
-    missing.mkdir()
-    shutil.copyfile(source_root/'compiled/episodes.jsonl', missing/'episodes.jsonl')
-    (missing/'archive.json').write_text('{"files": []}')
+    missing_raw = tmp_path/'missing-raw'
+    missing_raw.mkdir()
+    shutil.copyfile(source_root/'compiled/episodes.jsonl', missing_raw/'episodes.jsonl')
+    package(missing_raw, missing)
     with pytest.raises(ValueError, match='published generation source'):
         check(missing, bank)
 
