@@ -209,3 +209,12 @@ the first cycle's display convention. Their exact old source revision is carried
 into the new records, and only that revision permits its terminal-display rule.
 The waiting worker was restarted before any follow-up trials to include this
 provenance; no collected model results were deleted or changed.
+
+### Paper follow-up support
+
+The review-paper builder now accepts a separate follow-up folder. It keeps grammar
+comparisons, separate-call forecasts, held-out diary/framing tests, and v2 live
+play apart from the first study. It reports partial denominators and valid-pair
+flip rates. Duplicate completed episodes and mixed v1/v2 records are errors.
+Validation diagnostics never enter the held-out context table. All conditions and
+exploratory adjusted tests stay in evidence JSON; the paper shows compact tables.
