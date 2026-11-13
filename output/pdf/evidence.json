@@ -3175,8 +3175,8 @@
       "required_foresight": {
         "counts": {
           "1": 18,
-          "2": 1,
-          "None": 1
+          "None": 1,
+          "2": 1
         },
         "median_feasible": 1,
         "prefix_coverage_feasible": 0.0
@@ -6899,8 +6899,8 @@
       "required_foresight": {
         "counts": {
           "1": 18,
-          "2": 1,
-          "None": 1
+          "None": 1,
+          "2": 1
         },
         "median_feasible": 1,
         "prefix_coverage_feasible": 0.0
@@ -10618,8 +10618,8 @@
       "required_foresight": {
         "counts": {
           "1": 18,
-          "2": 1,
-          "None": 1
+          "None": 1,
+          "2": 1
         },
         "median_feasible": 1,
         "prefix_coverage_feasible": 0.0
@@ -13777,8 +13777,8 @@
       "required_foresight": {
         "counts": {
           "1": 18,
-          "2": 1,
-          "None": 1
+          "None": 1,
+          "2": 1
         },
         "median_feasible": 1,
         "prefix_coverage_feasible": 0.0
@@ -14501,7 +14501,7 @@
     "results/review/qwen3-8b-q4_K_M/B-validation/responses.jsonl.gz": "d8493047cfb6485cb3154ad86886393e49de0e5c442382fadbc6c8966748fbb3",
     "results/review/qwen3-8b-q4_K_M/C-validation/responses.jsonl.gz": "dad936275401d5fc6bf9e6705ef2da2de088969156e35546a5da035f8d24ce6c"
   },
-  "generated_at": "2026-11-13T13:44:57.897464+00:00",
+  "generated_at": "2026-11-13T15:06:49.857872+00:00",
   "bank_sha256": "0d2e1d39ada9885679dfe2f1146d4371d9ecd2fa8fe50c4652cb188178900002",
   "bank_search_audit": {
     "states": 500,
@@ -14515,7 +14515,7 @@
   "bank_search_audit_sha256": "77aae4a31359c8ce777489912037fa5bd77c55bc00f06abc10aafb6a02327544",
   "followup": {
     "input_sha256": {
-      "archive.json": "dce6123623b33d3ac9673c5628962b9f86e21a48fe986732ccd40cf72df38842",
+      "archive.json": "a2468d57316a490429d7d9f2ffd01ce76b6a9c61f62d5c987fbb06a04a98574b",
       "baseline-advance.jsonl.gz": "0b29463acb652fb4b60f3b87c7a94f429c72ffd51dafbc0a1085a02e636be957",
       "baseline-oracle.jsonl.gz": "49cf0a18a99fb71e45612c357b2e0892f978a93f43fec755f0febcf11af16f4c",
       "baseline-planner.jsonl.gz": "a288122eed7d2d9b6d2ffbdbed82f1995abc9cd047051b715609ba48d35f3fcb",
@@ -14530,7 +14530,7 @@
       "compiled/qwen3-1.7b-q4_K_M/manifest.json": "d1196e2b7a96811cd3c274dc203bc41cadf54d91b51aec7c0f8c9291a7a4e959",
       "compiled/qwen3-4b-q4_K_M/episodes.jsonl.gz": "701c72c43bc6b660e7ede081ad35d3e000611ef8d1bd8763825cf9e22f8ec86b",
       "compiled/qwen3-4b-q4_K_M/manifest.json": "9d4019fb22f4e4eab57dcd4945f4de9e9d7b95608d867fb4540ae9fc22deeebf",
-      "cycle.json": "04aa39e2b00e5fc965af0ada31bb5aa8b599516cad1e51435732c53c7245319d",
+      "cycle.json": "948f2437ba95025a729f05e2a8813efe1949c263e3fc0df4648497f6e0526cf9",
       "grammar/collection.json": "28d92202abd20fa08bd015c5eda54a3d37f7914bab46bc9bb8b83a1bebec04e7",
       "grammar/qwen3-1.7b-q4_K_M/manifest.json": "57b9433a5d504b73674d9b6f73a9b00138d0aeccad20e40df4e77135821e1f1b",
       "grammar/qwen3-1.7b-q4_K_M/responses.jsonl.gz": "bd92e3479134f491c2169c487ddf8e557f20067b766d9b6afe31baec1da5504f",
@@ -14569,8 +14569,12 @@
       "qwen3-4b-q4_K_M/E-test/manifest.json": "541229470cf86a86c0e798d383dac4b6d7f60225c674d89e4031bdb1efc85401",
       "qwen3-4b-q4_K_M/E-test/responses.jsonl.gz": "3127912a873056dd8022f84bbcaff8dd3c50387fac7910d9e7030cdfe803e0f5",
       "qwen3-4b-q4_K_M/E-test/summary.json": "a721c16cfb3b3b23d55eccb30829dd11ca166c305f4683c548229fdf985aa8ec",
+      "qwen3-4b-q4_K_M/live-all.jsonl.gz": "11abe49154625487674fca8e91d7cb59b61e1c74a377db2157aaef93a6478f93",
+      "qwen3-4b-q4_K_M/live-base.jsonl.gz": "a6152c86e1a76e87b642e0f67a3c9e5da652d4a597822faaaf46ad296defdc0f",
+      "qwen3-4b-q4_K_M/live-design.json": "3db849badbd3fcd6061aadafe5cf09eff742ea15574f53af90f903b180275af8",
+      "qwen3-4b-q4_K_M/live-selected.jsonl.gz": "e2d10fdcef9b57e2fed23051b7319eb55db082a7377f4f99d8a1f87814ed6082",
       "qwen3-4b-q4_K_M/profile.json": "c9d4725eabdb0dd62d2d9110e0f8f48a78ffd0f32053eda4d6915784f8869843",
-      "snapshot.json": "2c88521dae4e854e9d61387b7a34c62db370f6d1daab436be6e09b035a9bb690"
+      "snapshot.json": "c174e3307cc0f0fa6be0b92a13a99f4fc07f7c80aa0e57fc2db82d18290ec5a3"
     },
     "forecasts": [
       {
@@ -23995,6 +23999,162 @@
         "validated_program_decisions": 0
       },
       {
+        "code_enabled_decisions": 214,
+        "available_program_decisions": 0,
+        "mean_decision_seconds": 11.8129019541466,
+        "mean_collisions": 5.851851851851852,
+        "mean_final_lane": 8.592592592592593,
+        "mean_stay_loop": 0,
+        "model": "qwen3:4b-q4_K_M",
+        "condition": "all",
+        "episodes": 27,
+        "censored": 0,
+        "episode_seeds": [
+          60000,
+          60001,
+          60002,
+          60003,
+          60004,
+          60005,
+          60006,
+          60007,
+          60008,
+          60009,
+          60010,
+          60011,
+          60012,
+          60013,
+          60014,
+          60015,
+          60016,
+          60017,
+          60018,
+          60019,
+          60020,
+          60021,
+          60022,
+          60023,
+          60024,
+          60025,
+          60026
+        ],
+        "successes": 0,
+        "success_wilson": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.12455502974186705
+        },
+        "mean_tokens": 1314.8148148148148,
+        "mean_calls": 25.77777777777778,
+        "error_decisions": 214,
+        "decisions": 214,
+        "validated_program_decisions": 0
+      },
+      {
+        "code_enabled_decisions": 0,
+        "available_program_decisions": 0,
+        "mean_decision_seconds": 12.033563377724835,
+        "mean_collisions": 3.1481481481481484,
+        "mean_final_lane": 8.851851851851851,
+        "mean_stay_loop": 4.37037037037037,
+        "model": "qwen3:4b-q4_K_M",
+        "condition": "base",
+        "episodes": 27,
+        "censored": 1,
+        "episode_seeds": [
+          60000,
+          60001,
+          60002,
+          60003,
+          60004,
+          60005,
+          60006,
+          60007,
+          60008,
+          60009,
+          60010,
+          60011,
+          60012,
+          60013,
+          60014,
+          60015,
+          60016,
+          60017,
+          60018,
+          60019,
+          60020,
+          60021,
+          60022,
+          60023,
+          60024,
+          60025,
+          60026
+        ],
+        "successes": 0,
+        "success_wilson": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.12455502974186705
+        },
+        "mean_tokens": 1082.5555555555557,
+        "mean_calls": 8.37037037037037,
+        "error_decisions": 0,
+        "decisions": 226,
+        "validated_program_decisions": 0
+      },
+      {
+        "code_enabled_decisions": 214,
+        "available_program_decisions": 0,
+        "mean_decision_seconds": 11.805767866927003,
+        "mean_collisions": 5.851851851851852,
+        "mean_final_lane": 8.62962962962963,
+        "mean_stay_loop": 0,
+        "model": "qwen3:4b-q4_K_M",
+        "condition": "selected",
+        "episodes": 27,
+        "censored": 0,
+        "episode_seeds": [
+          60000,
+          60001,
+          60002,
+          60003,
+          60004,
+          60005,
+          60006,
+          60007,
+          60008,
+          60009,
+          60010,
+          60011,
+          60012,
+          60013,
+          60014,
+          60015,
+          60016,
+          60017,
+          60018,
+          60019,
+          60020,
+          60021,
+          60022,
+          60023,
+          60024,
+          60025,
+          60026
+        ],
+        "successes": 0,
+        "success_wilson": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.12455502974186705
+        },
+        "mean_tokens": 1314.8148148148148,
+        "mean_calls": 25.77777777777778,
+        "error_decisions": 214,
+        "decisions": 214,
+        "validated_program_decisions": 0
+      },
+      {
         "code_enabled_decisions": 0,
         "available_program_decisions": 0,
         "mean_decision_seconds": 0.0,
@@ -24133,6 +24293,30 @@
           "high": 0.0,
           "clusters": 50,
           "observations": 50
+        }
+      },
+      {
+        "model": "qwen3:4b-q4_K_M",
+        "condition": "all",
+        "paired_episodes": 27,
+        "success_change": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "clusters": 27,
+          "observations": 27
+        }
+      },
+      {
+        "model": "qwen3:4b-q4_K_M",
+        "condition": "selected",
+        "paired_episodes": 27,
+        "success_change": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "clusters": 27,
+          "observations": 27
         }
       }
     ],

@@ -79,7 +79,7 @@ in the audit. No action follows it, so goals, collisions and elapsed ticks agree
 Shortened decision budgets now censor unfinished episodes instead of calling them
 failures. The first queue's 100-decision budget cannot truncate a fresh 100-tick game.
 
-## Second cycle: frozen probes closed, live play collecting
+## Second cycle: collection closed
 
 The wider `code_v2` grammar adds bounded conditionals and `sign`. The original
 contract stays available. Its 1,237 forecast trials include 900 on 1.7B and a partial
@@ -163,13 +163,16 @@ out, fits fixed line/exponential/cliff families and a flat control, clips predic
 and scores held-out horizons. Missing horizons skip a fold. Overlapping training
 folds limit descriptive intervals. This is not frozen-to-live predictive validity.
 
-The interim archive contains closed probes, both compiled versions, controls and
-the complete 1.7B live cohort: fifty seeds per condition, 150 runs, zero goals.
-The 4B live cohort is collecting and will join after collection stops. Packaging uses a fresh directory,
+The final archive contains closed probes, both compiled versions, controls and
+all saved neural live episodes, including censored attempts.
+The follow-up saved 231 completed live runs and one cut short by the deadline.
+No run reached the goal. The 1.7B model finished fifty seeds each for
+base/selected/all; 4B finished twenty-seven each. The 4B cohort is partial.
+The worker closed normally at 15:05:12 UTC. Packaging uses a fresh directory,
 rejects changing inputs, and hashes every JSON evidence file exactly once. Audits
 rebuild prompts/scores, cross-check saved generation sources and replay physical
-trajectories against pinned upstream. CI checks both archives. The final paper must
-be rebuilt from saved records and every page visually inspected.
+trajectories against pinned upstream. CI checks both archives. The final paper was
+rebuilt from saved records and all fifteen pages were visually inspected.
 
 The focused [primary-source comparison](related_work.md) makes existing code-policy,
 verifier, stage-diagnosis, inertia and conversion-gap work explicit. No first/best

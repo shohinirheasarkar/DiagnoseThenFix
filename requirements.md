@@ -20,18 +20,18 @@ that a fix helps. This list keeps those three things apart.
 | Cascade replay and four monitor triggers (p13-15) | Basic hooks and triggers | Real stage interventions; 100 failures/model; channel attribution; cost-matched monitor |
 | Diagnosis and composed agent (p15-16) | Switches; matched C and diary D validation profiles | Matched random/leave-out comparisons; learned validation thresholds |
 | Latency-aware agent (p16) | World advances during measured delay; saved-program latency replay | Repair utility rule; cost-matched experiments; frozen-to-live prediction |
-| Live comparisons: 50 seeds/condition (p16) | Yes | First cycle: 10 paired seeds/model. Follow-up: 50 on 1.7B for base/selected/all; 4B collecting. Other planned comparisons remain open |
+| Live comparisons: 50 seeds/condition (p16) | Yes | First cycle: 10 paired seeds/model. Follow-up: 50 on 1.7B for base/selected/all; 4B partial: 27/27/27 completed for base/selected/all. Other planned comparisons remain open |
 | Five Qwen sizes + another family + ceiling (p2) | Local Ollama client | 0.6B, second family, ceiling; no automatic downloads or paid services |
 | Five seeds, 95% intervals, Holm (p2,18) | Bootstrap, paired estimates, cluster sign-flip tests, Holm | Full planned contrasts with cluster-aware tests; keep missing cells visible |
 | Novelty audit and related work (p18-19) | Cited paper and focused 13-source comparison | Exhaustive priority search; no unsupported first/best claim |
-| Reproducible repo and review paper (chat) | Tested PRs, raw evidence, paper generator and PDF | Update each overnight PR and final paper; verify every saved record |
+| Reproducible repo and review paper (chat) | Tested PRs, raw evidence, paper generator and PDF | Local-cycle evidence and review paper are saved; full planned studies remain open |
 
 The minimum version still needs the planned Stage D coverage and complete
 50-seed comparisons across models and agents. The small diary pilot and the
 finished 1.7B base/selected/all cohort cover only part of that target. The full version
 also needs the other games, broader models, cascades and conditional training.
-Eight more local hours may finish useful pieces; it cannot guarantee this whole
-multiweek research plan. Missing results stay marked missing.
+The two capped local cycles did not finish the full multiweek plan.
+Missing results stay marked missing.
 
 ## Second cycle, November 13
 

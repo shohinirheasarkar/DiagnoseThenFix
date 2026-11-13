@@ -1,6 +1,10 @@
 {
-  "captured_at": "2026-11-13T13:44:28.572282+00:00",
-  "scope": "Closed probes, compiled replays, controls and complete 1.7B live cohort. The collecting 4B live cohort is excluded.",
+  "captured_at": "2026-11-13T15:05:18.938417+00:00",
+  "scope": "Closed local follow-up; all actual completed and censored live records included.",
   "full_research_plan_complete": false,
-  "live_collection_stop": "2026-11-13T15:05:00+00:00"
+  "live_collection_stop": "2026-11-13T15:05:00+00:00",
+  "worker_status": "collection_finished",
+  "frozen_policy_hash_verified": "503f7e74f17c66679cc11da5e323f2f3fa4708ec1f2ef3af57e0c43394ed5d34",
+  "restart_live_prefixes_verified": true,
+  "request_deadline_enforced": true
 }

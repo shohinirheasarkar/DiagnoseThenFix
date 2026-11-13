@@ -56,9 +56,10 @@ See [the preregistration](preregistration.md). Built on
 ## Overnight follow-up
 
 [The plan checklist](requirements.md) shows what still needs work.
-[Closed follow-up evidence](results/review-overnight) is saved separately;
-the 1.7B model finished 50 seeds each for base/selected/all, with no goals.
-The 4B live cohort is still collecting; the paper reports closed cohorts only.
+[Closed follow-up evidence](results/review-overnight) is saved separately.
+The follow-up saved 231 completed live runs and one cut short by the deadline.
+No run reached the goal. The 1.7B model finished fifty seeds each for
+base/selected/all; 4B finished twenty-seven each. The 4B cohort is partial.
 The follow-up adds paired diary/story tests and an opt-in v2 agent that checks generated code,
 retries once, and keeps its own forecast when a repair fails. Old results stay
 separate. To rescore a local context run without calling a model:
