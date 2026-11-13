@@ -70,16 +70,26 @@ def test_queue_finishes_paired_cohorts_and_unloads_before_switching(tmp_path, mo
     def episode(policy, seed, **kwargs):
         return {'seed': seed, 'censored': False, 'success': False, 'trace': []}
     monkeypatch.setattr(diagnose.model, 'LocalModel', Model)
-    monkeypatch.setattr(diagnose.context, 'run', lambda *a, **k: [])
+    def context(*args, **kwargs):
+        import time
+        if kwargs.get('split') != 'validation':
+            minutes = 35 if args[3] == 'D' else 20
+            assert kwargs['stop_at'] <= time.time()+minutes*60
+        return []
+    monkeypatch.setattr(diagnose.context, 'run', context)
     monkeypatch.setattr(diagnose.context, 'summarize', lambda *a, **k: [])
     monkeypatch.setattr(diagnose.commitment, 'run', lambda *a, **k: [])
     monkeypatch.setattr(diagnose.runner, 'run', lambda *a, **k: [])
     monkeypatch.setattr(diagnose.live, 'episode', episode)
     monkeypatch.setattr(diagnose.composed, 'ComposedPolicy', Policy)
     overnight.main()
+    overnight.main()
     root = tmp_path/'results/overnight'
     assert json.loads((root/'cycle.json').read_text())['status'] == 'collection_finished'
     assert not (root/'worker.lock').exists() and Model.active is None
+    cycle = json.loads((root/'cycle.json').read_text())
+    assert cycle['source_commit_history'] == ['test-source']
+    assert len(cycle['phase_history']) == 12
     for size in ('1.7', '4'):
         for condition in ('base', 'selected', 'all'):
             rows = diagnose.model.read_jsonl(root/f'qwen3-{size}b-q4_K_M/live-{condition}.jsonl')
