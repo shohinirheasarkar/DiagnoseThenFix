@@ -148,9 +148,10 @@ class ComposedPolicy:
                     action, beliefs = replacement['action'], replacement['collision']
                     bound_action(beliefs)
             if 'code' in enabled:
+                code_disabled = self.revision == 'v2' and self.program_attempted and self.program is None
                 try:
                     if self.program is None:
-                        if self.revision == 'v2' and self.program_attempted:
+                        if code_disabled:
                             raise ValueError('Code disabled after validation failure: ' + self.program_failure)
                         self.program_attempted = True
                         code_task = make_task(state, 'B', k=self.horizon,
@@ -188,7 +189,9 @@ class ComposedPolicy:
                 except (ValueError, KeyError, TypeError, SyntaxError, ArithmeticError) as exc:
                     if self.revision == 'v1':
                         raise
-                    self.program, self.program_failure = None, str(exc)
+                    self.program = None
+                    if not code_disabled:
+                        self.program_failure = str(exc)
                     repair_errors.append(str(exc))
             if 'calibrate' in enabled:
                 common = RULES + '\nA means U, B means S, C means D.\n'
