@@ -784,6 +784,7 @@ def build(evidence, output, figures, root):
                   'intervals. Each panel uses the actual completed trials; inspect the evidence JSON '
                   'for per-horizon counts. Oracle predictions define the horizontal ceiling. '
                   'The linear control is computed on the same states.', 'SmallNote')
+        story[-2:] = [KeepTogether(story[-2:])]
     if len(figures) > 1:
         picture = Image(str(figures[1]))
         scale = min(528/picture.imageWidth, 180/picture.imageHeight)
@@ -797,6 +798,7 @@ def build(evidence, output, figures, root):
                   'predicted x minus true x, not circular distance or distance along travel. '
                   'Wrap can create large jumps. Invalid replies remain incorrect in accuracy '
                   'but cannot enter this numeric summary.', 'SmallNote')
+        story[-2:] = [KeepTogether(story[-2:])]
     if models:
         body = [[name.replace('qwen3:', '').replace('-q4_K_M', ''), m['profile']['best_representation'],
                  str(m['f_largest_80']), str(m['f_prefix_80']),

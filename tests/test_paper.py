@@ -342,3 +342,19 @@ def test_signed_error_plot_uses_valid_numeric_replies_and_keeps_horizon_gaps(tmp
     output = tmp_path/'signed.png'
     assert signed_error_figure(evidence, output) == output and output.stat().st_size > 1000
     assert signed_error_figure({'models': {}}, output) is None
+
+
+def test_paper_keeps_each_plot_with_its_caption(tmp_path):
+    import matplotlib.pyplot as plt
+    figure, ax = plt.subplots(figsize=(7, 4))
+    ax.plot([0, 1], [0, 1])
+    png = tmp_path/'plot.png'
+    figure.savefig(png)
+    plt.close(figure)
+    evidence = analyze(tmp_path, Path('data/freeway.json'))
+    output = tmp_path/'captions.pdf'
+    build(evidence, output, [png, png], tmp_path)
+    pages = PdfReader(output).pages
+    for caption in ('Figure 1.', 'Figure 2.'):
+        page = next(p for p in pages if caption in p.extract_text())
+        assert len(page.images) > 0
