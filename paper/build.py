@@ -252,7 +252,7 @@ def analyze(root, bank_path):
         data['first_error_events'] = first_error_events(test, bank)
         data['position_signed_error_curve'] = [
             {'k': k, 'error': interval([r for r in test if r['task']['kind'] == 'position'
-                                      and r['task']['k'] == k], 'signed_error')}
+                                      and r['task']['k'] == k and r['score'].get('valid')], 'signed_error')}
             for k in range(1, 11)]
         data['position_signed_error_valid'] = interval(
             [r for r in test if r['task']['kind'] == 'position'], 'signed_error')
