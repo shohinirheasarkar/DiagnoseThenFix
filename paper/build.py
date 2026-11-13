@@ -671,10 +671,12 @@ def build(evidence, output, figures, root):
                if position_values else '')
     agent_live = [r for r in evidence['live'] if r['model'] != 'simulator control']
     live_seed_count = len({seed for r in agent_live for seed in r['episode_seeds']})
+    censored_count = sum(r["censored"] for r in agent_live)
+    censored_label = "run" if censored_count == 1 else "runs"
     live_finding = (f'Live collection produced {sum(r["episodes"] for r in agent_live)} completed '
                     f'model-condition runs over {live_seed_count} environment seeds '
                     f'({sum(r["successes"] for r in agent_live)} goals) and '
-                    f'{sum(r["censored"] for r in agent_live)} censored runs. ' if agent_live else '')
+                    f'{censored_count} censored {censored_label}. ' if agent_live else '')
     title = 'Diagnose, Then Repair'
     paragraph(title, 'PaperTitle')
     paragraph('A simulator-checked study of small language-model agents in real-time Freeway', 'Heading2')

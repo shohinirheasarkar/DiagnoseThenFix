@@ -7,11 +7,11 @@ Research paper for review | November 12-13, 2026 | Two capped local cycles
 
 ## Abstract
 
-A correct action in a changing world requires a readable observation, an adequate forecast, and a decision that follows that forecast. We implement a stage-oriented diagnostic suite with replayable states, six renderers, simulator-checked labels, and targeted inference-time repairs. This report analyzes 8,000 held-out forecast trials from 4 installed Qwen3 model artifacts collected on a 16 GB Apple M3 laptop. The situation bank contains 500 states with disjoint source episodes across splits. We compare forecast accuracy at horizons 1-10 against constant-velocity extrapolation, and separately evaluate consistency repairs and measured-delay live play where completed. Episode-weighted exact-head accuracy spans 6.9%-15.6% across the collected artifacts. Live collection produced 60 completed model-condition runs over 10 environment seeds (0 goals) and 1 censored runs. Missing or malformed answers count as incorrect. This is an exploratory, single-game artifact; the full multi-game, thinking-mode, and training-based study remains incomplete. We make no first-of-its-kind or causal root-cause claim from this cycle.
+A correct action in a changing world requires a readable observation, an adequate forecast, and a decision that follows that forecast. We implement a stage-oriented diagnostic suite with replayable states, six renderers, simulator-checked labels, and targeted inference-time repairs. This report analyzes 8,000 held-out forecast trials from 4 installed Qwen3 model artifacts collected on a 16 GB Apple M3 laptop. The situation bank contains 500 states with disjoint source episodes across splits. We compare forecast accuracy at horizons 1-10 against constant-velocity extrapolation, and separately evaluate consistency repairs and measured-delay live play where completed. Episode-weighted exact-head accuracy spans 6.9%-15.6% across the collected artifacts. Live collection produced 60 completed model-condition runs over 10 environment seeds (0 goals) and 1 censored run. Missing or malformed answers count as incorrect. This is an exploratory, single-game artifact; the full multi-game, thinking-mode, and training-based study remains incomplete. We make no first-of-its-kind or causal root-cause claim from this cycle.
 
 The first-cycle results below keep their original cohort. Section 6.1 reports the separate November 13 follow-up; its changed code and fresh live seeds are never pooled with the first cycle.
 
-The separate v2 follow-up adds 150 completed model-condition runs and 0 goals. Its actual cohorts and limits are reported separately below.
+The separate v2 follow-up adds 231 completed model-condition runs and 0 goals. Its actual cohorts and limits are reported separately below.
 
 
 ## 1. Motivation and related work
@@ -417,6 +417,12 @@ Model | V2 condition | Complete / censored | Goals | Success [95% Wilson] | Toke
 
 1.7b | selected | 50/0 | 0 | 0.0% [0.0, 7.1] | 1786
 
+4b | all | 27/0 | 0 | 0.0% [0.0, 12.5] | 1315
+
+4b | base | 27/1 | 0 | 0.0% [0.0, 12.5] | 1083
+
+4b | selected | 27/0 | 0 | 0.0% [0.0, 12.5] | 1315
+
 simulator control | advance | 50/0 | 9 | 18.0% [9.8, 30.8] | 0
 
 simulator control | oracle | 50/0 | 45 | 90.0% [78.6, 95.7] | 0
@@ -439,6 +445,12 @@ Model / condition | Decisions | Code available / enabled | Charged sec / decisio
 
 1.7b / selected | 544 | 0/544 | 8.6 | 0.4 | 9.0 | 0.5
 
+4b / all | 214 | 0/214 | 11.8 | 5.9 | 8.6 | 0.0
+
+4b / base | 226 | 0/0 | 12.0 | 3.1 | 8.9 | 4.4
+
+4b / selected | 214 | 0/214 | 11.8 | 5.9 | 8.6 | 0.0
+
 Secondary details use completed episodes only. Program availability counts a validated program on a code-enabled decision; it does not prove that turn used the program. Zero availability among code-enabled decisions means the repair never became available, so these runs cannot test transfer of a successful code repair. Charged seconds include cached request durations and local elapsed execution time. Final lane is 9 at start and 0 at the goal; collisions reset progress. The last column averages the longest sequence of proposed S actions per run, including a last proposal that timed out. It excludes implicit waiting during reasoning. Counts of unavailable repairs are not evidence of a unique internal model failure.
 
 Model | V2 contrast vs base | Shared episodes | Success change [pp, 95% CI]
@@ -448,6 +460,10 @@ Model | V2 contrast vs base | Shared episodes | Success change [pp, 95% CI]
 1.7b | all | 50 | 0.0 [0.0, 0.0]
 
 1.7b | selected | 50 | 0.0 [0.0, 0.0]
+
+4b | all | 27 | 0.0 [0.0, 0.0]
+
+4b | selected | 27 | 0.0 [0.0, 0.0]
 
 This follow-up does not finish the planned 200/300-board matrices, other games, thinking sweeps, extra model families, causal cascades, or cost-matched controls. A simulator-assisted program repair and a short history manipulation cannot establish a unique internal failure cause or the value of diagnosis targeting.
 
@@ -517,7 +533,7 @@ At report generation, the main four-model forecast target is complete. This PDF 
 
 None of the 60 completed model-condition runs reached the goal. These runs reuse 10 environment seeds across models and conditions. This cycle does not demonstrate a goal-completion benefit from diagnosis-selected repairs under the chosen latency setting. Small live cohorts and wide Wilson bounds limit this negative result.
 
-The separate v2 cohort records 0 goals in 150 completed model-condition runs. It uses fresh seeds and changed repair behavior. Only paired conditions inside that cohort support a repair comparison; the two cycles are not pooled.
+The separate v2 cohort records 0 goals in 231 completed model-condition runs. It uses fresh seeds and changed repair behavior. Only paired conditions inside that cohort support a repair comparison; the two cycles are not pooled.
 
 The artifact makes stage probes and repair decisions inspectable against a pinned simulator. The completed results describe the tested prompts, states and local model artifacts; they do not establish that a weak probe score uniquely identifies an internal failure cause. Commitment matching removes one measurement ambiguity, and recording delay and all calls makes the live comparison auditable. A broader claim that diagnosis reliably selects better agents requires the pending cross-game, cost-matched and intervention controls.
 

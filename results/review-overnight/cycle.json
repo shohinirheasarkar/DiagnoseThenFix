@@ -1,7 +1,7 @@
 {
   "started_at": "2026-11-13T08:20:34.430301+00:00",
   "resumed_at": "2026-11-13T13:10:08.993087+00:00",
-  "status": "running",
+  "status": "collection_finished",
   "source": "503f7e74f17c66679cc11da5e323f2f3fa4708ec1f2ef3af57e0c43394ed5d34",
   "source_commit": "d393c4e4f473381fa11127952482264076563545",
   "context_stop": "2026-11-13T10:50:00+00:00",
@@ -74,5 +74,6 @@
     "E": 20,
     "B-chain": 5
   },
-  "phase": "live"
+  "phase": "live",
+  "ended_at": "2026-11-13T15:05:12.779429+00:00"
 }
