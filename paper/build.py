@@ -501,6 +501,11 @@ def build(evidence, output, figures, root):
         paragraph('The first-cycle results below keep their original cohort. Section 6.1 reports '
                   'the separate November 13 follow-up; its changed code and fresh live seeds are '
                   'never pooled with the first cycle.', 'SmallNote')
+        followup_agents = [r for r in evidence['followup']['live'] if r['model'] != 'simulator control']
+        if followup_agents:
+            paragraph(f'The separate v2 follow-up adds {sum(r["episodes"] for r in followup_agents)} '
+                      f'completed model-condition runs and {sum(r["successes"] for r in followup_agents)} '
+                      'goals. Its actual cohorts and limits are reported separately below.', 'SmallNote')
     heading('1. Motivation and related work')
     paragraph('RealtimeGym makes reasoning time consequential: the environment can change before a '
               'model finishes deciding [1]. We build on that simulator, rather than proposing a new game '
@@ -826,7 +831,8 @@ def build(evidence, output, figures, root):
         if forecast_rows:
             table(['Model', 'Cohort / repair', 'Boards / trials', 'Accuracy [95% CI]', 'Invalid', 'Paired change [pp]'],
                   [[r['model'].replace('qwen3:', '').replace('-q4_K_M', ''),
-                    ('Separate calls' if 'B-chained-calls' in r['cohort'] else 'Grammar') + ' / ' + r['repair'],
+                    ('Separate calls' if 'B-chained-calls' in r['cohort'] else 'Grammar') + ' / ' +
+                    r['repair'] + (' (UB)' if r['repair'] == 'tool' else ''),
                     f'{r["states"]}/{r["trials"]}', ci(r['accuracy']), r['invalid'],
                     ci(r['difference_from_base'], difference=True)] for r in forecast_rows],
                   [45, 120, 65, 115, 43, 140])
@@ -834,7 +840,8 @@ def build(evidence, output, figures, root):
                       'counts and paired denominators are saved in the evidence JSON. A valid program '
                       'can still predict the wrong cell. Separate-call chaining is a different cohort '
                       'and output budget; compare each repair only with its own paired base. The old '
-                      'chained condition asks for a table in one reply. Intervals are descriptive.', 'SmallNote')
+                      'chained condition asks for a table in one reply. UB marks the supplied '
+                      'simulator forecast, not a model-only repair. Intervals are descriptive.', 'SmallNote')
         paragraph(f'The follow-up saved {followup["context_trials"]:,} held-out diary/framing trials. '
                   'The target is four boards per model with five sampling seeds. Repeated answers '
                   'are not new boards. We transplant diaries from separate episodes while keeping '
@@ -956,6 +963,13 @@ def build(evidence, output, figures, root):
                   'across models and conditions. This cycle does not demonstrate a goal-completion '
                   'benefit from diagnosis-selected repairs under the chosen latency setting. '
                   'Small live cohorts and wide Wilson bounds limit this negative result.')
+    if followup is not None:
+        newer = [r for r in followup['live'] if r['model'] != 'simulator control']
+        if newer:
+            paragraph(f'The separate v2 cohort records {sum(r["successes"] for r in newer)} goals '
+                      f'in {sum(r["episodes"] for r in newer)} completed model-condition runs. '
+                      'It uses fresh seeds and changed repair behavior. Only paired conditions '
+                      'inside that cohort support a repair comparison; the two cycles are not pooled.')
     paragraph('The artifact makes stage probes and repair decisions inspectable against a pinned '
               'simulator. The completed results describe the tested prompts, states and local '
               'model artifacts; they do not establish that a weak probe score uniquely identifies '
