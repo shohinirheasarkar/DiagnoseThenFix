@@ -50,3 +50,14 @@ older one-tick/repeated-action logs are only a risk-disagreement proxy.
 See [the preregistration](preregistration.md). Built on
 [RealtimeGym](https://github.com/SALT-NLP/RealtimeGym) and
 [Wen et al.](https://arxiv.org/abs/2511.04898). Stage diagnosis itself is not new.
+
+## Overnight follow-up
+
+[The plan checklist](requirements.md) shows what still needs work. The follow-up
+adds paired diary/story tests and an opt-in v2 agent that checks generated code,
+retries once, and keeps its own forecast when a repair fails. Old results stay
+separate. To rescore a local context run without calling a model:
+
+```sh
+python -m diagnose.context --output results/overnight/qwen3-1.7b-q4_K_M/D-test --check
+```

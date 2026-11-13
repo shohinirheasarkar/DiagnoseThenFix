@@ -193,6 +193,7 @@ def run(bank, model, output, stage, representation, real=(), limit=8, seeds=rang
         response = model.ask(query['prompt'], seed=seed, thinking=thinking,
                              max_tokens=max_tokens, schema='json')
         append_jsonl(path, {'trial_id': trial, 'state_id': row['id'],
+                           'split': split,
                            'source_seed': row['state']['source_seed'], 'model': model.name,
                            'digest': model.digest, 'task': query, 'response': response,
                            'score': score(query, response)})
