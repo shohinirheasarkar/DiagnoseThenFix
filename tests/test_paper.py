@@ -417,3 +417,46 @@ def test_paper_rejects_a_search_audit_for_a_different_bank(tmp_path):
     audit.write_text(json.dumps({'states': 500, 'bank_sha256': 'wrong'}))
     with pytest.raises(ValueError, match='does not match this bank'):
         analyze(tmp_path, bank)
+
+
+def test_context_report_shows_invalid_label_replies_as_missing_pairs(tmp_path):
+    from diagnose.context import task, score
+    from paper.build import analyze_followup
+    row = next(r for r in json.loads(Path('data/freeway.json').read_text())['situations'] if r['split'] == 'test')
+    records = []
+    response = {'error': None, 'raw': {'message': {'content': json.dumps({
+        'action': 'U', 'collision': dict.fromkeys(('U', 'S', 'D'), False), 'confidence': .5})}}}
+    for labels in ('standard', 'words'):
+        query = task(row, 'E', 'coordinates', 0, labels=labels)
+        records.append({'model': 'test-model', 'source_seed': row['state']['source_seed'],
+                        'state_id': row['id'], 'split': 'test', 'task': query,
+                        'response': response, 'score': score(query, response)})
+    folder = tmp_path/'E-test'
+    folder.mkdir()
+    (folder/'responses.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in records))
+    followup = analyze_followup(tmp_path)
+    words = next(r for r in followup['context'] if r['condition']['labels'] == 'words')
+    assert words['invalid'] == 1 and words['paired_valid'] == 0
+    assert words['action_change']['mean'] is None
+    empty = tmp_path/'empty'
+    empty.mkdir()
+    evidence = analyze(empty, Path('data/freeway.json'))
+    evidence['followup'] = followup
+    output = tmp_path/'label-counts.pdf'
+    build(evidence, output, [], tmp_path)
+    text = ' '.join(' '.join(p.extract_text() for p in PdfReader(output).pages).split())
+    assert 'Boards / valid / all' in text and '1/0/1' in text
+    assert 'output-format compliance' in text and 'unavailable, not zero' in text
+
+
+def test_original_published_tables_keep_their_two_count_headers(tmp_path):
+    evidence = json.loads(Path('output/pdf/evidence.json').read_text())
+    evidence.pop('followup', None)
+    for model in evidence['models'].values():
+        model.setdefault('position_shape_prediction', {'summary': {}, 'folds': []})
+    output = tmp_path/'original-tables.pdf'
+    build(evidence, output, [], Path('results/review'))
+    text = ' '.join(' '.join(p.extract_text() for p in PdfReader(output).pages).split())
+    assert 'Position repair Boards / trials' in text
+    assert 'Condition Boards / trials' in text
+    assert 'Boards / valid / all' not in text
