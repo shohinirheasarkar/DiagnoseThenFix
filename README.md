@@ -49,7 +49,8 @@ older one-tick/repeated-action logs are only a risk-disagreement proxy.
 
 See [the preregistration](preregistration.md). Built on
 [RealtimeGym](https://github.com/SALT-NLP/RealtimeGym) and
-[Wen et al.](https://arxiv.org/abs/2511.04898). Stage diagnosis itself is not new.
+[Wen et al.](https://arxiv.org/abs/2511.04898). Stage diagnosis itself is not new. [The source comparison](related_work.md) explains
+what earlier work already covers.
 
 ## Overnight follow-up
 

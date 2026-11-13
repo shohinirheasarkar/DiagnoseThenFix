@@ -316,3 +316,12 @@ later turn. New code keeps the original failure and adds that prefix once in the
 turn's message. It still makes no further generation attempts, and keeps the same
 fallback beliefs and action. The running study's frozen code and raw messages
 remain unchanged. Repeated prefixes in those records are a logging issue.
+
+### Primary-source comparison
+
+A focused comparison now covers all reading-list topics from the uploaded plan,
+plus RealtimeGym's own code-policy baseline. It separates existing ideas from this
+cycle's narrower evidence. Saved code policies, verifier feedback, stage separation,
+history bias and static-to-live gaps are not claimed as new. The paper adds the
+missing closest-work citations; related_work.md gives direct primary-source links.
+This is a focused audit, not an exhaustive proof of priority.
