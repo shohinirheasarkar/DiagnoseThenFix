@@ -96,3 +96,47 @@ def test_queue_finishes_paired_cohorts_and_unloads_before_switching(tmp_path, mo
             assert len(rows) == 50
             assert {r['seed'] for r in rows} == set(range(60000, 60050))
             assert all(r['policy_revision'] == 'v2' for r in rows)
+
+
+def test_request_deadline_blocks_dispatch_but_allows_cleanup(monkeypatch):
+    from types import SimpleNamespace
+    import pytest
+    from scripts import overnight
+    sent = []
+    model = SimpleNamespace(transport=lambda route, payload: sent.append((route, payload)))
+    overnight.deadline_model(model, 100)
+    monkeypatch.setattr(overnight.time, 'time', lambda: 99)
+    model.transport('/api/chat', {'messages': ['hello']})
+    monkeypatch.setattr(overnight.time, 'time', lambda: 100)
+    for route, payload in [('/api/chat', {}), ('/api/generate', {'prompt': 'hello'}),
+                           ('/api/generate', {'keep_alive': 0, 'prompt': 'hello'}),
+                           ('/api/generate', {'keep_alive': 0, 'messages': ['hello']})]:
+        with pytest.raises(TimeoutError, match='before request dispatch'):
+            model.transport(route, payload)
+    assert len(sent) == 1
+    model.transport('/api/generate', {'model': 'test', 'keep_alive': 0})
+    model.transport('/api/tags', None)
+    assert len(sent) == 3
+
+
+def test_deadline_errors_are_recorded_without_cache_or_server_call(tmp_path, monkeypatch):
+    from diagnose.model import LocalModel
+    from scripts import overnight
+    sent = []
+    def transport(route, payload):
+        if route == '/api/tags':
+            return {'models': [{'name': 'test', 'digest': 'hash'}]}
+        if route == '/api/chat':
+            sent.append(payload)
+            return {'message': {'content': '{}'}}
+        return {}
+    model = overnight.deadline_model(LocalModel('test', cache=tmp_path, transport=transport), 100)
+    monkeypatch.setattr(overnight.time, 'time', lambda: 99)
+    cached = model.ask('saved')
+    assert cached['error'] is None and len(sent) == 1
+    monkeypatch.setattr(overnight.time, 'time', lambda: 100)
+    assert model.ask('saved')['cache_hit']
+    blocked = model.ask('new')
+    assert 'before request dispatch' in blocked['error'] and not blocked['raw']
+    assert not (tmp_path/f"{blocked['key']}.json").exists()
+    assert len(sent) == 1

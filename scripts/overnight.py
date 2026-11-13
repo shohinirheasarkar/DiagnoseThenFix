@@ -21,6 +21,20 @@ def save(path, value):
     temporary.replace(path)
 
 
+def deadline_model(model, stop):
+    transport = model.transport
+
+    def send(route, payload):
+        unload = (route == '/api/generate' and payload and payload.get('keep_alive') == 0
+                  and not payload.get('prompt') and not payload.get('messages'))
+        if route in ('/api/chat', '/api/generate') and not unload and time.time() >= stop:
+            raise TimeoutError('Research deadline reached before request dispatch')
+        return transport(route, payload)
+
+    model.transport = send
+    return model
+
+
 def profile(base, diaries, commitments):
     if base.get('split') != 'validation' or any(
             r.get('split') != 'validation' for r in [*diaries, *commitments]):
@@ -82,7 +96,12 @@ def main():
              'source': fingerprint, 'source_commit': (SOURCE/'SOURCE_REVISION').read_text().strip(),
              'context_stop': args.context_stop, 'collection_stop': args.stop,
              'full_research_plan_complete': False, 'policy_revision': 'v2'}
-    state.update(collector_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+    collector_hash = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    state.update(collector_sha256=collector_hash, request_deadline_enforced=True,
+                 collector_sha256_history=list(dict.fromkeys([
+                     *previous.get('collector_sha256_history', []),
+                     *([previous['collector_sha256']] if 'collector_sha256' in previous else []),
+                     collector_hash])),
                  source_commit_history=list(dict.fromkeys([
                      *previous.get('source_commit_history', []),
                      *([previous['source_commit']] if previous else []), state['source_commit']])),
@@ -106,7 +125,7 @@ def main():
         for tag in models:
             if time.time() >= context_stop:
                 break
-            current_model = LocalModel(tag, cache=ROOT/'.cache/model', timeout=90)
+            current_model = deadline_model(LocalModel(tag, cache=ROOT/'.cache/model', timeout=90), stop)
             folder = output/tag.replace(':', '-')
             previous = ROOT/'results/cycle'/tag.replace(':', '-')
             old_profile = json.loads((previous/'profile.json').read_text())
@@ -128,7 +147,7 @@ def main():
                 if not (folder/'profile.json').exists():
                     continue
                 frozen_profile = json.loads((folder/'profile.json').read_text())
-                current_model = LocalModel(tag, cache=ROOT/'.cache/model', timeout=90)
+                current_model = deadline_model(LocalModel(tag, cache=ROOT/'.cache/model', timeout=90), stop)
                 representation = frozen_profile['best_representation']
                 phase_stop = min(context_stop, time.time()+60*state['phase_minutes'][stage])
                 phase = {'stage': stage, 'model': tag, 'started_at': datetime.now(timezone.utc).isoformat(),
@@ -167,7 +186,7 @@ def main():
             if not (folder/'profile.json').exists():
                 continue
             frozen_profile = json.loads((folder/'profile.json').read_text())
-            current_model = LocalModel(tag, cache=ROOT/'.cache/model', timeout=90)
+            current_model = deadline_model(LocalModel(tag, cache=ROOT/'.cache/model', timeout=90), stop)
             save(folder/'live-design.json', {'source': source_fingerprint(), 'model': tag,
                   'digest': current_model.digest, 'version': current_model.version,
                   'profile': frozen_profile, 'tick_seconds': 1., 'seeds': [60000, 60049],
