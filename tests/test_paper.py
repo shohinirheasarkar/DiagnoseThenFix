@@ -370,3 +370,40 @@ def test_related_work_marks_existing_code_policies_and_conversion_limits(tmp_pat
     for phrase in ('already evaluates code-as-policy', 'AutoHarness', 'XiangqiBench',
                    'Seeing Without Understanding', 'not an exhaustive priority search'):
         assert phrase in text
+
+
+def test_live_details_distinguish_program_availability_from_execution_and_missing_data():
+    from paper.build import live_details
+    def frame(repairs, validated, seconds):
+        return {'response': {'repairs': repairs, 'program_validated': validated, 'seconds': seconds}}
+    records = [{'trace': [frame(['code'], True, 1), frame(['code'], False, 3), frame([], True, 2)],
+                'collisions': 2, 'final_lane': 8, 'longest_stay_loop': 4},
+               {'trace': [frame(['code'], False, 2)], 'collisions': 0, 'final_lane': 2,
+                'longest_stay_loop': 2}]
+    result = live_details(records)
+    assert result['code_enabled_decisions'] == 3 and result['available_program_decisions'] == 1
+    assert result['mean_decision_seconds'] == 2 and result['mean_final_lane'] == 5
+    assert result['mean_collisions'] == 1 and result['mean_stay_loop'] == 3
+    assert live_details([{'trace': []}])['mean_collisions'] is None
+    assert live_details([])['mean_decision_seconds'] is None
+
+
+def test_followup_pdf_explains_unavailable_code_repairs(tmp_path):
+    from paper.build import analyze_followup
+    folder = tmp_path/'model'
+    folder.mkdir()
+    (folder/'profile.json').write_text('{"model":"test-model"}')
+    record = {'policy_revision': 'v2', 'seed': 60000, 'success': False, 'censored': False,
+              'calls': 1, 'tokens': 10, 'collisions': 0, 'final_lane': 9, 'longest_stay_loop': 1,
+              'trace': [{'response': {'repairs': ['code'], 'program_validated': False,
+                                       'seconds': 3, 'error': 'training failure'}}]}
+    (folder/'live-selected.jsonl').write_text(json.dumps(record)+'\n')
+    (tmp_path/'empty').mkdir()
+    evidence = analyze(tmp_path/'empty', Path('data/freeway.json'))
+    evidence['followup'] = analyze_followup(tmp_path)
+    output = tmp_path/'availability.pdf'
+    build(evidence, output, [], tmp_path)
+    text = ' '.join(' '.join(p.extract_text() for p in PdfReader(output).pages).split())
+    assert 'Code available / enabled' in text and '0/1' in text
+    assert 'cannot test transfer of a successful code repair' in text
+    assert 'excludes implicit waiting' in text

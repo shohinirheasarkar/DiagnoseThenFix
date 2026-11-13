@@ -446,6 +446,19 @@ def analyze_compiled(root):
     return output
 
 
+def live_details(complete):
+    frames = [t for r in complete for t in r['trace']]
+    eligible = [t for t in frames if 'code' in t['response'].get('repairs', [])]
+    def mean(key):
+        return statistics.mean(r[key] for r in complete) if complete and all(key in r for r in complete) else None
+    return {'code_enabled_decisions': len(eligible),
+            'available_program_decisions': sum(bool(t['response'].get('program_validated')) for t in eligible),
+            'mean_decision_seconds': statistics.mean(t['response']['seconds'] for t in frames)
+                if frames and all('seconds' in t['response'] for t in frames) else None,
+            'mean_collisions': mean('collisions'), 'mean_final_lane': mean('final_lane'),
+            'mean_stay_loop': mean('longest_stay_loop')}
+
+
 def analyze_followup(root):
     from collections import defaultdict
     from diagnose.context import summarize as context_summary
@@ -495,7 +508,7 @@ def analyze_followup(root):
                 raise ValueError('Duplicate completed live seed')
             condition = path.name.removesuffix('.gz').removesuffix('.jsonl')[5:]
             completed[condition] = {r['seed']: r for r in complete}
-            output['live'].append({'model': profile['model'], 'condition': condition,
+            output['live'].append({**live_details(complete), 'model': profile['model'], 'condition': condition,
                 'episodes': len(complete), 'censored': len(group)-len(complete),
                 'episode_seeds': sorted(seeds), 'successes': sum(r['success'] for r in complete),
                 'success_wilson': wilson(sum(r['success'] for r in complete), len(complete)),
@@ -516,7 +529,7 @@ def analyze_followup(root):
                     'paired_episodes': len(shared), 'success_change': bootstrap(paired, 'difference')})
     for path in sorted(root.glob('baseline-*.jsonl*')):
         group = rows(path)
-        output['live'].append({'model': 'simulator control',
+        output['live'].append({**live_details(group), 'model': 'simulator control',
               'condition': path.name.removesuffix('.gz').removesuffix('.jsonl')[9:],
               'episodes': len(group), 'censored': 0, 'successes': sum(r['success'] for r in group),
               'success_wilson': wilson(sum(r['success'] for r in group), len(group)),
@@ -1113,6 +1126,25 @@ def build(evidence, output, figures, root):
         else:
             paragraph('No v2 live episode is included yet. Better frozen forecasts alone do not '
                       'show that the new agent reaches the goal.')
+        agents = [r for r in followup['live'] if r['model'] != 'simulator control']
+        if agents:
+            table(['Model / condition', 'Decisions', 'Code available / enabled', 'Charged sec / decision',
+                   'Collisions / run', 'Final lane', 'Longest S proposals'],
+                  [[r['model'].replace('qwen3:', '').replace('-q4_K_M', '')+' / '+r['condition'],
+                    r['decisions'], f'{r["available_program_decisions"]}/{r["code_enabled_decisions"]}',
+                    *[f'{r[key]:.1f}' if r[key] is not None else '-' for key in
+                      ('mean_decision_seconds', 'mean_collisions', 'mean_final_lane', 'mean_stay_loop')]]
+                   for r in agents], [86, 52, 84, 84, 70, 66, 86])
+            paragraph('Secondary details use completed episodes only. Program availability counts '
+                      'a validated program on a code-enabled decision; it does not prove that turn '
+                      'used the program. Zero availability among code-enabled decisions means the repair never became '
+                      'available, so these runs cannot test transfer of a successful code repair. '
+                      'Charged seconds include cached request durations and local elapsed execution '
+                      'time. Final lane is 9 at start and 0 at the goal; collisions reset progress. '
+                      'The last column averages the longest sequence of proposed S actions per run, '
+                      'including a last proposal that timed out. It excludes implicit waiting during '
+                      'reasoning. Counts of unavailable repairs are not evidence of a unique internal '
+                      'model failure.', 'SmallNote')
         if followup['live_paired']:
             table(['Model', 'V2 contrast vs base', 'Shared episodes', 'Success change [pp, 95% CI]'],
                   [[r['model'].replace('qwen3:', '').replace('-q4_K_M', ''), r['condition'],

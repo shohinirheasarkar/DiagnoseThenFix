@@ -334,3 +334,12 @@ neural live logs are excluded from this interim snapshot. CI replays the new
 archive as well as the first study. Final packaging will use a fresh staging
 archive and replace this snapshot consistently after collection stops; it must
 keep the same closed raw records and add the actual live outcomes.
+
+### Live repair availability
+
+The follow-up paper now reports whether a checked program was available on each
+code-enabled decision, alongside charged decision time, collisions, final lane,
+and proposed stay streaks. Availability is not execution. A repair that never
+passes its training checks cannot establish whether a successful forecast repair
+would transfer to live play. These secondary details exclude censored episodes;
+missing metrics stay unavailable rather than becoming zero.
