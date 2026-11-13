@@ -271,3 +271,14 @@ conditions after this fix. Never pool its results with v1. The frozen neural v2
 collector retains its original package; this fix does not silently change that
 running study. Core input normalization and the saved-program replay are separate
 from a claim about an LLM's internal forecasting skill.
+
+### Reporting the saved-program pilot
+
+The paper keeps both adapter versions and all four gate/delay conditions separate.
+Intervals resample five generated programs and shared environment seeds as two
+crossed axes. Balanced estimates require all five programs on common completed
+seeds; partial counts stay visible. Per-program intervals and paired contrasts
+are saved in evidence JSON. The parser and selector are human-provided assistance,
+and repeated generation delay is a synthetic charge. No new model call occurs.
+The analysis rejects changed source programs, duplicate completed cases, or fresh
+requests disguised as offline replay. This remains an exploratory pilot.

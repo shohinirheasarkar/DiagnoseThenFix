@@ -300,6 +300,92 @@ def analyze(root, bank_path):
     return output
 
 
+def crossed_interval(values, seed=0, replicates=2000):
+    import random
+    programs = sorted(values)
+    shared = sorted(set.intersection(*(set(values[p]) for p in programs))) if programs == list(range(5)) else []
+    result = {'mean': None, 'low': None, 'high': None, 'programs': len(programs),
+              'episodes': len(shared), 'observations': len(programs)*len(shared)}
+    if not shared:
+        return result
+    grid = [[float(values[p][e]) for e in shared] for p in programs]
+    rng = random.Random(seed)
+    estimates = []
+    for _ in range(replicates):
+        ps = rng.choices(range(5), k=5)
+        es = rng.choices(range(len(shared)), k=len(shared))
+        estimates.append(sum(grid[p][e] for p in ps for e in es)/(5*len(shared)))
+    estimates.sort()
+    result.update(mean=sum(map(sum, grid))/(5*len(shared)),
+                  low=estimates[int(.025*(replicates-1))], high=estimates[int(.975*(replicates-1))])
+    return result
+
+
+def analyze_compiled(root):
+    from collections import defaultdict
+    from diagnose.compiled import prepare
+    groups, source_programs = defaultdict(list), {}
+    for path in sorted(Path(root).rglob('episodes.jsonl*')):
+        for record in rows(path):
+            if record.get('protocol') not in ('compiled-controller-v1', 'compiled-controller-v2'):
+                continue
+            protocol = record['protocol']
+            if any(t['response']['fresh_requests'] != 0 for t in record['trace']):
+                raise ValueError('Compiled replay contains fresh requests')
+            key = (protocol, record['model'], record['condition'], record['validation'])
+            groups[key].append(record)
+            program_key = (protocol, record['model'], record['program_seed'])
+            if program_key in source_programs and source_programs[program_key] != record['generation_response']:
+                raise ValueError('Compiled source program changed')
+            source_programs[program_key] = record['generation_response']
+    output = {'groups': [], 'programs': [], 'contrasts': [], 'complete': 0, 'censored': 0,
+              'source_programs': len({r['key'] for r in source_programs.values()})}
+    matrices = {}
+    for (protocol, model, condition, validation), records in sorted(groups.items()):
+        complete = [r for r in records if not r['censored']]
+        output['complete'] += len(complete)
+        output['censored'] += len(records)-len(complete)
+        matrix = defaultdict(dict)
+        for r in complete:
+            if r['seed'] in matrix[r['program_seed']]:
+                raise ValueError('Duplicate completed compiled case')
+            matrix[r['program_seed']][r['seed']] = int(r['success'])
+        matrices[(protocol, model, condition, validation)] = matrix
+        output['groups'].append({'protocol': protocol, 'model': model, 'condition': condition, 'validation': validation,
+             'episodes': len(complete), 'censored': len(records)-len(complete),
+             'successes': sum(r['success'] for r in complete), 'success': crossed_interval(matrix),
+             'mean_tokens': statistics.mean(r['tokens'] for r in complete) if complete else None,
+             'mean_calls': statistics.mean(r['calls'] for r in complete) if complete else None,
+             'mean_collisions': statistics.mean(r['collisions'] for r in complete) if complete else None,
+             'mean_stay_loop': statistics.mean(r['longest_stay_loop'] for r in complete) if complete else None,
+             'fresh_requests': sum(t['response']['fresh_requests'] for r in records for t in r['trace'])})
+        for program_seed in range(5):
+            subset = [r for r in complete if r['program_seed'] == program_seed]
+            if not subset:
+                continue
+            _, parse_error, training_error = prepare(source_programs[(protocol, model, program_seed)], 'executable',
+                 native_inputs=protocol == 'compiled-controller-v2')
+            output['programs'].append({'protocol': protocol, 'model': model, 'program_seed': program_seed,
+                  'condition': condition, 'validation': validation, 'episodes': len(subset),
+                  'successes': sum(r['success'] for r in subset),
+                  'success_wilson': wilson(sum(r['success'] for r in subset), len(subset)),
+                  'executable': parse_error is None, 'training_passed': parse_error is None and training_error is None,
+                  'generation_key': source_programs[(protocol, model, program_seed)]['key']})
+    for protocol, model in sorted({key[:2] for key in groups}):
+        contrasts = [('once minus per-turn / '+v, ('amortized', v), ('per_turn', v))
+                     for v in ('executable', 'checked')]
+        contrasts += [('checked minus executable / '+c, (c, 'checked'), (c, 'executable'))
+                      for c in ('amortized', 'per_turn')]
+        for name, candidate_key, base_key in contrasts:
+            candidate = matrices.get((protocol, model, *candidate_key), {})
+            base = matrices.get((protocol, model, *base_key), {})
+            paired = {p: {e: candidate[p][e]-base[p][e] for e in candidate[p].keys() & base[p].keys()}
+                      for p in candidate.keys() & base.keys()}
+            output['contrasts'].append({'protocol': protocol, 'model': model, 'contrast': name,
+                                       'success_change': crossed_interval(paired)})
+    return output
+
+
 def analyze_followup(root):
     from collections import defaultdict
     from diagnose.context import summarize as context_summary
@@ -376,6 +462,7 @@ def analyze_followup(root):
               'success_wilson': wilson(sum(r['success'] for r in group), len(group)),
               'mean_tokens': 0, 'mean_calls': 0, 'error_decisions': 0, 'decisions': 0,
               'validated_program_decisions': 0})
+    output['compiled'] = analyze_compiled(root)
     return output
 
 
@@ -909,6 +996,32 @@ def build(evidence, output, figures, root):
                   'thinking sweeps, extra model families, causal cascades, or cost-matched controls. '
                   'A simulator-assisted program repair and a short history manipulation cannot '
                   'establish a unique internal failure cause or the value of diagnosis targeting.')
+        compiled = followup['compiled']
+        if compiled['groups']:
+            heading('6.2. Saved programs and delay')
+            paragraph(f'This separate replay used {compiled["source_programs"]} saved generation '
+                      f'requests and completed {compiled["complete"]:,} program-episode cases '
+                      f'({compiled["censored"]} censored). It made no fresh model requests. Each model '
+                      'has only five generated programs. Fifty shared environment seeds per program '
+                      'do not make 250 independent program samples.')
+            paragraph('Canonical object parsing and a fixed action selector assist this controller. '
+                      'Executable programs may have wrong physics. The checked gate rejects any '
+                      'program that fails fixed training examples and falls back to staying still. '
+                      'Saved generation delay is charged once per episode or on every turn; the '
+                      'per-turn charge is synthetic, not a fresh measured call. Local execution '
+                      'time is measured in both cases. These controls do not isolate diagnosis targeting.')
+            table(['Version / model', 'Charge / gate', 'Goals / complete', 'Success [95% CI]'],
+                  [[r['protocol'].removeprefix('compiled-controller-')+' / '+
+                    r['model'].replace('qwen3:', '').replace('-q4_K_M', ''),
+                    r['condition']+' / '+r['validation'],
+                    f'{r["successes"]}/{r["episodes"]}', ci(r['success'])]
+                   for r in compiled['groups']], [95, 160, 100, 173])
+            paragraph('Intervals resample generated programs and shared environment seeds as two '
+                      'crossed axes. They require all five programs on a common completed seed set; '
+                      'partial counts remain visible. Version 1 preserves an audited NumPy-number '
+                      'adapter bug. Version 2 fixes that adapter and repeats the same design. '
+                      'They are never pooled. The concurrently frozen neural v2 study retains its '
+                      'original adapter. Per-program results and paired contrasts are in evidence JSON.')
     heading('7. Limits and unfinished tests')
     paragraph('The complete research plan is not finished. This cycle does not establish '
               'cross-game generality, thinking-mode effects, causal cascade attribution, or '

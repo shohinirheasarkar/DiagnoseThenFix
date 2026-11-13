@@ -228,3 +228,66 @@ def test_followup_context_table_uses_test_boards_only(tmp_path):
     text = '\n'.join(p.extract_text() for p in PdfReader(output).pages)
     assert '2 held-out diary/framing trials' in text and 'Unsafe flip' in text
     assert '100.0%' in text
+
+
+def test_crossed_interval_keeps_shared_environment_dependence():
+    from paper.build import crossed_interval
+    result = crossed_interval({p: {10: 0, 11: 1} for p in range(5)})
+    assert result['mean'] == .5 and result['low'] == 0 and result['high'] == 1
+    assert crossed_interval({p: {10: 1} for p in range(4)})['mean'] is None
+    assert crossed_interval({p: {10: 1} for p in range(1, 6)})['mean'] is None
+
+
+def test_compiled_analysis_separates_versions_and_rejects_changed_sources(tmp_path):
+    from copy import deepcopy
+    import pytest
+    from paper.build import analyze_compiled
+    from test_compiled import generation
+    folder = tmp_path/'compiled'
+    folder.mkdir()
+    records = []
+    for version in (1, 2):
+        for p in range(5):
+            records.append({'protocol': f'compiled-controller-v{version}', 'model': 'test-model',
+                            'program_seed': p, 'condition': 'amortized', 'validation': 'executable',
+                            'generation_response': generation(p), 'seed': 60000, 'success': version == 2,
+                            'censored': False, 'tokens': 42, 'calls': 1, 'collisions': 0,
+                            'longest_stay_loop': 0, 'trace': []})
+    path = folder/'episodes.jsonl'
+    def save():
+        path.write_text(''.join(json.dumps(r)+'\n' for r in records))
+    save()
+    result = analyze_compiled(tmp_path)
+    assert result['source_programs'] == 5 and result['complete'] == 10
+    assert [g['success']['mean'] for g in result['groups']] == [0, 1]
+    duplicate = deepcopy(records[0])
+    records.append(duplicate)
+    save()
+    with pytest.raises(ValueError, match='Duplicate'):
+        analyze_compiled(tmp_path)
+    duplicate['seed'] += 1
+    duplicate['generation_response']['key'] = 'changed'
+    save()
+    with pytest.raises(ValueError, match='source program changed'):
+        analyze_compiled(tmp_path)
+    records.pop()
+    records[0]['trace'] = [{'response': {'fresh_requests': 1}}]
+    save()
+    with pytest.raises(ValueError, match='fresh requests'):
+        analyze_compiled(tmp_path)
+
+
+def test_compiled_paper_table_has_protocol_and_assistance_caveats(tmp_path):
+    from paper.build import analyze_followup
+    evidence = analyze(tmp_path, Path('data/freeway.json'))
+    evidence['followup'] = analyze_followup(tmp_path)
+    evidence['followup']['compiled'] = {'source_programs': 5, 'complete': 250, 'censored': 0,
+        'groups': [{'protocol': 'compiled-controller-v2', 'model': 'test-model',
+                    'condition': 'amortized', 'validation': 'executable', 'successes': 3,
+                    'episodes': 250, 'success': {'mean': .012, 'low': 0, 'high': .04}}]}
+    output = tmp_path/'compiled.pdf'
+    build(evidence, output, [], tmp_path)
+    text = '\n'.join(p.extract_text() for p in PdfReader(output).pages)
+    assert 'Saved programs and delay' in text and '3/250' in text
+    assert 'synthetic' in text and 'crossed axes' in text
+    assert 'never pooled' in text and 'five generated programs' in text
