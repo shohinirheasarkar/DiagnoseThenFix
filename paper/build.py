@@ -611,6 +611,7 @@ def build(evidence, output, figures, root):
         block = Paragraph(text, styles[style])
         story.append(KeepTogether([block]) if style == 'SmallNote' else block)
         markdown.append(text.replace('<b>', '**').replace('</b>', '**'))
+        return block
 
     def heading(text):
         story.append(Paragraph(text, styles['Heading2']))
@@ -778,27 +779,25 @@ def build(evidence, output, figures, root):
         scale = min(528/picture.imageWidth, 290/picture.imageHeight)
         picture.drawWidth, picture.drawHeight = picture.imageWidth*scale, picture.imageHeight*scale
         picture.hAlign = 'CENTER'
-        picture.keepWithNext = True
         story.append(picture)
-        paragraph('Figure 1. Forecast accuracy by horizon. Shading shows episode-cluster bootstrap '
+        caption = paragraph('Figure 1. Forecast accuracy by horizon. Shading shows episode-cluster bootstrap '
                   'intervals. Each panel uses the actual completed trials; inspect the evidence JSON '
                   'for per-horizon counts. Oracle predictions define the horizontal ceiling. '
                   'The linear control is computed on the same states.', 'SmallNote')
-        story[-2:] = [KeepTogether(story[-2:])]
+        story[-2:] = [KeepTogether([picture, caption])]
     if len(figures) > 1:
         picture = Image(str(figures[1]))
         scale = min(528/picture.imageWidth, 180/picture.imageHeight)
         picture.drawWidth, picture.drawHeight = picture.imageWidth*scale, picture.imageHeight*scale
         picture.hAlign = 'CENTER'
-        picture.keepWithNext = True
         story.append(picture)
-        paragraph('Figure 2. Signed coordinate error on valid numeric position replies only, '
+        caption = paragraph('Figure 2. Signed coordinate error on valid numeric position replies only, '
                   'with episode-cluster bootstrap intervals. Zero means no average coordinate '
                   'bias, not perfect forecasts: opposite errors can cancel. This is ordinary '
                   'predicted x minus true x, not circular distance or distance along travel. '
                   'Wrap can create large jumps. Invalid replies remain incorrect in accuracy '
                   'but cannot enter this numeric summary.', 'SmallNote')
-        story[-2:] = [KeepTogether(story[-2:])]
+        story[-2:] = [KeepTogether([picture, caption])]
     if models:
         body = [[name.replace('qwen3:', '').replace('-q4_K_M', ''), m['profile']['best_representation'],
                  str(m['f_largest_80']), str(m['f_prefix_80']),
