@@ -210,3 +210,49 @@ def test_packaging_detects_a_source_that_changes_while_being_read(tmp_path, monk
     with pytest.raises(ValueError, match='Source changed'):
         package(source, destination)
     assert not (destination/'archive.json').exists()
+
+
+def test_bank_search_checks_labels_without_calling_the_labeler(tmp_path, monkeypatch):
+    from scripts.check_evidence import verify_bank
+    from diagnose.world import State
+    rows = []
+    for lane in (1, 5, 9):
+        state = State((), lane=lane)
+        rows.append({'id': state.key, 'state': state.to_dict(), 'oracle': label(state, 3)})
+    path = tmp_path/'bank.json'
+    path.write_text(json.dumps({'situations': rows}))
+    def unavailable(*args, **kwargs):
+        raise AssertionError('Reference audit must not call the oracle labeler')
+    monkeypatch.setattr('diagnose.world.oracle', unavailable)
+    monkeypatch.setattr('diagnose.world.label', unavailable)
+    result = verify_bank(path)
+    assert result['states'] == 3 and result['nodes'] > 0
+    rows[1]['oracle']['safe'] = []
+    path.write_text(json.dumps({'situations': rows}))
+    with pytest.raises(ValueError, match='search label mismatch'):
+        verify_bank(path)
+
+
+def test_bank_search_refuses_partial_checks_and_wrong_required_depth(tmp_path):
+    from scripts.check_evidence import verify_bank
+    from diagnose.world import State
+    state = State((), lane=9)
+    row = {'id': state.key, 'state': state.to_dict(), 'oracle': label(state, 3)}
+    path = tmp_path/'bank.json'
+    path.write_text(json.dumps({'situations': [row]}))
+    with pytest.raises(ValueError, match='budget exhausted'):
+        verify_bank(path, node_budget=0)
+    row['oracle']['required_foresight'] = 3
+    path.write_text(json.dumps({'situations': [row]}))
+    with pytest.raises(ValueError, match='required-foresight mismatch'):
+        verify_bank(path)
+
+
+def test_published_bank_search_report_matches_its_inputs_and_implementation():
+    import hashlib
+    report = json.loads(Path('data/freeway-search-audit.json').read_text())
+    assert report['states'] == 500 and report['nodes'] > 500
+    for field, path in [('bank_sha256', 'data/freeway.json'),
+                        ('checker_sha256', 'scripts/check_evidence.py'),
+                        ('physics_sha256', 'diagnose/world.py')]:
+        assert report[field] == hashlib.sha256(Path(path).read_bytes()).hexdigest()

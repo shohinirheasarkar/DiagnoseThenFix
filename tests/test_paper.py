@@ -407,3 +407,13 @@ def test_followup_pdf_explains_unavailable_code_repairs(tmp_path):
     assert 'Code available / enabled' in text and '0/1' in text
     assert 'cannot test transfer of a successful code repair' in text
     assert 'excludes implicit waiting' in text
+
+
+def test_paper_rejects_a_search_audit_for_a_different_bank(tmp_path):
+    import pytest
+    bank = tmp_path/'bank.json'
+    bank.write_bytes(Path('data/freeway.json').read_bytes())
+    audit = tmp_path/'bank-search-audit.json'
+    audit.write_text(json.dumps({'states': 500, 'bank_sha256': 'wrong'}))
+    with pytest.raises(ValueError, match='does not match this bank'):
+        analyze(tmp_path, bank)

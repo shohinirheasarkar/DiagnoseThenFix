@@ -180,6 +180,61 @@ def verify_commitment(record, situation):
         raise ValueError('Commitment score mismatch')
 
 
+def verify_bank(bank_path, node_budget=1000000):
+    from functools import lru_cache
+    from diagnose.world import ACTIONS
+    payload = Path(bank_path).read_bytes()
+    bank = json.loads(payload)['situations']
+    checked, total_nodes = 0, 0
+    for row in bank:
+        state = State.from_dict(row['state'])
+        horizon = row['oracle']['horizon']
+        if state.key != row['id'] or horizon < 1 or state.lane == 0 or state.turn >= 100:
+            raise ValueError('Invalid bank state identity or horizon')
+        nodes = 0
+        transition = lru_cache(None)(step)
+        def value(current, remaining):
+            nonlocal nodes
+            nodes += 1
+            if nodes > node_budget:
+                raise ValueError('Bank search node budget exhausted; no complete certificate')
+            if remaining == 0:
+                return (1, 0, -current.lane)
+            best = (0, 0, -10)
+            for action in ACTIONS:
+                following, event = transition(current, action)
+                score = ((0, 0, -10) if event in ('collision', 'timeout') else
+                         (1, 1, 0) if event == 'goal' else value(following, remaining-1))
+                best = max(best, score)
+                if best == (1, 1, 0):
+                    break
+            return best
+        def reference(depth):
+            scores = {}
+            for action in ACTIONS:
+                following, event = transition(state, action)
+                scores[action] = ((0, 0, -10) if event in ('collision', 'timeout') else
+                                  (1, 1, 0) if event == 'goal' else value(following, depth-1))
+            safe = [a for a in ACTIONS if scores[a][0]]
+            optimal = [a for a in ACTIONS if scores[a] == max(scores.values())] if safe else []
+            return {'safe': safe, 'optimal': optimal, 'choice': optimal[0] if optimal else None,
+                    'scores': {a: list(v) for a, v in scores.items()}, 'horizon': depth}
+        expected = reference(horizon)
+        if any(row['oracle'][key] != value for key, value in expected.items()):
+            raise ValueError('Bank search label mismatch: '+row['id'])
+        required = next((depth for depth in range(1, horizon+1)
+                         if reference(depth)['choice'] in expected['safe']), None) if expected['safe'] else None
+        if required != row['oracle']['required_foresight']:
+            raise ValueError('Bank required-foresight mismatch: '+row['id'])
+        checked += 1
+        total_nodes += nodes
+    return {'states': checked, 'nodes': total_nodes, 'bank_sha256': hashlib.sha256(payload).hexdigest(),
+            'method': 'uncached path search; failed branches stop; goal is an exact upper bound',
+            'physics': 'shared replay step; differential upstream tests remain separate',
+            'checker_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+            'physics_sha256': hashlib.sha256((Path(__file__).resolve().parents[1]/'diagnose/world.py').read_bytes()).hexdigest()}
+
+
 def check(root, bank_path=Path('data/freeway.json')):
     root = Path(root)
     bank = {r['id']: r for r in json.loads(Path(bank_path).read_text())['situations']}
@@ -262,10 +317,17 @@ def check(root, bank_path=Path('data/freeway.json')):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('results', type=Path)
+    parser.add_argument('results', type=Path, nargs='?')
+    parser.add_argument('--bank-search', action='store_true', help='Independently check search labels on every bank state')
     parser.add_argument('--bank', type=Path, default=Path('data/freeway.json'))
     args = parser.parse_args()
-    print(json.dumps(check(args.results, args.bank), indent=2))
+    if args.bank_search:
+        result = verify_bank(args.bank)
+    elif args.results is not None:
+        result = check(args.results, args.bank)
+    else:
+        parser.error('Choose a results folder or --bank-search')
+    print(json.dumps(result, indent=2))
 
 
 if __name__ == '__main__':

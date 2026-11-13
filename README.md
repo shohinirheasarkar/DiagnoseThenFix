@@ -38,6 +38,7 @@ These commands use [saved evidence](results/review), with no model calls:
 
 ```sh
 python scripts/check_evidence.py results/review
+python scripts/check_evidence.py --bank-search
 python paper/build.py --results results/review --output output/pdf/diagnose-then-repair.pdf
 ```
 

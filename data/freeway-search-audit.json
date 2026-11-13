@@ -1,0 +1,9 @@
+{
+  "states": 500,
+  "nodes": 7961721,
+  "bank_sha256": "0d2e1d39ada9885679dfe2f1146d4371d9ecd2fa8fe50c4652cb188178900002",
+  "method": "uncached path search; failed branches stop; goal is an exact upper bound",
+  "physics": "shared replay step; differential upstream tests remain separate",
+  "checker_sha256": "8cc6e190369f1cc2163e7656f40cc01c819a719b688615ca124966dbde2674a2",
+  "physics_sha256": "e4941972aa549fef5f32e9fc541f347699fad9300b3d3ba3bfef4ab77fe145a1"
+}
