@@ -1,6 +1,6 @@
 {
   "started_at": "2026-11-13T08:20:34.430301+00:00",
-  "resumed_at": "2026-11-13T08:41:26.877509+00:00",
+  "resumed_at": "2026-11-13T13:10:08.993087+00:00",
   "status": "running",
   "source": "503f7e74f17c66679cc11da5e323f2f3fa4708ec1f2ef3af57e0c43394ed5d34",
   "source_commit": "d393c4e4f473381fa11127952482264076563545",
@@ -8,7 +8,12 @@
   "collection_stop": "2026-11-13T15:05:00+00:00",
   "full_research_plan_complete": false,
   "policy_revision": "v2",
-  "collector_sha256": "ae8544654fa61d292faa63d2a3ec5ea8be262144d41b6b2b8b0d9e72d65de9dc",
+  "collector_sha256": "fd5e1e76ff6c745e9e75e512bc884c7f761dd4adc82b0b8d5392c16e034bf7c7",
+  "request_deadline_enforced": true,
+  "collector_sha256_history": [
+    "ae8544654fa61d292faa63d2a3ec5ea8be262144d41b6b2b8b0d9e72d65de9dc",
+    "fd5e1e76ff6c745e9e75e512bc884c7f761dd4adc82b0b8d5392c16e034bf7c7"
+  ],
   "source_commit_history": [
     "9963e57543eb72dce70a9c01e12cd12a972e3808",
     "d393c4e4f473381fa11127952482264076563545"

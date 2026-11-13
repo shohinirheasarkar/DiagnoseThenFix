@@ -1,0 +1,265 @@
+{
+  "source": "503f7e74f17c66679cc11da5e323f2f3fa4708ec1f2ef3af57e0c43394ed5d34",
+  "model": "qwen3:1.7b-q4_K_M",
+  "digest": "8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7",
+  "version": {
+    "version": "0.40.16"
+  },
+  "profile": {
+    "split": "validation",
+    "model": "qwen3:1.7b-q4_K_M",
+    "digest": "8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7",
+    "best_representation": "coordinates",
+    "representation_accuracy": {
+      "ascii": 0.36,
+      "coordinates": 0.4,
+      "prose": 0.34,
+      "lanes": 0.06,
+      "relations": 0.28,
+      "json": 0.3
+    },
+    "A": 0.36,
+    "B": 0.10416666666666667,
+    "C": 1,
+    "prior": {
+      "scores": {
+        "U": -1.8843027353286743,
+        "S": -6.714560031890869,
+        "D": -0.16626986391067167
+      },
+      "response": {
+        "cache_hit": true,
+        "created_at": "2026-11-12T08:04:54.809325+00:00",
+        "error": null,
+        "identity": {
+          "digest": "8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7",
+          "request": {
+            "keep_alive": "5m",
+            "logprobs": true,
+            "messages": [
+              {
+                "content": "Game rules: U moves one lane toward 0, D toward 9, S stays. Column stays 4.\nThe player moves first. Reaching lane 0 wins before objects update.\nEach object is [head x, lane, timer, speed_parameter p, length].\nIf x<0 set x=8; if x>8 set x=0; either wrap uses the whole tick.\nOtherwise if abs(p)>=1: decrease timer by 1; only if timer becomes -1,\nincrease timer by abs(p) and move head by sign(p).\nIf abs(p)<1: move head by int(1/p). No same-tick modulo wrap.\nAn object occupies x, x-sign(p), ... for its length. After objects move, contact\nwith column 4 in the player's lane causes a collision and resets the board.\nOnly occupied cells at tick endpoints collide; no swept collision rule.\nAt tick 100 the game ends. Prefer safe progress to the goal; don't wait forever.\nA means U, B means S, C means D.\nBOARD MASKED.\nReply with exactly one token: A for U, B for S, C for D.",
+                "role": "user"
+              }
+            ],
+            "model": "qwen3:1.7b-q4_K_M",
+            "options": {
+              "num_ctx": 8192,
+              "num_predict": 1,
+              "seed": 0,
+              "temperature": 1.0
+            },
+            "stream": false,
+            "think": false,
+            "top_logprobs": 20
+          },
+          "version": {
+            "version": "0.40.16"
+          }
+        },
+        "key": "dc8eb34da2195890f0a36cfaa6cee8624f81449e36e5fc7122af38b8670002b0",
+        "raw": {
+          "created_at": "2026-11-12T08:04:54.808431Z",
+          "done": true,
+          "done_reason": "length",
+          "eval_count": 1,
+          "eval_duration": 1000,
+          "load_duration": 1776667,
+          "logprobs": [
+            {
+              "bytes": [
+                67
+              ],
+              "logprob": -0.16626986861228943,
+              "token": "C",
+              "top_logprobs": [
+                {
+                  "bytes": [
+                    67
+                  ],
+                  "logprob": -0.16626986861228943,
+                  "token": "C"
+                },
+                {
+                  "bytes": [
+                    65
+                  ],
+                  "logprob": -1.8843027353286743,
+                  "token": "A"
+                },
+                {
+                  "bytes": [
+                    66
+                  ],
+                  "logprob": -6.714560031890869,
+                  "token": "B"
+                },
+                {
+                  "bytes": [
+                    68
+                  ],
+                  "logprob": -10.32376766204834,
+                  "token": "D"
+                },
+                {
+                  "bytes": [
+                    69
+                  ],
+                  "logprob": -13.959223747253418,
+                  "token": "E"
+                },
+                {
+                  "bytes": [
+                    83
+                  ],
+                  "logprob": -15.62438678741455,
+                  "token": "S"
+                },
+                {
+                  "bytes": [
+                    85
+                  ],
+                  "logprob": -15.966561317443848,
+                  "token": "U"
+                },
+                {
+                  "bytes": [
+                    82
+                  ],
+                  "logprob": -16.414106369018555,
+                  "token": "R"
+                },
+                {
+                  "bytes": [
+                    70
+                  ],
+                  "logprob": -16.674053192138672,
+                  "token": "F"
+                },
+                {
+                  "bytes": [
+                    73
+                  ],
+                  "logprob": -17.314884185791016,
+                  "token": "I"
+                },
+                {
+                  "bytes": [
+                    76
+                  ],
+                  "logprob": -17.460359573364258,
+                  "token": "L"
+                },
+                {
+                  "bytes": [
+                    71
+                  ],
+                  "logprob": -17.583948135375977,
+                  "token": "G"
+                },
+                {
+                  "bytes": [
+                    80
+                  ],
+                  "logprob": -17.832700729370117,
+                  "token": "P"
+                },
+                {
+                  "bytes": [
+                    77
+                  ],
+                  "logprob": -18.1900691986084,
+                  "token": "M"
+                },
+                {
+                  "bytes": [
+                    78
+                  ],
+                  "logprob": -18.352521896362305,
+                  "token": "N"
+                },
+                {
+                  "bytes": [
+                    84,
+                    104,
+                    101
+                  ],
+                  "logprob": -18.401887893676758,
+                  "token": "The"
+                },
+                {
+                  "bytes": [
+                    79
+                  ],
+                  "logprob": -18.777751922607422,
+                  "token": "O"
+                },
+                {
+                  "bytes": [
+                    89
+                  ],
+                  "logprob": -19.12642478942871,
+                  "token": "Y"
+                },
+                {
+                  "bytes": [
+                    84
+                  ],
+                  "logprob": -19.163822174072266,
+                  "token": "T"
+                },
+                {
+                  "bytes": [
+                    32,
+                    67
+                  ],
+                  "logprob": -19.341629028320312,
+                  "token": " C"
+                }
+              ]
+            }
+          ],
+          "message": {
+            "content": "C",
+            "role": "assistant"
+          },
+          "model": "qwen3:1.7b-q4_K_M",
+          "prompt_eval_cached_count": 3,
+          "prompt_eval_count": 257,
+          "prompt_eval_duration": 319664000,
+          "total_duration": 354735000
+        },
+        "wall_seconds": 0.35619595799653325
+      },
+      "error": null
+    },
+    "D": 1,
+    "history_not_profiled": false,
+    "null_probabilities": {
+      "U": 0.15194016399347038,
+      "S": 0.0012131611685285656,
+      "D": 0.846846674838001
+    },
+    "E": 0.5,
+    "followup_profile": {
+      "D": "worst validation diary stability; invalid pairs score zero",
+      "C": "matched own-forecast consistency; invalid replies score zero",
+      "diary_trials": 168,
+      "commitment_trials": 32,
+      "thresholds": "unchanged fixed A/B .8 and C/D/E .9",
+      "exploratory": true
+    }
+  },
+  "tick_seconds": 1.0,
+  "seeds": [
+    60000,
+    60049
+  ],
+  "max_tokens": 512,
+  "policy_revision": "v2",
+  "conditions": [
+    "base",
+    "selected",
+    "all"
+  ]
+}

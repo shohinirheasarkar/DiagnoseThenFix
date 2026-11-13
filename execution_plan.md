@@ -163,8 +163,9 @@ out, fits fixed line/exponential/cliff families and a flat control, clips predic
 and scores held-out horizons. Missing horizons skip a fold. Overlapping training
 folds limit descriptive intervals. This is not frozen-to-live predictive validity.
 
-The interim archive contains closed probes, both compiled versions and controls;
-neural live logs will join after collection stops. Packaging uses a fresh directory,
+The interim archive contains closed probes, both compiled versions, controls and
+the complete 1.7B live cohort: fifty seeds per condition, 150 runs, zero goals.
+The 4B live cohort is collecting and will join after collection stops. Packaging uses a fresh directory,
 rejects changing inputs, and hashes every JSON evidence file exactly once. Audits
 rebuild prompts/scores, cross-check saved generation sources and replay physical
 trajectories against pinned upstream. CI checks both archives. The final paper must

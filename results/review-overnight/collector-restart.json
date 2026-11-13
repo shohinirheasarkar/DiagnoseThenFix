@@ -1,0 +1,33 @@
+{
+  "reason": "Enforce the fixed research cutoff before every fresh request, including nested repair calls.",
+  "interrupt_sent_at": "2026-11-13T13:09:54.455688+00:00",
+  "old_worker_closed_at": "2026-11-13T13:10:05.272111+00:00",
+  "resume_verified_at": "2026-11-13T13:10:22.792269+00:00",
+  "old_pid": 19368,
+  "new_pid": 28896,
+  "collector_commit": "9cd6ce6ca4592d55133eb73d05d0df60a31fc685",
+  "source_commit": "d393c4e4f473381fa11127952482264076563545",
+  "package_sha256": "503f7e74f17c66679cc11da5e323f2f3fa4708ec1f2ef3af57e0c43394ed5d34",
+  "collector_sha256_history": [
+    "ae8544654fa61d292faa63d2a3ec5ea8be262144d41b6b2b8b0d9e72d65de9dc",
+    "fd5e1e76ff6c745e9e75e512bc884c7f761dd4adc82b0b8d5392c16e034bf7c7"
+  ],
+  "preserved_live_prefixes": {
+    "qwen3-1.7b-q4_K_M/live-selected.jsonl": {
+      "bytes": 13131874,
+      "sha256": "356c7b55190f280b4fe5d75e9820b4d7d2d07a341b5394eb10c525998825f60f",
+      "completed": 43
+    },
+    "qwen3-1.7b-q4_K_M/live-all.jsonl": {
+      "bytes": 10314967,
+      "sha256": "a79ce263a13884942e164110f92dc9ddc31c2268c8da580ad3ded0c123c12870",
+      "completed": 43
+    },
+    "qwen3-1.7b-q4_K_M/live-base.jsonl": {
+      "bytes": 10426301,
+      "sha256": "2df81ef8382dcb38ae1e597153b5323d875c96464aaabbde5c8e89370ed7ea05",
+      "completed": 43
+    }
+  },
+  "limitation": "The interrupted, unwritten episode is not counted as a saved attempt. A retry can reuse cached requests while local execution time is measured again. Completed episode records were retained byte for byte."
+}
