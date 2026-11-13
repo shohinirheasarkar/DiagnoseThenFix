@@ -291,3 +291,32 @@ def test_compiled_paper_table_has_protocol_and_assistance_caveats(tmp_path):
     assert 'Saved programs and delay' in text and '3/250' in text
     assert 'synthetic' in text and 'crossed axes' in text
     assert 'never pooled' in text and 'five generated programs' in text
+
+
+def test_heldout_shapes_never_fit_the_test_episode():
+    from paper.build import heldout_shape_fits
+    records = [{'source_seed': episode, 'task': {'kind': 'position', 'k': k},
+                'score': {'correct': episode != 2}}
+               for episode in range(3) for k in range(1, 5)]
+    result = heldout_shape_fits(records)
+    heldout = next(f for f in result['folds'] if f['source_episode'] == 2)
+    assert heldout['training_episodes'] == [0, 1]
+    assert heldout['scores']['flat']['predictions'] == dict.fromkeys(range(1, 5), 1.)
+    assert heldout['scores']['flat']['curve_mse'] == 1
+    for fold in result['folds']:
+        assert fold['source_episode'] not in fold['training_episodes']
+        for score in fold['scores'].values():
+            assert all(0 <= value <= 1 for value in score['predictions'].values())
+    assert set(result['contrasts_vs_flat']) == {'linear', 'exponential', 'cliff'}
+    assert heldout_shape_fits(records[:4])['summary'] == {}
+
+
+def test_heldout_shapes_reject_missing_horizons_without_filling_them():
+    from paper.build import heldout_shape_fits
+    records = [{'source_seed': episode, 'task': {'kind': 'position', 'k': k},
+                'score': {'correct': k < 3}}
+               for episode in range(3) for k in range(1, 5) if not (episode == 2 and k == 4)]
+    result = heldout_shape_fits(records)
+    assert {f['source_episode'] for f in result['folds']} == {0, 1}
+    for kind, score in result['summary'].items():
+        assert score['curve_mse']['mean'] >= 0 and kind in ('flat', 'linear', 'exponential', 'cliff')

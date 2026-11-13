@@ -282,3 +282,14 @@ are saved in evidence JSON. The parser and selector are human-provided assistanc
 and repeated generation delay is a synthetic charge. No new model call occurs.
 The analysis rejects changed source programs, duplicate completed cases, or fresh
 requests disguised as offline replay. This remains an exploratory pilot.
+
+### Exploratory held-out curve prediction
+
+The original shape RMSE stays labeled in-sample. A separate post-hoc analysis now
+leaves each source episode out before fitting the fixed line/exponential/cliff
+families and a flat control. Predictions are clipped to probabilities. Missing
+horizons skip a fold rather than being filled. Training uses equally weighted
+saved trials; test error averages horizons and then source episodes. Fold membership,
+predictions, Brier scores and descriptive episode-bootstrap intervals are saved.
+Overlapping training folds limit those intervals. This does not establish the
+planned preregistered curve hypothesis or frozen-to-live predictive validity.
