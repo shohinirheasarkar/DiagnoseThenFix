@@ -183,7 +183,8 @@ def verify_commitment(record, situation):
 def check(root, bank_path=Path('data/freeway.json')):
     root = Path(root)
     bank = {r['id']: r for r in json.loads(Path(bank_path).read_text())['situations']}
-    counts = {'forecast_trials': 0, 'commitment_trials': 0, 'live_episodes': 0, 'files': 0}
+    counts = {'forecast_trials': 0, 'commitment_trials': 0, 'context_trials': 0,
+              'live_episodes': 0, 'files': 0}
     archive = root / 'archive.json'
     cycle_path = root / 'cycle.json'
     legacy_terminal_reset = (cycle_path.exists() and
@@ -218,6 +219,10 @@ def check(root, bank_path=Path('data/freeway.json')):
                 if 'task' in record and record['task']['stage'] == 'B':
                     verify_forecast(record, bank[record['state_id']])
                     counts['forecast_trials'] += 1
+                elif 'task' in record and record['task']['stage'] in ('D', 'E') and 'diary' in record['task']:
+                    from diagnose.context import verify
+                    verify(record, bank[record['state_id']])
+                    counts['context_trials'] += 1
                 elif record.get('protocol') == 'repeated-action-commitment-v1':
                     verify_commitment(record, bank[record['state_id']])
                     counts['commitment_trials'] += 1

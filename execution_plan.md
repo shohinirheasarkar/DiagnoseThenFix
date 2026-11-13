@@ -201,3 +201,11 @@ source snapshot, permits one collector per output, rejects changed sources on
 resume, and saves actual completed/censored episodes. The heartbeat must inspect
 that worker before launching any additional model work. It should be quiet while
 collection is healthy and no action is needed.
+
+The context evidence audit now rebuilds the exact prompt, verifies model digest
+and sampling seed, replays both synthetic and real diary outcomes (including
+thinking delays), and checks oracle feedback. Some old diary terminal frames use
+the first cycle's display convention. Their exact old source revision is carried
+into the new records, and only that revision permits its terminal-display rule.
+The waiting worker was restarted before any follow-up trials to include this
+provenance; no collected model results were deleted or changed.

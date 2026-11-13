@@ -1,6 +1,7 @@
 """This keeps the board fixed while changing the diary or story, then checks what changed."""
 import hashlib
 import itertools
+from functools import lru_cache
 import json
 from pathlib import Path
 import random
@@ -38,7 +39,7 @@ def diary(state, kind, length, seed=0, real=()):
     return rows
 
 
-def real_diary(episodes):
+def real_diary(episodes, source_revision=None):
     rows = []
     for episode in episodes:
         for frame in episode['trace']:
@@ -46,6 +47,7 @@ def real_diary(episodes):
                          'applied': frame['action_applied'], 'events': frame['events'],
                          'before': frame['before'], 'after': frame['after'],
                          'source': 'saved model episode', 'episode_seed': episode['seed'],
+                         'source_revision': source_revision,
                          'optimal': frame['response']['action'] in
                          oracle(State.from_dict(frame['before']))['optimal']})
     return rows
@@ -280,6 +282,12 @@ def sign_test(differences, seed=0, draws=20000):
 def verify(record, row):
     t = record['task']
     state = State.from_dict(row['state'])
+    request = record['response']['identity']['request']
+    if (request['messages'] != [{'role': 'user', 'content': t['prompt']}]
+            or request['options']['seed'] != t['seed']
+            or record['response']['identity']['digest'] != record['digest']
+            or record['source_seed'] != state.source_seed):
+        raise ValueError('Context request identity mismatch')
     rebuilt = task(row, t['stage'], t['representation'], t['seed'],
                    **{k: t[k] for k in ('kind', 'length', 'repair', 'outcomes', 'skin',
                                         'labels', 'name_leak', 'reversal', 'paraphrase')},
@@ -294,12 +302,37 @@ def verify(record, row):
     if t['actual_collision'] != actual:
         raise ValueError('Context forecast target mismatch')
     for turn in t['diary']:
-        if turn['source'] == 'simulated diary':
-            following, event = step(State.from_dict(turn['before']), turn['action'])
-            if canonical(following.to_dict()) != canonical(turn['after']) or turn['events'] != [event]:
-                raise ValueError('Fabricated diary outcome mismatch')
+        verify_turn(canonical(turn))
     if score(t, record['response']) != record['score']:
         raise ValueError('Context score mismatch')
+    return True
+
+
+@lru_cache(maxsize=10000)
+def verify_turn(serialized):
+    turn = json.loads(serialized)
+    if turn['source'] not in ('simulated diary', 'saved model episode'):
+        raise ValueError('Unknown diary source')
+    if type(turn['applied']) is not bool or not turn['events'] or turn['action'] not in ACTIONS:
+        raise ValueError('Invalid diary action or event record')
+    current = State.from_dict(turn['before'])
+    if turn['optimal'] != (turn['action'] in oracle(current)['optimal']):
+        raise ValueError('Diary optimal-action feedback mismatch')
+    actions = ['S']*(len(turn['events'])-int(turn['applied']))
+    if turn['applied']:
+        actions.append(turn['action'])
+    if len(actions) != len(turn['events']):
+        raise ValueError('Diary applied-action mismatch')
+    for action, expected in zip(actions, turn['events']):
+        current, event = step(current, action)
+        if event != expected:
+            raise ValueError('Diary outcome mismatch')
+    if (turn.get('source_revision') == 'f71b9259abd055291c7c865659363aa1b3d9ec0f'
+            and current.turn == 100 and turn['events'][-1:] == ['collision']):
+        from dataclasses import replace
+        current = replace(initial(current.source_seed), turn=100)
+    if canonical(current.to_dict()) != canonical(turn['after']):
+        raise ValueError('Diary after-state mismatch')
     return True
 
 

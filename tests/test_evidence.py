@@ -141,3 +141,26 @@ def test_audit_rejects_changed_censoring_and_final_lane():
     changed['final_lane'] = 8
     with pytest.raises(ValueError, match='final-lane mismatch'):
         verify_live(changed)
+
+
+def test_context_archive_replays_prompts_and_flags_request_tampering(tmp_path):
+    from diagnose.context import run
+    from diagnose.model import LocalModel
+    from diagnose.world import initial, label
+    from test_study import FakeOllama
+    state = initial(1000)
+    row = {'id': state.key, 'state': state.to_dict(), 'oracle': label(state), 'split': 'test'}
+    bank = tmp_path/'bank.json'
+    bank.write_text(json.dumps({'situations': [row]}))
+    fake = FakeOllama()
+    fake.reply = {'action': 'U', 'collision': {'U': False, 'S': False, 'D': False}, 'confidence': .5}
+    model = LocalModel('test', tmp_path/'cache', transport=fake)
+    output = tmp_path/'records'
+    run([row], model, output, 'E', 'coordinates', limit=1, seeds=(0,))
+    assert check(output, bank)['context_trials'] == 17
+    path = output/'responses.jsonl'
+    records = [json.loads(line) for line in path.read_text().splitlines()]
+    records[0]['response']['identity']['request']['options']['seed'] = 99
+    path.write_text('\n'.join(json.dumps(r) for r in records)+'\n')
+    with pytest.raises(ValueError, match='identity'):
+        check(output, bank)
