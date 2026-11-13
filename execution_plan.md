@@ -172,3 +172,32 @@ forecast. Calibration's board-conditioned scores also receive the current foreca
 the masked-board prior receives no state or forecast. This preserves a meaningful
 leave-binding-out comparison. The added action request is charged and logged.
 The old v1 evidence is not rewritten or presented as having this corrected path.
+
+### Fixed overnight queue
+
+The first follow-up collector uses the merged arithmetic-contract source frozen
+at 0667a194f52545e6b48edfb0efe1063979cb06c5. It stops by 08:30 UTC and keeps
+partial model cohorts. The next queue waits for it, so models never compete for
+RAM. It collects four validation boards (one decoding seed) for diaries and matched
+commitment consistency before selecting v2 repairs. D is the worst diary-condition
+fraction with valid paired answers and no safe-to-unsafe flip; C is matched
+own-forecast consistency, with invalid replies scored zero. Existing fixed cutoffs
+stay unchanged. This small follow-up profile is exploratory and noisy.
+
+The context target is four held-out boards, all defined conditions, five decoding
+seeds, on both local models. This smaller balanced matrix protects coverage of
+both D and E within the measured local throughput. Extra separate-call forecast
+checks follow if time remains. Context work stops at 10:50 UTC. Live work then
+prioritizes 50 seeds each for base/selected/all on 1.7B, then 4B if time remains.
+New live seeds are 60000-60049, disjoint from the earlier live diaries used as
+context. Five simulator controls use those same fresh seeds. Collection stops at
+15:05 UTC, with the overall 15:39 UTC deadline unchanged. Unfinished cells stay
+visible; this schedule does not turn four boards into the planned 300.
+
+A local thread heartbeat (`finish-the-eight-hour-research-cycle`) checks progress
+every twenty minutes and continues implementation and paper work. It must pause
+itself at the hard stop. The worker is `scripts/overnight.py`; it runs from a fixed
+source snapshot, permits one collector per output, rejects changed sources on
+resume, and saves actual completed/censored episodes. The heartbeat must inspect
+that worker before launching any additional model work. It should be quiet while
+collection is healthy and no action is needed.

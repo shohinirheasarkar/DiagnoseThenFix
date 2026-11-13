@@ -161,6 +161,7 @@ def run(bank, model, output, limit=20, seeds=tuple(range(5)), horizon=3,
                                 responses.append(retried)
                                 value, error = parse_reply(retried, ('action', 'confidence'))
                 result = {'trial_id': ids[condition], 'protocol': design['protocol'],
+                          'split': split,
                           'state_id': row['id'], 'source_seed': state.source_seed,
                           'seed': seed, 'horizon': horizon, 'condition': condition,
                           'model': model.name, 'target': target, 'value': value,
