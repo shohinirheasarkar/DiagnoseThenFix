@@ -1,0 +1,76 @@
+{
+  "design": {
+    "bank_sha256": "f64f61dac4ac2a7d084068b64f66c236a2731f88d6853538db1ed188e35a4a27",
+    "digest": "8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7",
+    "history_kinds": [
+      "none"
+    ],
+    "history_lengths": [
+      0
+    ],
+    "horizons": [
+      1,
+      5,
+      10
+    ],
+    "labels": [
+      "standard"
+    ],
+    "max_tokens": 512,
+    "model": "qwen3:1.7b-q4_K_M",
+    "model_details": {
+      "families": [
+        "qwen3"
+      ],
+      "family": "qwen3",
+      "format": "gguf",
+      "parameter_size": "2.0B",
+      "parent_model": "",
+      "quantization_level": "Q4_K_M"
+    },
+    "paraphrases": [
+      0
+    ],
+    "python": "3.12.14",
+    "repairs": [
+      "base",
+      "rule",
+      "scratchpad",
+      "chained",
+      "code",
+      "code_v2",
+      "tool"
+    ],
+    "representations": [
+      "coordinates"
+    ],
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "skins": [
+      "cars"
+    ],
+    "source": "4f21bf261aa97515fce98411ec11dd470f1e25e230010b3c740b6f0e0d75dd71",
+    "split": "test",
+    "stages": [
+      "B"
+    ],
+    "state_ids": [
+      "02e7af704da212048a3b",
+      "04bc01124c49f6d4c3c1",
+      "070bb0ad244770abceaa",
+      "0e7287803589daefeac0",
+      "137149aa1121609b9f5f"
+    ],
+    "thinking": false,
+    "version": {
+      "version": "0.40.16"
+    }
+  },
+  "git_revision": "0667a194f52545e6b48edfb0efe1063979cb06c5",
+  "created_at": "2026-11-13T07:44:45.423069+00:00"
+}

@@ -325,3 +325,12 @@ cycle's narrower evidence. Saved code policies, verifier feedback, stage separat
 history bias and static-to-live gaps are not claimed as new. The paper adds the
 missing closest-work citations; related_work.md gives direct primary-source links.
 This is a focused audit, not an exhaustive proof of priority.
+
+### Closed-cohort evidence snapshot at 11:05 UTC
+
+The follow-up archive now saves the closed frozen probes, both compiled replay
+versions, original program-generation logs, and fresh simulator controls. Open
+neural live logs are excluded from this interim snapshot. CI replays the new
+archive as well as the first study. Final packaging will use a fresh staging
+archive and replace this snapshot consistently after collection stops; it must
+keep the same closed raw records and add the actual live outcomes.
