@@ -161,7 +161,10 @@ def test_evidence_verifier_rejects_changed_truth_score_or_diary():
     row = board()
     query = task(row, 'D', 'coordinates', 0, length=3)
     raw = response()
-    record = json.loads(json.dumps({'task': query, 'response': raw, 'score': score(query, raw)}))
+    raw['identity'] = {'digest': 'hash', 'request': {'messages': [{'role': 'user', 'content': query['prompt']}],
+                                                   'options': {'seed': 0}}}
+    record = json.loads(json.dumps({'task': query, 'response': raw, 'score': score(query, raw),
+                                    'digest': 'hash', 'source_seed': row['state']['source_seed']}))
     assert verify(record, row)
     for field in ('truth', 'score', 'diary'):
         bad = copy.deepcopy(record)
@@ -173,3 +176,35 @@ def test_evidence_verifier_rejects_changed_truth_score_or_diary():
             bad['task']['diary'][0]['events'] = ['goal']
         with pytest.raises(ValueError):
             verify(bad, row)
+
+
+def test_old_terminal_display_compatibility_requires_the_exact_source():
+    from dataclasses import replace
+    from diagnose.context import verify_turn
+    from diagnose.model import canonical
+    from diagnose.world import Car, oracle
+    before = State((Car(3, 8, 0, 1, 1),), lane=8, turn=99, source_seed=1000)
+    old_after = replace(initial(1000), turn=100)
+    turn = {'source': 'saved model episode', 'action': 'S', 'applied': True,
+            'events': ['collision'], 'before': before.to_dict(), 'after': old_after.to_dict(),
+            'optimal': 'S' in oracle(before)['optimal']}
+    with pytest.raises(ValueError, match='after-state'):
+        verify_turn(canonical(turn))
+    turn['source_revision'] = 'f71b9259abd055291c7c865659363aa1b3d9ec0f'
+    assert verify_turn(canonical(turn))
+    turn['source_revision'] = 'other'
+    with pytest.raises(ValueError, match='after-state'):
+        verify_turn(canonical(turn))
+
+
+def test_request_tampering_cannot_pass_a_matching_answer():
+    from diagnose.context import verify
+    row = board()
+    query = task(row, 'E', 'coordinates', 0)
+    raw = response()
+    raw['identity'] = {'digest': 'hash', 'request': {'messages': [{'role': 'user', 'content': 'different board'}],
+                                                   'options': {'seed': 0}}}
+    record = {'task': query, 'response': raw, 'score': score(query, raw),
+              'digest': 'hash', 'source_seed': row['state']['source_seed']}
+    with pytest.raises(ValueError, match='request identity'):
+        verify(record, row)

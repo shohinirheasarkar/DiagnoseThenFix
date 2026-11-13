@@ -102,7 +102,8 @@ def main():
             folder = output/tag.replace(':', '-')
             previous = ROOT/'results/cycle'/tag.replace(':', '-')
             old_profile = json.loads((previous/'profile.json').read_text())
-            real = real_diary(read_jsonl(previous/'live-base.jsonl'))
+            old_revision = json.loads((previous.parent/'cycle.json').read_text())['source_commit']
+            real = real_diary(read_jsonl(previous/'live-base.jsonl'), source_revision=old_revision)
             kwargs = dict(representation=old_profile['best_representation'], stop_at=context_stop)
             d = context(bank, current_model, folder/'D-validation', 'D', real=real,
                         limit=4, seeds=(0,), split='validation', **kwargs)
@@ -128,7 +129,8 @@ def main():
                            stop_at=context_stop, max_tokens=256)
                 else:
                     previous = ROOT/'results/cycle'/tag.replace(':', '-')
-                    real = real_diary(read_jsonl(previous/'live-base.jsonl')) if stage == 'D' else ()
+                    old_revision = json.loads((previous.parent/'cycle.json').read_text())['source_commit']
+                    real = real_diary(read_jsonl(previous/'live-base.jsonl'), source_revision=old_revision) if stage == 'D' else ()
                     rows = context(bank, current_model, folder/f'{stage}-test', stage,
                                    representation, real=real, limit=4, stop_at=context_stop)
                     save(folder/f'{stage}-test'/'summary.json', summarize(rows))

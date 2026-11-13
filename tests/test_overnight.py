@@ -43,6 +43,8 @@ def test_queue_finishes_paired_cohorts_and_unloads_before_switching(tmp_path, mo
     (tmp_path/'data').mkdir()
     (tmp_path/'data/freeway.json').write_text('{"situations": []}')
     (tmp_path/'SOURCE_REVISION').write_text('test-source')
+    (tmp_path/'results/cycle').mkdir(parents=True)
+    (tmp_path/'results/cycle/cycle.json').write_text('{"source_commit": "test-source"}')
     for size in ('1.7', '4'):
         path = tmp_path/f'results/cycle/qwen3-{size}b-q4_K_M'
         path.mkdir(parents=True)
