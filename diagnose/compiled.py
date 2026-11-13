@@ -16,9 +16,10 @@ from .model import append_jsonl, canonical, parse_reply, read_jsonl
 from .probes import make_task
 from .repairs import ArithmeticProgram, bound_action
 from .runner import source_fingerprint
-from .world import State, initial
+from .world import initial, step
 
-PROTOCOL = 'compiled-controller-v1'
+PROTOCOL = 'compiled-controller-v2'
+LEGACY_PROTOCOL = 'compiled-controller-v1'
 
 
 def load_programs(path):
@@ -59,7 +60,7 @@ def load_programs(path):
     return [programs[seed] for seed in range(5)]
 
 
-def prepare(response, validation='checked'):
+def prepare(response, validation='checked', native_inputs=True):
     if validation not in ('checked', 'executable'):
         raise ValueError('Unknown program gate')
     training_error = None
@@ -70,7 +71,7 @@ def prepare(response, validation='checked'):
             confidence = value['confidence']
             if type(confidence) not in (int, float) or not 0 <= confidence <= 1:
                 raise ValueError('Invalid generation confidence')
-            program = ArithmeticProgram(value['code'], extended=True)
+            program = ArithmeticProgram(value['code'], extended=True, native_inputs=native_inputs)
             failure = program_error(program)
             if failure is not None:
                 training_error = 'Training-case failure: ' + canonical(failure)
@@ -112,26 +113,28 @@ class CompiledPolicy:
                 'policy_revision': PROTOCOL, 'repairs': ['code', 'bound']}
 
 
-@lru_cache(maxsize=32)
-def prepared(serialized, validation):
-    return prepare(json.loads(serialized), validation)
+@lru_cache(maxsize=64)
+def prepared(serialized, validation, native_inputs):
+    return prepare(json.loads(serialized), validation, native_inputs=native_inputs)
 
 
 def verify(record):
-    if record['protocol'] != PROTOCOL or record['condition'] not in ('amortized', 'per_turn'):
+    if record['protocol'] not in (PROTOCOL, LEGACY_PROTOCOL) or record['condition'] not in ('amortized', 'per_turn'):
         raise ValueError('Unknown compiled-controller protocol')
     generation = record['generation_response']
     request = generation['identity']['request']
     if (record['program_seed'] not in range(5) or request['options']['seed'] != record['program_seed']
             or request['model'] != record['model'] or not 1 <= record['horizon'] <= 10):
         raise ValueError('Compiled source identity mismatch')
-    program, error, training_error = prepared(canonical(generation), record['validation'])
+    program, error, training_error = prepared(canonical(generation), record['validation'],
+                                            record['protocol'] == PROTOCOL)
+    current = initial(record['seed'])
     for index, frame in enumerate(record['trace']):
         response = frame['response']
         beliefs, action = None, 'S'
         if program is not None:
             try:
-                beliefs = forecast_with_code(State.from_dict(frame['before']), program, record['horizon'])
+                beliefs = forecast_with_code(current, program, record['horizon'])
                 action = bound_action(beliefs) or 'S'
             except (ValueError, KeyError, TypeError, ArithmeticError) as exc:
                 program, error = None, str(exc)
@@ -141,12 +144,18 @@ def verify(record):
             raise ValueError('Invalid compiled CPU cost')
         if (response['responses'] != expected or response['fresh_requests'] != 0
                 or response['seconds'] != cpu+sum(r['wall_seconds'] for r in expected)
-                or response['policy_revision'] != PROTOCOL or not response['generation_reused']):
+                or response['policy_revision'] != record['protocol'] or not response['generation_reused']):
             raise ValueError('Compiled generation-charge mismatch')
         if (response['action'] != action or response['collision'] != beliefs
                 or response['error'] != error or response['program_executable'] != (program is not None)
                 or response['training_check_error'] != training_error):
             raise ValueError('Compiled policy does not follow its saved program')
+        for _ in range(frame['delay_ticks']):
+            current, _ = step(current, 'S')
+            if current.lane == 0 or current.turn == 100:
+                break
+        if frame['action_applied']:
+            current, _ = step(current, response['action'])
     return True
 
 
@@ -163,6 +172,7 @@ def run(source, output, stop_at, seeds=range(60000, 60050)):
               'generation_source_sha256': hashlib.sha256(source.read_bytes()).hexdigest(),
               'model': samples[0]['model'], 'program_seeds': list(range(5)), 'seeds': list(seeds),
               'conditions': ['amortized', 'per_turn'], 'validations': ['executable', 'checked'],
+              'native_inputs': True,
               'horizon': 3, 'tick_seconds': 1.,
               'fresh_requests': 0, 'generation_charge': 'saved measured duration, once or each turn',
               'training_check_seeds': list(range(1000, 1006))}

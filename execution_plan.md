@@ -253,3 +253,21 @@ Keep this `compiled-controller-v1` cohort separate from v2 live play. Save every
 program failure, raw source response, CPU duration and logical generation charge.
 Audit both the program's chosen moves and every physical tick against upstream.
 The published archive must include the original generation logs for cross-checks.
+
+### Numeric boundary correction after the first replay audit
+
+The first compiled replay completed 2,000 cases. Its independent audit caught a
+mismatch: real game states contain NumPy scalar numbers, but JSON-restored states
+contain plain Python numbers. The old arithmetic interpreter rejected some
+integer-valued NumPy results. This was an input-adapter bug, not proof that a
+program's physics was wrong. Keep all `compiled-controller-v1` records unchanged.
+Their audit now rebuilds the original typed simulator trajectory before evaluating
+programs, and all 2,000 cases pass that exact replay.
+
+The interpreter now converts finite real inputs to plain bounded numbers. Existing
+forecast-bank inputs were already plain numbers; original evidence remains checked.
+A new `compiled-controller-v2` repeats the same programs, seeds, gates and delay
+conditions after this fix. Never pool its results with v1. The frozen neural v2
+collector retains its original package; this fix does not silently change that
+running study. Core input normalization and the saved-program replay are separate
+from a claim about an LLM's internal forecasting skill.

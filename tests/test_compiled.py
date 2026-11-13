@@ -182,3 +182,21 @@ def test_published_gzip_source_preserves_every_program(tmp_path):
     compressed = path.with_suffix('.jsonl.gz')
     compressed.write_bytes(gzip.compress(path.read_bytes(), mtime=0))
     assert load_programs(compressed) == load_programs(path)
+
+
+def test_legacy_audit_retains_simulator_number_types_after_json_roundtrip():
+    from diagnose.compiled import LEGACY_PROTOCOL
+    raw = generation(code='def forecast(x,timer,p,k):\n return x + 0*p')
+    legacy = CompiledPolicy(raw, validation='executable')
+    legacy.program, legacy.error, legacy.training_error = prepare(raw, 'executable', native_inputs=False)
+    result = episode(legacy, 60000)
+    for frame in result['trace']:
+        frame['response']['policy_revision'] = LEGACY_PROTOCOL
+    saved = {'protocol': LEGACY_PROTOCOL, 'model': 'test-model', 'program_seed': 0,
+             'condition': 'amortized', 'validation': 'executable', 'horizon': 3,
+             'generation_response': raw, **result}
+    saved = json.loads(json.dumps(saved))
+    assert saved['trace'][0]['response']['error'] == 'Forecast must return an integer cell'
+    assert verify(saved)
+    modern = CompiledPolicy(raw, validation='executable')(initial(60000), [])
+    assert modern['error'] is None and modern['program_executable']
