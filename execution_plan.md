@@ -15,6 +15,12 @@ The second cycle runs November 13, 07:39–15:39 UTC (02:39–10:39 EST). New re
 calls stop at 15:05. The final window is for replay checks, the paper PDF, PRs and
 cleanup. Its heartbeat must stop by 15:39. Closing the laptop can still suspend it.
 
+The collector now checks the fixed 15:05 deadline immediately before each model
+request, including nested repair calls. Calls already in flight may finish; model
+unloading remains allowed. A blocked call becomes an explicit error record and
+never reaches the server. Cached replies may still be reused without a new call.
+Collector hashes retain their history; the frozen model-policy package stays fixed.
+
 ## Keep the studies separate
 
 | Study | Frozen source | Saved evidence |
