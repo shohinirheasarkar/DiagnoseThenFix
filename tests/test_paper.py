@@ -200,3 +200,30 @@ def test_followup_report_marks_empty_cells_without_rewriting_first_cycle(tmp_pat
     assert '0 held-out diary/framing trials' in text
     assert 'No v2 live episode is included yet' in text
     assert 'never pooled with the first cycle' in text
+
+
+def test_followup_context_table_uses_test_boards_only(tmp_path):
+    from paper.build import analyze_followup
+    folder = tmp_path/'D-test'
+    folder.mkdir()
+    def record(length, split, action, safe):
+        return {'model': 'test-model', 'state_id': 's', 'source_seed': 10, 'split': split,
+                'task': {'stage': 'D', 'kind': 'stay', 'length': length, 'repair': 'base',
+                         'outcomes': False, 'seed': 0},
+                'score': {'valid': True, 'correct': safe, 'safe': safe, 'action': action,
+                          'collision': {'U': False, 'S': False, 'D': True},
+                          'history_match': action == 'S' if length else None}}
+    values = [record(0, 'test', 'U', True), record(12, 'test', 'S', False),
+              record(12, 'validation', 'U', True)]
+    (folder/'responses.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in values))
+    result = analyze_followup(tmp_path)
+    assert result['context_trials'] == 2
+    changed = next(r for r in result['context'] if r['condition']['length'] == 12)
+    assert changed['harmful_flip']['mean'] == 1 and changed['accuracy']['mean'] == 0
+    evidence = analyze(tmp_path/'no-first-cycle', Path('data/freeway.json'))
+    evidence['followup'] = result
+    output = tmp_path/'context.pdf'
+    build(evidence, output, [], tmp_path)
+    text = '\n'.join(p.extract_text() for p in PdfReader(output).pages)
+    assert '2 held-out diary/framing trials' in text and 'Unsafe flip' in text
+    assert '100.0%' in text
