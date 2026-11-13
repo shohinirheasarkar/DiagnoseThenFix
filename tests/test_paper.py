@@ -220,6 +220,7 @@ def test_followup_context_table_uses_test_boards_only(tmp_path):
     assert result['context_trials'] == 2
     changed = next(r for r in result['context'] if r['condition']['length'] == 12)
     assert changed['harmful_flip']['mean'] == 1 and changed['accuracy']['mean'] == 0
+    (tmp_path/'no-first-cycle').mkdir()
     evidence = analyze(tmp_path/'no-first-cycle', Path('data/freeway.json'))
     evidence['followup'] = result
     output = tmp_path/'context.pdf'
