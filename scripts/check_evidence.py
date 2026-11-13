@@ -94,12 +94,14 @@ def verify_forecast(record, situation):
                 else repeated_outcome(state, 'U', task['k']) == 'collision')
     if task['truth'] != expected:
         raise ValueError('Forecast target mismatch')
-    required = ('code', 'confidence') if task['repair'] == 'code' else ('answer', 'confidence')
+    code = task['repair'] in ('code', 'code_v2')
+    required = ('code', 'confidence') if code else ('answer', 'confidence')
     value, error = parse_reply(record['response'], required)
-    if not error and task['repair'] == 'code':
+    if not error and code:
         try:
             c = state.cars[0]
-            answer = ArithmeticProgram(value['code'])(c.x, c.timer, c.speed, task['k'])
+            answer = ArithmeticProgram(value['code'], extended=task['repair'] == 'code_v2')(
+                c.x, c.timer, c.speed, task['k'])
             value = {**value, 'answer': answer}
         except (ValueError, KeyError, TypeError, SyntaxError, ArithmeticError) as exc:
             error = str(exc)
