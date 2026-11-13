@@ -300,6 +300,85 @@ def analyze(root, bank_path):
     return output
 
 
+def analyze_followup(root):
+    from collections import defaultdict
+    from diagnose.context import summarize as context_summary
+    from diagnose.model import canonical
+    root = Path(root)
+    output = {'input_sha256': {}, 'forecasts': [], 'context': [], 'live': [],
+              'live_paired': [], 'profiles': {}, 'context_trials': 0}
+    forecasts, context = defaultdict(list), []
+    for path in sorted(root.rglob('*')):
+        if path.is_file() and path.name.endswith(('.json', '.jsonl', '.jsonl.gz')):
+            output['input_sha256'][str(path.relative_to(root))] = hashlib.sha256(path.read_bytes()).hexdigest()
+        if not path.name.endswith(('responses.jsonl', 'responses.jsonl.gz')):
+            continue
+        for record in rows(path):
+            task = record.get('task', {})
+            if task.get('stage') == 'B':
+                key = (record['model'], str(path.parent.relative_to(root)),
+                       task['kind'], task['repair'])
+                forecasts[key].append(record)
+            elif task.get('stage') in ('D', 'E') and record.get('split') == 'test':
+                context.append(record)
+    for (model, cohort, kind, repair), group in sorted(forecasts.items()):
+        base = forecasts.get((model, cohort, kind, 'base'), [])
+        def identity(r):
+            return tuple([r['state_id']] + [r['task'].get(k, 0) for k in ('seed', 'k', 'paraphrase')])
+        baseline = {identity(r): r for r in base}
+        pairs = [{'state_id': r['source_seed'], 'difference': int(r['score']['correct'])-
+                  int(baseline[identity(r)]['score']['correct'])} for r in group if identity(r) in baseline]
+        output['forecasts'].append({'model': model, 'cohort': cohort, 'kind': kind, 'repair': repair,
+              'trials': len(group), 'states': len({r['state_id'] for r in group}),
+              'invalid': sum(not r['score']['valid'] for r in group), 'accuracy': interval(group),
+              'paired_trials': len(pairs), 'difference_from_base': bootstrap(pairs, 'difference'),
+              'unique_requests': len({r.get('response', {}).get('key', canonical(identity(r))) for r in group})})
+    output['context_trials'] = len(context)
+    output['context'] = context_summary(context)
+    for folder in sorted(p.parent for p in root.glob('*/profile.json')):
+        profile = json.loads((folder/'profile.json').read_text())
+        output['profiles'][profile['model']] = profile
+        completed = {}
+        for path in sorted(folder.glob('live-*.jsonl*')):
+            group = rows(path)
+            if any(r.get('policy_revision') != 'v2' for r in group):
+                raise ValueError('Follow-up live records must declare v2; never pool with v1')
+            complete = [r for r in group if not r['censored']]
+            seeds = [r['seed'] for r in complete]
+            if len(set(seeds)) != len(seeds):
+                raise ValueError('Duplicate completed live seed')
+            condition = path.name.removesuffix('.gz').removesuffix('.jsonl')[5:]
+            completed[condition] = {r['seed']: r for r in complete}
+            output['live'].append({'model': profile['model'], 'condition': condition,
+                'episodes': len(complete), 'censored': len(group)-len(complete),
+                'episode_seeds': sorted(seeds), 'successes': sum(r['success'] for r in complete),
+                'success_wilson': wilson(sum(r['success'] for r in complete), len(complete)),
+                'mean_tokens': statistics.mean(r['tokens'] for r in complete) if complete else None,
+                'mean_calls': statistics.mean(r['calls'] for r in complete) if complete else None,
+                'error_decisions': sum(bool(t['response'].get('error')) for r in complete for t in r['trace']),
+                'decisions': sum(len(r['trace']) for r in complete),
+                'validated_program_decisions': sum(bool(t['response'].get('program_validated'))
+                                                    for r in complete for t in r['trace'])})
+        base = completed.get('base', {})
+        for condition, candidate in completed.items():
+            if condition == 'base':
+                continue
+            shared = sorted(base.keys() & candidate.keys())
+            paired = [{'state_id': seed, 'difference': int(candidate[seed]['success'])-int(base[seed]['success'])}
+                      for seed in shared]
+            output['live_paired'].append({'model': profile['model'], 'condition': condition,
+                    'paired_episodes': len(shared), 'success_change': bootstrap(paired, 'difference')})
+    for path in sorted(root.glob('baseline-*.jsonl*')):
+        group = rows(path)
+        output['live'].append({'model': 'simulator control',
+              'condition': path.name.removesuffix('.gz').removesuffix('.jsonl')[9:],
+              'episodes': len(group), 'censored': 0, 'successes': sum(r['success'] for r in group),
+              'success_wilson': wilson(sum(r['success'] for r in group), len(group)),
+              'mean_tokens': 0, 'mean_calls': 0, 'error_decisions': 0, 'decisions': 0,
+              'validated_program_decisions': 0})
+    return output
+
+
 def curves_figure(evidence, output):
     models = list(evidence['models'])
     if not models:
@@ -404,7 +483,8 @@ def build(evidence, output, figures, root):
     title = 'Diagnose, Then Repair'
     paragraph(title, 'PaperTitle')
     paragraph('A simulator-checked study of small language-model agents in real-time Freeway', 'Heading2')
-    paragraph('Research paper for review | November 12, 2026 | Time-capped local study', 'SmallNote')
+    paragraph('Research paper for review | November 12-13, 2026 | Two capped local cycles'
+              if evidence.get('followup') else 'Research paper for review | November 12, 2026 | Time-capped local study', 'SmallNote')
     heading('Abstract')
     paragraph(f'A correct action in a changing world requires a readable observation, an adequate forecast, '
               f'and a decision that follows that forecast. We implement a stage-oriented diagnostic suite '
@@ -417,6 +497,15 @@ def build(evidence, output, figures, root):
               f'as incorrect. This is an exploratory, single-game artifact; the full multi-game, '
               f'thinking-mode, and training-based study remains incomplete. We make no first-of-its-kind '
               f'or causal root-cause claim from this cycle.')
+    if evidence.get('followup'):
+        paragraph('The first-cycle results below keep their original cohort. Section 6.1 reports '
+                  'the separate November 13 follow-up; its changed code and fresh live seeds are '
+                  'never pooled with the first cycle.', 'SmallNote')
+        followup_agents = [r for r in evidence['followup']['live'] if r['model'] != 'simulator control']
+        if followup_agents:
+            paragraph(f'The separate v2 follow-up adds {sum(r["episodes"] for r in followup_agents)} '
+                      f'completed model-condition runs and {sum(r["successes"] for r in followup_agents)} '
+                      'goals. Its actual cohorts and limits are reported separately below.', 'SmallNote')
     heading('1. Motivation and related work')
     paragraph('RealtimeGym makes reasoning time consequential: the environment can change before a '
               'model finishes deciding [1]. We build on that simulator, rather than proposing a new game '
@@ -728,13 +817,105 @@ def build(evidence, output, figures, root):
     else:
         paragraph('No live episode completed at report generation. Frozen accuracy alone cannot '
                   'establish usefulness during live play.')
+    followup = evidence.get('followup')
+    if followup is not None:
+        heading('6.1. A separate overnight follow-up')
+        paragraph('After reviewing the first cycle, we widened the tiny code language and fixed '
+                  'repair routing. These are exploratory follow-ups, not confirmations registered '
+                  'before seeing the first results. The v2 policy retries a generated program once '
+                  'using fixed training-only counterexamples. Failed repairs leave the model forecast '
+                  'available. Unbound actions and calibrated action scores now receive repaired '
+                  'forecasts. Code checking and execution time add to v2 delay. No training or paid '
+                  'model service is used; simulator-assisted code checks are not unassisted knowledge.')
+        forecast_rows = [r for r in followup['forecasts'] if r['kind'] == 'position']
+        if forecast_rows:
+            table(['Model', 'Cohort / repair', 'Boards / trials', 'Accuracy [95% CI]', 'Invalid', 'Paired change [pp]'],
+                  [[r['model'].replace('qwen3:', '').replace('-q4_K_M', ''),
+                    ('Separate calls' if 'B-chained-calls' in r['cohort'] else 'Grammar') + ' / ' +
+                    r['repair'] + (' (UB)' if r['repair'] == 'tool' else ''),
+                    f'{r["states"]}/{r["trials"]}', ci(r['accuracy']), r['invalid'],
+                    ci(r['difference_from_base'], difference=True)] for r in forecast_rows],
+                  [45, 120, 65, 115, 43, 140])
+            paragraph('Grammar code samples are reused across boards and horizons. Unique request '
+                      'counts and paired denominators are saved in the evidence JSON. A valid program '
+                      'can still predict the wrong cell. Separate-call chaining is a different cohort '
+                      'and output budget; compare each repair only with its own paired base. The old '
+                      'chained condition asks for a table in one reply. UB marks the supplied '
+                      'simulator forecast, not a model-only repair. Intervals are descriptive.', 'SmallNote')
+        paragraph(f'The follow-up saved {followup["context_trials"]:,} held-out diary/framing trials. '
+                  'The target is four boards per model with five sampling seeds. Repeated answers '
+                  'are not new boards. We transplant diaries from separate episodes while keeping '
+                  'the current board fixed. Outcomes are replayed; real histories record whether a '
+                  'proposed move actually ran. Oracle outcome feedback concerns the source episode. '
+                  'Delta summaries also concern that episode, not a hidden prior test-board frame.')
+        diary_rows = [r for r in followup['context'] if r['stage'] == 'D' and (
+            r['condition']['length'] == 0 or
+            (r['condition']['length'] == 12 and r['condition']['kind'] in ('stay', 'own') and
+             (r['condition']['kind'] == 'stay' or not r['condition']['outcomes'])))]
+        if diary_rows:
+            table(['Model', 'Diary / repair', 'Boards / trials', 'Accuracy [95% CI]', 'Action flip', 'Unsafe flip'],
+                  [[r['model'].replace('qwen3:', '').replace('-q4_K_M', ''),
+                    ('No diary' if r['condition']['length'] == 0 else
+                     r['condition']['kind'] + ' / ' + r['condition']['repair'] +
+                     (' + outcomes' if r['condition']['outcomes'] else '')),
+                    f'{r["states"]}/{r["trials"]}', ci(r['accuracy']),
+                    percent(r['action_change']['mean']), ci(r['harmful_flip'])] for r in diary_rows],
+                  [42, 130, 64, 112, 65, 115])
+        framing_rows = [r for r in followup['context'] if r['stage'] == 'E' and
+                        r['condition']['paraphrase'] == 0 and
+                        (r['condition']['skin'] == 'cars' or r['condition']['labels'] == 'standard')]
+        if framing_rows:
+            table(['Model', 'Story / labels', 'Boards / trials', 'Accuracy [95% CI]', 'Action flip', 'Forecast flip'],
+                  [[r['model'].replace('qwen3:', '').replace('-q4_K_M', ''),
+                    'Safe object 0' if r['condition']['reversal'] else
+                    'Named game' if r['condition']['name_leak'] else
+                    'Strategy hint' if r['condition']['repair'] == 'strategy' else
+                    r['condition']['skin'] + ' / ' + r['condition']['labels'],
+                    f'{r["states"]}/{r["trials"]}', ci(r['accuracy']),
+                    percent(r['action_change']['mean']), percent(r['forecast_change']['mean'])]
+                   for r in framing_rows], [42, 130, 64, 112, 65, 115])
+        if diary_rows or framing_rows:
+            paragraph('Accuracy counts malformed replies as wrong. Flip rates use valid paired '
+                      'answers only: same board and decoding seed, compared with the no-diary or '
+                      'cars/standard-label base. Unsafe flip means a safe base choice changed to an '
+                      'unsafe choice. Forecast flip is the fraction of three collision beliefs that '
+                      'changed. Contact reversal changes the rules and reference labels, so it is '
+                      'a different task, not a pure framing effect. Full conditions, invalid counts, '
+                      '95% episode-cluster intervals and exploratory Holm-adjusted sign-flip tests '
+                      'are saved in JSON. The tiny cohort limits generalization.', 'SmallNote')
+        if followup['live']:
+            table(['Model', 'V2 condition', 'Complete / censored', 'Goals', 'Success [95% Wilson]', 'Tokens / run'],
+                  [[r['model'].replace('qwen3:', '').replace('-q4_K_M', ''), r['condition'],
+                    f'{r["episodes"]}/{r["censored"]}', r['successes'], ci(r['success_wilson']),
+                    f'{r["mean_tokens"]:.0f}' if r['mean_tokens'] is not None else '-'] for r in followup['live']],
+                  [80, 80, 90, 40, 150, 88])
+            paragraph('V2 uses fresh environment seeds 60000-60049, disjoint from the old model '
+                      'diaries. Models share seeds across conditions. Four validation boards and one '
+                      'decoding seed set the new C/D scores; fixed cutoffs remain unchanged. These '
+                      'small profiles are noisy. Successful code is checked on training seeds '
+                      '1000-1005, never on the live test board. Cache hits reuse measured request '
+                      'durations and token counts; v2 local program time is measured again. Controls '
+                      'have zero inference delay. Counts are actual coverage, not a claim that all '
+                      'planned 50-seed conditions finished.', 'SmallNote')
+        else:
+            paragraph('No v2 live episode is included yet. Better frozen forecasts alone do not '
+                      'show that the new agent reaches the goal.')
+        if followup['live_paired']:
+            table(['Model', 'V2 contrast vs base', 'Shared episodes', 'Success change [pp, 95% CI]'],
+                  [[r['model'].replace('qwen3:', '').replace('-q4_K_M', ''), r['condition'],
+                    r['paired_episodes'], ci(r['success_change'], difference=True)]
+                   for r in followup['live_paired']], [80, 120, 100, 228])
+        paragraph('This follow-up does not finish the planned 200/300-board matrices, other games, '
+                  'thinking sweeps, extra model families, causal cascades, or cost-matched controls. '
+                  'A simulator-assisted program repair and a short history manipulation cannot '
+                  'establish a unique internal failure cause or the value of diagnosis targeting.')
     heading('7. Limits and unfinished tests')
     paragraph('The complete research plan is not finished. This cycle does not establish '
               'cross-game generality, thinking-mode effects, causal cascade attribution, or '
               'frozen-to-live predictive validity. Snapshot and bounded-search support for Snake '
               'and Overcooked is tested, but their diagnostic banks and empirical replications '
               'are pending. The 0.6B model, a second model family, larger-model ceiling, full '
-              'three-paraphrase robustness, diary/outcome history study, framing and danger '
+              'three-paraphrase robustness, full diary/outcome history matrices, framing and danger '
               'reversal study, cost-matched monitors, leave-one-repair-out live tests, and '
               'compute-conditional training remain outside the completed evidence unless a '
               'separate result file explicitly records them.')
@@ -782,6 +963,13 @@ def build(evidence, output, figures, root):
                   'across models and conditions. This cycle does not demonstrate a goal-completion '
                   'benefit from diagnosis-selected repairs under the chosen latency setting. '
                   'Small live cohorts and wide Wilson bounds limit this negative result.')
+    if followup is not None:
+        newer = [r for r in followup['live'] if r['model'] != 'simulator control']
+        if newer:
+            paragraph(f'The separate v2 cohort records {sum(r["successes"] for r in newer)} goals '
+                      f'in {sum(r["episodes"] for r in newer)} completed model-condition runs. '
+                      'It uses fresh seeds and changed repair behavior. Only paired conditions '
+                      'inside that cohort support a repair comparison; the two cycles are not pooled.')
     paragraph('The artifact makes stage probes and repair decisions inspectable against a pinned '
               'simulator. The completed results describe the tested prompts, states and local '
               'model artifacts; they do not establish that a weak probe score uniquely identifies '
@@ -816,9 +1004,12 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--results', type=Path, default=Path('results/cycle'))
     parser.add_argument('--bank', type=Path, default=Path('data/freeway.json'))
+    parser.add_argument('--followup', type=Path, help='Separate second-cycle records; never pooled with the first')
     parser.add_argument('--output', type=Path, default=Path('output/pdf/diagnose-then-repair.pdf'))
     args = parser.parse_args()
     evidence = analyze(args.results, args.bank)
+    if args.followup is not None:
+        evidence['followup'] = analyze_followup(args.followup)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     (args.output.parent / 'evidence.json').write_text(json.dumps(evidence, indent=2))
     figure = curves_figure(evidence, args.output.parent / 'forecast-curves.png')

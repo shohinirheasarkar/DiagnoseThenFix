@@ -9,22 +9,22 @@ that a fix helps. This list keeps those three things apart.
 | Shared bank, exact replay, labels, splits (p2) | Freeway: 500 states; other games: replay adapters | 500 labeled states each for Snake and Overcooked; exhaustive search checks |
 | Six formats, five reading probes (p3-5) | Yes, Freeway | 200-state study; action transfer; perception scaffold; signed-error plots |
 | Forecasts, k=1..10, confidence (p5-7) | Yes | 300-state matrix; thinking on; three paraphrases; held-out curve fits |
-| Direct/chained/rule/table/code/tool repairs (p6-7) | Prompt variants and bounded code runner | Full isolated comparisons; truly separate chained calls; calibrated error onset controls |
+| Direct/chained/rule/table/code/tool repairs (p6-7) | Prompt variants, separate chained calls, two bounded code formats | Full isolated comparisons; calibrated error onset controls |
 | Train forecast repair (p7) | No | Conditional on spare compute; keep training separate |
 | Matched forecast/action gap and injection (p8-9) | Yes, separate commitment task | Finish four-model, 300-state, thinking matrix; gap closure and progress |
 | Binding, retry, shield (p8-9) | Yes | Full matched comparisons; shield is a simulator ceiling |
-| Diary: six types, four lengths (p9-11) | Basic fabricated actions | Real histories; honest outcome histories; paired harm analysis; all models/thinking |
-| History repairs (p10-11) | No history, clipping, balanced actions | Delta and outcome summaries; frozen and live comparisons |
-| Null/labels/skins/name/danger reversal (p11-13) | Null scores, labels, skins, name prompt | Paired actions and forecasts; reversal physics; validation-picked framing |
+| Diary: six types, four lengths (p9-11) | Six sources, replayed outcomes, real diaries, paired harm analysis | Full 300-state/model/thinking matrix; natural live history transfer |
+| History repairs (p10-11) | Five frozen diary transforms; no-history live switch | Live delta/outcome/clip/balanced policies; full comparisons |
+| Null/labels/skins/name/danger reversal (p11-13) | Null scores, labels, skins, naming, paired forecasts, reversal physics | Full empirical matrix; validation-picked framing |
 | Calibration/framing/neutral/strategy repairs (p12-13) | Calibration and strategy; input switches | Full frozen and live comparisons |
 | Cascade replay and four monitor triggers (p13-15) | Basic hooks and triggers | Real stage interventions; 100 failures/model; channel attribution; cost-matched monitor |
-| Diagnosis and composed agent (p15-16) | Switches and validation-only profile | Profile D; matched random and leave-out comparisons; learned validation thresholds |
+| Diagnosis and composed agent (p15-16) | Switches; matched C and diary D validation profiles | Matched random/leave-out comparisons; learned validation thresholds |
 | Latency-aware agent (p16) | World advances during measured delay | Repair utility rule; cost-matched experiments; frozen-to-live prediction |
 | Live comparisons: 50 seeds/condition (p16) | Yes | First cycle reached 10 paired seeds/model for base/selected/all; extend cohorts |
 | Five Qwen sizes + another family + ceiling (p2) | Local Ollama client | 0.6B, second family, ceiling; no automatic downloads or paid services |
-| Five seeds, 95% intervals, Holm (p2,18) | Bootstrap, paired estimates, correction helper | Full planned contrasts with cluster-aware tests; keep missing cells visible |
+| Five seeds, 95% intervals, Holm (p2,18) | Bootstrap, paired estimates, cluster sign-flip tests, Holm | Full planned contrasts with cluster-aware tests; keep missing cells visible |
 | Novelty audit and related work (p18-19) | Cautious cited review paper | Full primary-source comparison; no unsupported first/best claim |
-| Reproducible repo and review paper (chat) | 13 merged PRs; tests; raw evidence; PDF | Update each overnight PR and final paper; verify every saved record |
+| Reproducible repo and review paper (chat) | Tested PRs, raw evidence, paper generator and PDF | Update each overnight PR and final paper; verify every saved record |
 
 The minimum version still needs Stage D and 50-seed live coverage. The full version
 also needs the other games, broader models, cascades and conditional training.

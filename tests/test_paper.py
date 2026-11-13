@@ -123,3 +123,108 @@ def test_error_onset_uses_delayed_wrap_and_keeps_partial_sequences_separate():
     assert result['all_correct'] == 1
     assert result['first_error_event']['wrap'] == 1
     assert result['first_error_after_any_wrap'] == 1
+
+
+def test_followup_keeps_forecast_cohorts_and_invalid_denominators_separate(tmp_path):
+    from paper.build import analyze_followup
+    def record(repair, correct, valid, key):
+        return {'model': 'qwen3:1.7b', 'state_id': 's', 'source_seed': 10,
+                'task': {'stage': 'B', 'kind': 'position', 'repair': repair, 'seed': 0, 'k': 1},
+                'response': {'key': key}, 'score': {'correct': correct, 'valid': valid}}
+    for name, values in [('grammar', [record('base', False, True, 'a'),
+                                      record('code_v2', True, True, 'b'),
+                                      {**record('code_v2', False, False, 'c'),
+                                       'state_id': 'other', 'source_seed': 11}]),
+                          ('B-chained-calls', [record('base', True, True, 'd'),
+                                               record('chained_calls', False, True, 'e')])]:
+        folder = tmp_path/name
+        folder.mkdir()
+        (folder/'responses.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in values))
+    evidence = analyze_followup(tmp_path)
+    code = next(r for r in evidence['forecasts'] if r['repair'] == 'code_v2')
+    chain = next(r for r in evidence['forecasts'] if r['repair'] == 'chained_calls')
+    assert code['trials'] == 2 and code['invalid'] == 1 and code['accuracy']['mean'] == .5
+    assert code['paired_trials'] == 1 and code['difference_from_base']['mean'] == 1
+    assert chain['difference_from_base']['mean'] == -1
+    assert code['unique_requests'] == 2
+    assert len(evidence['input_sha256']) == 2
+
+
+def test_followup_never_pools_v1_or_duplicate_completed_seeds(tmp_path):
+    import pytest
+    from paper.build import analyze_followup
+    folder = tmp_path/'model'
+    folder.mkdir()
+    (folder/'profile.json').write_text('{"model":"test-model"}')
+    record = {'seed': 60000, 'success': False, 'censored': False, 'trace': [],
+              'tokens': 0, 'calls': 0}
+    path = folder/'live-base.jsonl'
+    path.write_text(json.dumps(record)+'\n')
+    with pytest.raises(ValueError, match='never pool'):
+        analyze_followup(tmp_path)
+    record['policy_revision'] = 'v2'
+    path.write_text((json.dumps(record)+'\n')*2)
+    with pytest.raises(ValueError, match='Duplicate'):
+        analyze_followup(tmp_path)
+
+
+def test_followup_pairs_only_shared_completed_live_runs(tmp_path):
+    from paper.build import analyze_followup
+    folder = tmp_path/'model'
+    folder.mkdir()
+    (folder/'profile.json').write_text('{"model":"test-model"}')
+    def row(seed, success=False, censored=False):
+        return {'seed': seed, 'success': success, 'censored': censored, 'trace': [],
+                'tokens': 10, 'calls': 1, 'policy_revision': 'v2'}
+    for condition, records in [('base', [row(60000), row(60001)]),
+                               ('selected', [row(60000, True), row(60001, censored=True)])]:
+        (folder/f'live-{condition}.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in records))
+    evidence = analyze_followup(tmp_path)
+    paired = evidence['live_paired'][0]
+    assert paired['paired_episodes'] == 1 and paired['success_change']['mean'] == 1
+    selected = next(r for r in evidence['live'] if r['condition'] == 'selected')
+    assert selected['episodes'] == selected['censored'] == 1
+
+
+def test_followup_report_marks_empty_cells_without_rewriting_first_cycle(tmp_path):
+    from paper.build import analyze_followup
+    root = tmp_path/'empty'
+    root.mkdir()
+    evidence = analyze(root, Path('data/freeway.json'))
+    evidence['followup'] = analyze_followup(root)
+    output = tmp_path/'followup.pdf'
+    build(evidence, output, [], root)
+    text = '\n'.join(p.extract_text() for p in PdfReader(output).pages)
+    assert '0 held-out forecast trials' in text
+    assert 'separate overnight follow-up' in text
+    assert '0 held-out diary/framing trials' in text
+    assert 'No v2 live episode is included yet' in text
+    assert 'never pooled with the first cycle' in text
+
+
+def test_followup_context_table_uses_test_boards_only(tmp_path):
+    from paper.build import analyze_followup
+    folder = tmp_path/'D-test'
+    folder.mkdir()
+    def record(length, split, action, safe):
+        return {'model': 'test-model', 'state_id': 's', 'source_seed': 10, 'split': split,
+                'task': {'stage': 'D', 'kind': 'stay', 'length': length, 'repair': 'base',
+                         'outcomes': False, 'seed': 0},
+                'score': {'valid': True, 'correct': safe, 'safe': safe, 'action': action,
+                          'collision': {'U': False, 'S': False, 'D': True},
+                          'history_match': action == 'S' if length else None}}
+    values = [record(0, 'test', 'U', True), record(12, 'test', 'S', False),
+              record(12, 'validation', 'U', True)]
+    (folder/'responses.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in values))
+    result = analyze_followup(tmp_path)
+    assert result['context_trials'] == 2
+    changed = next(r for r in result['context'] if r['condition']['length'] == 12)
+    assert changed['harmful_flip']['mean'] == 1 and changed['accuracy']['mean'] == 0
+    (tmp_path/'no-first-cycle').mkdir()
+    evidence = analyze(tmp_path/'no-first-cycle', Path('data/freeway.json'))
+    evidence['followup'] = result
+    output = tmp_path/'context.pdf'
+    build(evidence, output, [], tmp_path)
+    text = '\n'.join(p.extract_text() for p in PdfReader(output).pages)
+    assert '2 held-out diary/framing trials' in text and 'Unsafe flip' in text
+    assert '100.0%' in text
