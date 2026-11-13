@@ -103,6 +103,11 @@ This throughput-based change preserved completed records. D saved 840 trials on
 1.7B and 546 on 4B; E saved 340 each. Validation saved 336 D and 64 matched C trials.
 Those four-board, one-seed validation profiles are noisy. Cutoffs stayed fixed.
 Worker restarts before testing preserved package fingerprints and source history.
+At 13:10 UTC, a live collector restart added the per-request deadline check. All
+129 completed live records were retained byte for byte. The unwritten interrupted
+episode is not a saved attempt; its retry can reuse cached requests while local
+execution time is measured again. `collector-restart.json` records the operation
+and both collector hashes. The policy package did not change.
 
 ## Neural v2 live play
 

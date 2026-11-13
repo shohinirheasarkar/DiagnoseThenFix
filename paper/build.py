@@ -473,6 +473,8 @@ def analyze_followup(root):
     root = Path(root)
     output = {'input_sha256': {}, 'forecasts': [], 'context': [], 'live': [],
               'live_paired': [], 'profiles': {}, 'context_trials': 0}
+    restart = root/'collector-restart.json'
+    output['collector_restart'] = json.loads(restart.read_text()) if restart.exists() else None
     forecasts, context = defaultdict(list), []
     for path in sorted(root.rglob('*')):
         if path.is_file() and path.name.endswith(('.json', '.jsonl', '.jsonl.gz')):
@@ -1067,6 +1069,13 @@ def build(evidence, output, figures, root):
                   'available. Unbound actions and calibrated action scores now receive repaired '
                   'forecasts. Code checking and execution time add to v2 delay. No training or paid '
                   'model service is used; simulator-assisted code checks are not unassisted knowledge.')
+        if followup.get('collector_restart'):
+            paragraph('A collector restart during live play added a deadline check before each fresh '
+                      'request, including nested repair calls. The frozen policy package and completed '
+                      'records were retained. The interrupted, unwritten episode is not counted as a '
+                      'saved attempt; its retry may reuse cached requests while measuring local time '
+                      'again. Calls already in flight may finish after the cutoff; cleanup remains '
+                      'allowed. The archive records both collector hashes and preserved log prefixes.', 'SmallNote')
         forecast_rows = [r for r in followup['forecasts'] if r['kind'] == 'position']
         if forecast_rows:
             table(['Model', 'Cohort / repair', 'Boards / trials', 'Accuracy [95% CI]', 'Invalid', 'Paired change [pp]'],
