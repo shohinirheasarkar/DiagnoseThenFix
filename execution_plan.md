@@ -165,3 +165,10 @@ If code still fails, it is disabled for that episode; the original model forecas
 remains available. Missing calibration scores also leave the model action intact.
 Failures and every generation/retry/scoring call remain logged. The default v1
 policy and the first cycle stay unchanged. Never pool the two policy versions.
+
+A wiring audit then found that code forecasts could be computed but unused when
+binding was off. In v2, that branch now asks the model to act on the generated
+forecast. Calibration's board-conditioned scores also receive the current forecast;
+the masked-board prior receives no state or forecast. This preserves a meaningful
+leave-binding-out comparison. The added action request is charged and logged.
+The old v1 evidence is not rewritten or presented as having this corrected path.
