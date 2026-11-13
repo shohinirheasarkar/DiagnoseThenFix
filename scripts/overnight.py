@@ -1,5 +1,6 @@
 """This runs one local research queue, saves every completed result, and stops before the review deadline."""
 import argparse
+import hashlib
 from datetime import datetime, timezone
 import json
 import os
@@ -81,6 +82,13 @@ def main():
              'source': fingerprint, 'source_commit': (SOURCE/'SOURCE_REVISION').read_text().strip(),
              'context_stop': args.context_stop, 'collection_stop': args.stop,
              'full_research_plan_complete': False, 'policy_revision': 'v2'}
+    state.update(collector_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+                 source_commit_history=list(dict.fromkeys([
+                     *previous.get('source_commit_history', []),
+                     *([previous['source_commit']] if previous else []), state['source_commit']])),
+                 queue_revision='protect-context-stage-coverage',
+                 phase_history=previous.get('phase_history', []),
+                 phase_minutes={'D': 35, 'E': 20, 'B-chain': 5})
     save(output/'cycle.json', state)
     models = ('qwen3:1.7b-q4_K_M', 'qwen3:4b-q4_K_M')
     current_model = None
@@ -122,18 +130,26 @@ def main():
                 frozen_profile = json.loads((folder/'profile.json').read_text())
                 current_model = LocalModel(tag, cache=ROOT/'.cache/model', timeout=90)
                 representation = frozen_profile['best_representation']
+                phase_stop = min(context_stop, time.time()+60*state['phase_minutes'][stage])
+                phase = {'stage': stage, 'model': tag, 'started_at': datetime.now(timezone.utc).isoformat(),
+                         'stop_at': datetime.fromtimestamp(phase_stop, timezone.utc).isoformat()}
+                state['phase_history'].append(phase)
+                state['phase'] = f'{stage}:{tag}'
+                save(output/'cycle.json', state)
                 if stage == 'B-chain':
-                    probes(bank, current_model, folder/'B-chained-calls', stages=('B',),
+                    rows = probes(bank, current_model, folder/'B-chained-calls', stages=('B',),
                            representations=(representation,), horizons=(1, 3, 5),
                            repairs=('base', 'chained_calls'), seeds=(0, 1), limit=2,
-                           stop_at=context_stop, max_tokens=256)
+                           stop_at=phase_stop, max_tokens=256)
                 else:
                     previous = ROOT/'results/cycle'/tag.replace(':', '-')
                     old_revision = json.loads((previous.parent/'cycle.json').read_text())['source_commit']
                     real = real_diary(read_jsonl(previous/'live-base.jsonl'), source_revision=old_revision) if stage == 'D' else ()
                     rows = context(bank, current_model, folder/f'{stage}-test', stage,
-                                   representation, real=real, limit=4, stop_at=context_stop)
+                                   representation, real=real, limit=4, stop_at=phase_stop)
                     save(folder/f'{stage}-test'/'summary.json', summarize(rows))
+                phase.update(ended_at=datetime.now(timezone.utc).isoformat(), saved_trials=len(rows))
+                save(output/'cycle.json', state)
                 current_model.transport('/api/generate', {'model': tag, 'keep_alive': 0})
                 current_model = None
         for name in ('random', 'stay', 'advance', 'planner', 'oracle'):

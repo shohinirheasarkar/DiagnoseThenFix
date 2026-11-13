@@ -218,3 +218,14 @@ play apart from the first study. It reports partial denominators and valid-pair
 flip rates. Duplicate completed episodes and mixed v1/v2 records are errors.
 Validation diagnostics never enter the held-out context table. All conditions and
 exploratory adjusted tests stay in evidence JSON; the paper shows compact tables.
+
+### Protecting coverage at 08:35 UTC
+
+Measured context throughput could let diary probes consume the whole context
+window. Keep the same four-board/five-seed targets and every completed record, but
+cap each model's D phase at 35 minutes, E at 20, and the chained-call pilot at five.
+The global 10:50 context cutoff still wins. This is a scheduling change based on
+throughput, not answer quality. A phase can be partial. The worker records phase
+start/end/cutoff times and its own script hash. Source-commit history is retained;
+unchanged package fingerprints and trial manifests let validation resume exactly.
+The worker restarts once to apply this budget before any held-out test phase.
