@@ -250,6 +250,10 @@ def analyze(root, bank_path):
         data['position_shape_fits'] = shape_fits(pos_curve)
         data['position_shape_prediction'] = heldout_shape_fits(test)
         data['first_error_events'] = first_error_events(test, bank)
+        data['position_signed_error_curve'] = [
+            {'k': k, 'error': interval([r for r in test if r['task']['kind'] == 'position'
+                                      and r['task']['k'] == k and r['score'].get('valid')], 'signed_error')}
+            for k in range(1, 11)]
         data['position_signed_error_valid'] = interval(
             [r for r in test if r['task']['kind'] == 'position'], 'signed_error')
         data['position_absolute_error_valid'] = interval(
@@ -551,6 +555,31 @@ def curves_figure(evidence, output):
     return output
 
 
+def signed_error_figure(evidence, output):
+    models = [(name, m) for name, m in evidence['models'].items()
+              if any(r['error']['mean'] is not None for r in m['position_signed_error_curve'])]
+    if not models:
+        return None
+    figure, axes = plt.subplots(1, len(models), figsize=(7.33, 2.25), squeeze=False,
+                                layout='constrained', sharey=True)
+    for ax, (name, model) in zip(axes[0], models):
+        data = model['position_signed_error_curve']
+        x = [r['k'] for r in data]
+        ax.plot(x, [r['error']['mean'] if r['error']['mean'] is not None else np.nan for r in data],
+                color='#24577a')
+        ax.fill_between(x, [r['error']['low'] if r['error']['low'] is not None else np.nan for r in data],
+                        [r['error']['high'] if r['error']['high'] is not None else np.nan for r in data], alpha=.2, color='#24577a')
+        ax.axhline(0, color='#777777', linestyle=':', linewidth=1)
+        ax.set_title(name.replace('qwen3:', '').replace('-q4_K_M', ''), fontsize=9)
+        ax.set_xticks([1, 3, 5, 7, 10])
+        ax.grid(alpha=.15)
+    axes[0][0].set_ylabel('Predicted x minus true x (cells)', fontsize=8)
+    figure.supxlabel('Forecast horizon (car ticks)', fontsize=9)
+    figure.savefig(output, dpi=180, bbox_inches='tight')
+    plt.close(figure)
+    return output
+
+
 def percent(value):
     return 'unavailable' if value is None else f'{100*value:.1f}%'
 
@@ -582,6 +611,7 @@ def build(evidence, output, figures, root):
         block = Paragraph(text, styles[style])
         story.append(KeepTogether([block]) if style == 'SmallNote' else block)
         markdown.append(text.replace('<b>', '**').replace('</b>', '**'))
+        return block
 
     def heading(text):
         story.append(Paragraph(text, styles['Heading2']))
@@ -749,12 +779,25 @@ def build(evidence, output, figures, root):
         scale = min(528/picture.imageWidth, 290/picture.imageHeight)
         picture.drawWidth, picture.drawHeight = picture.imageWidth*scale, picture.imageHeight*scale
         picture.hAlign = 'CENTER'
-        picture.keepWithNext = True
         story.append(picture)
-        paragraph('Figure 1. Forecast accuracy by horizon. Shading shows episode-cluster bootstrap '
+        caption = paragraph('Figure 1. Forecast accuracy by horizon. Shading shows episode-cluster bootstrap '
                   'intervals. Each panel uses the actual completed trials; inspect the evidence JSON '
                   'for per-horizon counts. Oracle predictions define the horizontal ceiling. '
                   'The linear control is computed on the same states.', 'SmallNote')
+        story[-2:] = [KeepTogether([picture, caption])]
+    if len(figures) > 1:
+        picture = Image(str(figures[1]))
+        scale = min(528/picture.imageWidth, 180/picture.imageHeight)
+        picture.drawWidth, picture.drawHeight = picture.imageWidth*scale, picture.imageHeight*scale
+        picture.hAlign = 'CENTER'
+        story.append(picture)
+        caption = paragraph('Figure 2. Signed coordinate error on valid numeric position replies only, '
+                  'with episode-cluster bootstrap intervals. Zero means no average coordinate '
+                  'bias, not perfect forecasts: opposite errors can cancel. This is ordinary '
+                  'predicted x minus true x, not circular distance or distance along travel. '
+                  'Wrap can create large jumps. Invalid replies remain incorrect in accuracy '
+                  'but cannot enter this numeric summary.', 'SmallNote')
+        story[-2:] = [KeepTogether([picture, caption])]
     if models:
         body = [[name.replace('qwen3:', '').replace('-q4_K_M', ''), m['profile']['best_representation'],
                  str(m['f_largest_80']), str(m['f_prefix_80']),
@@ -1193,7 +1236,8 @@ def main():
     args.output.parent.mkdir(parents=True, exist_ok=True)
     (args.output.parent / 'evidence.json').write_text(json.dumps(evidence, indent=2))
     figure = curves_figure(evidence, args.output.parent / 'forecast-curves.png')
-    build(evidence, args.output, [figure] if figure else [], args.results)
+    error_figure = signed_error_figure(evidence, args.output.parent / 'signed-errors.png')
+    build(evidence, args.output, [p for p in (figure, error_figure) if p], args.results)
     print(args.output.resolve())
 
 

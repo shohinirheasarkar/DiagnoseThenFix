@@ -293,3 +293,11 @@ saved trials; test error averages horizons and then source episodes. Fold member
 predictions, Brier scores and descriptive episode-bootstrap intervals are saved.
 Overlapping training folds limit those intervals. This does not establish the
 planned preregistered curve hypothesis or frozen-to-live predictive validity.
+
+### Signed forecast-error plot
+
+The paper now plots coordinate bias at each horizon, using valid numeric position
+answers and source-episode bootstrap intervals. Malformed replies still count as
+wrong in accuracy, but have no numeric error. Zero mean error can hide opposite
+mistakes. This is ordinary x-coordinate error, not circular distance or progress
+along travel; wrap can create large jumps. Missing horizons stay blank.

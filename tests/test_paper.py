@@ -320,3 +320,41 @@ def test_heldout_shapes_reject_missing_horizons_without_filling_them():
     assert {f['source_episode'] for f in result['folds']} == {0, 1}
     for kind, score in result['summary'].items():
         assert score['curve_mse']['mean'] >= 0 and kind in ('flat', 'linear', 'exponential', 'cliff')
+
+
+def test_signed_error_plot_uses_valid_numeric_replies_and_keeps_horizon_gaps(tmp_path):
+    from paper.build import signed_error_figure
+    bank = json.loads(Path('data/freeway.json').read_text())
+    situation = next(r for r in bank['situations'] if r['split'] == 'test')
+    folder = tmp_path/'model'
+    phase = folder/'B-test'
+    phase.mkdir(parents=True)
+    (folder/'profile.json').write_text(json.dumps({'model': 'test-model'}))
+    common = {'state_id': situation['id'], 'source_seed': situation['state']['source_seed'],
+              'task': {'kind': 'position', 'k': 1, 'seed': 0, 'truth': 4}}
+    trials = [{**common, 'score': {'valid': True, 'correct': False, 'confidence': 1, 'signed_error': 2}},
+              {**common, 'score': {'valid': False, 'correct': False, 'error': 'truncated'}}]
+    (phase/'responses.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in trials))
+    evidence = analyze(tmp_path, Path('data/freeway.json'))
+    curve = evidence['models']['test-model']['position_signed_error_curve']
+    assert curve[0]['error']['mean'] == 2 and curve[0]['error']['observations'] == 1
+    assert curve[1]['error']['mean'] is None
+    output = tmp_path/'signed.png'
+    assert signed_error_figure(evidence, output) == output and output.stat().st_size > 1000
+    assert signed_error_figure({'models': {}}, output) is None
+
+
+def test_paper_keeps_each_plot_with_its_caption(tmp_path):
+    import matplotlib.pyplot as plt
+    figure, ax = plt.subplots(figsize=(7, 4))
+    ax.plot([0, 1], [0, 1])
+    png = tmp_path/'plot.png'
+    figure.savefig(png)
+    plt.close(figure)
+    evidence = analyze(tmp_path, Path('data/freeway.json'))
+    output = tmp_path/'captions.pdf'
+    build(evidence, output, [png, png], tmp_path)
+    pages = PdfReader(output).pages
+    for caption in ('Figure 1.', 'Figure 2.'):
+        page = next(p for p in pages if caption in p.extract_text())
+        assert len(page.images) > 0
