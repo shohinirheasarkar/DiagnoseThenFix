@@ -460,3 +460,24 @@ def test_original_published_tables_keep_their_two_count_headers(tmp_path):
     assert 'Position repair Boards / trials' in text
     assert 'Condition Boards / trials' in text
     assert 'Boards / valid / all' not in text
+
+
+def test_followup_explains_midrun_collector_restart_and_hashes_record(tmp_path):
+    import hashlib
+    from paper.build import analyze_followup
+    root = tmp_path/'followup'
+    root.mkdir()
+    record = root/'collector-restart.json'
+    record.write_text(json.dumps({'reason': 'Per-request cutoff', 'old_pid': 1, 'new_pid': 2}))
+    followup = analyze_followup(root)
+    assert followup['collector_restart']['reason'] == 'Per-request cutoff'
+    assert followup['input_sha256'][record.name] == hashlib.sha256(record.read_bytes()).hexdigest()
+    (tmp_path/'empty').mkdir()
+    evidence = analyze(tmp_path/'empty', Path('data/freeway.json'))
+    evidence['followup'] = followup
+    output = tmp_path/'restart.pdf'
+    build(evidence, output, [], root)
+    text = ' '.join(' '.join(page.extract_text() for page in PdfReader(output).pages).split())
+    assert 'interrupted, unwritten episode is not counted' in text
+    assert 'Calls already in flight may finish after the cutoff' in text
+    assert 'frozen policy package and completed' in text
