@@ -358,3 +358,15 @@ def test_paper_keeps_each_plot_with_its_caption(tmp_path):
     for caption in ('Figure 1.', 'Figure 2.'):
         page = next(p for p in pages if caption in p.extract_text())
         assert len(page.images) > 0
+
+
+def test_related_work_marks_existing_code_policies_and_conversion_limits(tmp_path):
+    from paper.build import REFERENCES
+    assert len({url for _, url in REFERENCES}) == len(REFERENCES)
+    evidence = analyze(tmp_path, Path('data/freeway.json'))
+    output = tmp_path/'related.pdf'
+    build(evidence, output, [], tmp_path)
+    text = '\n'.join(p.extract_text() for p in PdfReader(output).pages)
+    for phrase in ('already evaluates code-as-policy', 'AutoHarness', 'XiangqiBench',
+                   'Seeing Without Understanding', 'not an exhaustive priority search'):
+        assert phrase in text

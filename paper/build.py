@@ -40,6 +40,12 @@ REFERENCES = [
  ('Xu et al. (2026). Code over Words: Overcoming Semantic Inertia via Code-Grounded Reasoning. Findings of ACL.', 'https://aclanthology.org/2026.findings-acl.819/'),
  ('Zhao et al. (2021). Calibrate Before Use: Improving Few-shot Performance of Language Models. ICML, PMLR 139.', 'https://proceedings.mlr.press/v139/zhao21c.html'),
  ('Yang et al. (2025). Qwen3 Technical Report.', 'https://arxiv.org/abs/2505.09388'),
+ ('Jin et al. (2026). Seeing Without Understanding: Disentangling Perception, Reasoning, and Simulation in VLM Gameplay. ICML.', 'https://proceedings.mlr.press/v306/jin26a.html'),
+ ('Schmied et al. (2025). LLMs are Greedy Agents: Effects of RL Fine-tuning on Decision-Making Abilities.', 'https://arxiv.org/abs/2504.16078'),
+ ('Lou et al. (2026). AutoHarness: improving LLM agents by automatically synthesizing a code harness.', 'https://arxiv.org/abs/2603.03329'),
+ ('Chai et al. (2026). Finding the Move Is Not Winning the Game: XiangqiBench for Closed-Loop Evaluation of LLM Agents.', 'https://arxiv.org/abs/2610.02425'),
+ ('Li et al. (2026). Do LLMs Build Spatial World Models? Evidence from Grid-World Maze Tasks.', 'https://arxiv.org/abs/2604.10690'),
+ ('Huang et al. (2026). Learning to Draw ASCII Improves Spatial Reasoning in Language Models.', 'https://arxiv.org/abs/2604.14641'),
 ]
 
 
@@ -685,6 +691,16 @@ def build(evidence, output, figures, root):
               'world models motivate computational offloading [6]. Semantic inertia motivates label '
               'and framing controls [7]. Those constructs guide the implementation; this report does '
               'not rebrand them as new contributions.')
+    paragraph('Closest overlaps matter for the follow-up. RealtimeGym already evaluates code-as-policy '
+              '[1, Appendix C.4]; AutoHarness synthesizes verifiers and entire policies [12]. Our '
+              'saved-program pilot therefore tests a bounded Freeway implementation and its delay '
+              'charges, not a new code-policy idea. Seeing Without Understanding separates perception '
+              'and simulation [10], while spatial-format and layout-construction studies motivate our '
+              'input controls [14,15]. Greedy Agents studies frequency bias and the knowing-doing gap '
+              '[11]. XiangqiBench distinguishes a promising local move from a verified win [13]. '
+              'Our frozen-to-live comparison follows that caution; diagnosis-targeting superiority '
+              'and causal stage attribution remain unestablished. The repository includes a focused '
+              'primary-source comparison; it is not an exhaustive priority search.')
     heading('2. Simulator and reference labels')
     paragraph('We pin RealtimeGym to commit 3d5b3ef37dafee25ca2e8d2e8d71f5fe842eda7b. '
               'Freeway has nine columns and ten lanes; the player stays in column 4. Its actual motion '

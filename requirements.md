@@ -23,7 +23,7 @@ that a fix helps. This list keeps those three things apart.
 | Live comparisons: 50 seeds/condition (p16) | Yes | First cycle reached 10 paired seeds/model for base/selected/all; extend cohorts |
 | Five Qwen sizes + another family + ceiling (p2) | Local Ollama client | 0.6B, second family, ceiling; no automatic downloads or paid services |
 | Five seeds, 95% intervals, Holm (p2,18) | Bootstrap, paired estimates, cluster sign-flip tests, Holm | Full planned contrasts with cluster-aware tests; keep missing cells visible |
-| Novelty audit and related work (p18-19) | Cautious cited review paper | Full primary-source comparison; no unsupported first/best claim |
+| Novelty audit and related work (p18-19) | Cited paper and focused 13-source comparison | Exhaustive priority search; no unsupported first/best claim |
 | Reproducible repo and review paper (chat) | Tested PRs, raw evidence, paper generator and PDF | Update each overnight PR and final paper; verify every saved record |
 
 The minimum version still needs Stage D and 50-seed live coverage. The full version
