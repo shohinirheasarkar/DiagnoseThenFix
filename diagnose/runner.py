@@ -63,7 +63,7 @@ def run(bank, model, output, stages=('A', 'B', 'C'), representations=('coordinat
         diaries = list(itertools.product(history_kinds, history_lengths)) if stage == 'D' else [('none', 0)]
         frames = list(itertools.product(skins, labels)) if stage == 'E' else [('cars', 'standard')]
         for kind, k, (diary, length), (skin, label_set) in itertools.product(kinds, ks, diaries, frames):
-            if stage == 'B' and repair in ('code', 'code_v2') and kind != 'position':
+            if stage == 'B' and repair in ('code', 'code_v2', 'chained_calls') and kind != 'position':
                 continue
             if stage == 'C' and repair in ('bound', 'retry', 'oracle_shield', 'forecast_then_act') and kind != 'combined':
                 continue
@@ -97,7 +97,27 @@ def run(bank, model, output, stages=('A', 'B', 'C'), representations=('coordinat
             task = make_task(state, stage, rep, k, seed, paraphrase, kind=kind, repair=repair,
                              history_kind=diary, history_length=length, skin=skin, labels=label_set,
                              injected=injected)
-            response = model.ask(task['prompt'], seed, thinking, max_tokens, schema='json')
+            if repair == 'chained_calls':
+                messages = []
+                for tick in range(1, k+1):
+                    if stop_at is not None and time.time() >= stop_at:
+                        results = read_jsonl(results_path)
+                        (output / 'summary.json').write_text(json.dumps(summarize(results), indent=2))
+                        return results
+                    chained = make_task(state, 'B', rep, tick, seed, paraphrase,
+                                        kind=kind, repair='chained_calls')
+                    response = model.ask(chained['prompt'], seed, thinking, max_tokens,
+                                         schema='json', history=messages)
+                    parsed, failed = parse_reply(response, ('answer', 'confidence'))
+                    checked = score(chained, parsed, failed, state, row['oracle'])
+                    if tick < k and checked['valid']:
+                        auxiliary.append(response)
+                        messages.extend(({'role': 'user', 'content': chained['prompt']},
+                                         {'role': 'assistant', 'content': response['raw']['message']['content']}))
+                    else:
+                        break
+            else:
+                response = model.ask(task['prompt'], seed, thinking, max_tokens, schema='json')
             required = (('code', 'confidence') if repair in ('code', 'code_v2') else
                         ('answer', 'confidence') if stage in ('A', 'B') else
                         ('collision', 'confidence') if stage == 'C' and kind == 'forecast' else
