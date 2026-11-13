@@ -121,6 +121,55 @@ def shape_fits(curve):
                       'rmse': math.sqrt(cliff_error)}}
 
 
+def heldout_shape_fits(records):
+    from collections import defaultdict
+    by_episode = defaultdict(lambda: defaultdict(list))
+    for r in records:
+        if r['task']['kind'] == 'position':
+            by_episode[r['source_seed']][r['task']['k']].append(int(r['score']['correct']))
+    output = {'protocol': 'posthoc-leave-source-episode-out-v1', 'folds': [], 'summary': {}, 'contrasts_vs_flat': {}}
+    if len(by_episode) < 3:
+        return output
+    errors = defaultdict(list)
+    for heldout, test in sorted(by_episode.items()):
+        train = defaultdict(list)
+        for episode, curve in by_episode.items():
+            if episode != heldout:
+                for k, values in curve.items():
+                    train[k].extend(values)
+        curve = {k: statistics.mean(v) for k, v in train.items()}
+        fits = shape_fits(curve)
+        if fits is None or set(test) != set(curve):
+            continue
+        predictions = {name: {} for name in ('flat', 'linear', 'exponential', 'cliff')}
+        for k in test:
+            predictions['flat'][k] = statistics.mean(curve.values())
+            predictions['linear'][k] = fits['linear']['slope']*k+fits['linear']['intercept']
+            predictions['exponential'][k] = fits['exponential']['amplitude']*math.exp(fits['exponential']['rate']*k)
+            predictions['cliff'][k] = fits['cliff']['before' if k <= fits['cliff']['last_before'] else 'after']
+        fold = {'source_episode': heldout, 'training_episodes': sorted(set(by_episode)-{heldout}),
+                'test_horizons': sorted(test), 'fits': fits, 'scores': {}}
+        for name, prediction in predictions.items():
+            prediction = {k: min(1., max(0., p)) for k, p in prediction.items()}
+            mse = statistics.mean((prediction[k]-statistics.mean(test[k]))**2 for k in test)
+            brier = statistics.mean(statistics.mean((prediction[k]-v)**2 for v in test[k]) for k in test)
+            fold['scores'][name] = {'curve_mse': mse, 'brier': brier, 'predictions': prediction}
+            errors[name].append({'state_id': heldout, 'curve_mse': mse, 'brier': brier})
+        output['folds'].append(fold)
+    for name, values in errors.items():
+        output['summary'][name] = {'curve_mse': bootstrap(values, 'curve_mse'),
+                                   'brier': bootstrap(values, 'brier')}
+    for name in ('linear', 'exponential', 'cliff'):
+        if name in errors:
+            differences = [{'state_id': f['source_episode'],
+                            'curve_mse': f['scores'][name]['curve_mse']-f['scores']['flat']['curve_mse'],
+                            'brier': f['scores'][name]['brier']-f['scores']['flat']['brier']}
+                           for f in output['folds']]
+            output['contrasts_vs_flat'][name] = {
+                metric: bootstrap(differences, metric) for metric in ('curve_mse', 'brier')}
+    return output
+
+
 def motion_events(state, horizon=10):
     car = state.cars[0]
     events = []
@@ -199,6 +248,7 @@ def analyze(root, bank_path):
                 'collision_accuracy': interval([r for r in test if r['task']['kind'] == 'collision']),
                 'invalid': sum(not r['score']['valid'] for r in test)}
         data['position_shape_fits'] = shape_fits(pos_curve)
+        data['position_shape_prediction'] = heldout_shape_fits(test)
         data['first_error_events'] = first_error_events(test, bank)
         data['position_signed_error_valid'] = interval(
             [r for r in test if r['task']['kind'] == 'position'], 'signed_error')
@@ -736,6 +786,23 @@ def build(evidence, output, figures, root):
                       'one breakpoint. RMSE is in-sample accuracy error. The cliff has an extra '
                       'selected parameter; lower RMSE is not evidence that it generalizes or that '
                       'compounding error caused the curve. No confirmatory shape test is claimed.', 'SmallNote')
+        prediction_rows = [[name.replace('qwen3:', '').replace('-q4_K_M', ''),
+                            len(m['position_shape_prediction']['folds']),
+                            *[f"{m['position_shape_prediction']['summary'][kind]['curve_mse']['mean']:.4f}"
+                              for kind in ('flat', 'linear', 'exponential', 'cliff')]]
+                           for name, m in models.items() if m['position_shape_prediction']['summary']]
+        if prediction_rows:
+            table(['Model', 'Held-out episodes', 'Flat MSE', 'Line MSE', 'Exp. MSE', 'Cliff MSE'],
+                  prediction_rows, [80, 105, 85, 85, 85, 88])
+            paragraph('A post-hoc follow-up leaves one whole source episode out, fits the same '
+                      'fixed curve families on remaining episodes, clips predictions to [0,1], '
+                      'and scores the unseen episode. A flat training-mean control tests whether '
+                      'shape helps at all. Training fits weight saved trials equally; scoring weights '
+                      'horizons and held-out episodes equally. Malformed answers count as wrong. '
+                      'Evidence JSON includes fold membership, predictions, Brier scores and '
+                      'episode-bootstrap intervals. Training folds overlap, so these intervals '
+                      'are descriptive and do not capture every source of fit uncertainty. This '
+                      'does not confirm a preregistered shape or frozen-to-live prediction.', 'SmallNote')
         event_rows = [[name.replace('qwen3:', '').replace('-q4_K_M', ''),
                        m['first_error_events']['complete_sequences'],
                        *[m['first_error_events']['first_error_event'][kind]
