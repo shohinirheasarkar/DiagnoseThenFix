@@ -184,8 +184,17 @@ def check(root, bank_path=Path('data/freeway.json')):
     root = Path(root)
     bank = {r['id']: r for r in json.loads(Path(bank_path).read_text())['situations']}
     counts = {'forecast_trials': 0, 'commitment_trials': 0, 'context_trials': 0,
-              'live_episodes': 0, 'files': 0}
+              'live_episodes': 0, 'compiled_episodes': 0, 'files': 0}
     archive = root / 'archive.json'
+    generations = {}
+    if archive.exists():
+        for path in root.rglob('*'):
+            if path.name.endswith(('.jsonl', '.jsonl.gz')):
+                for _, item in read(path):
+                    if item.get('task', {}).get('repair') == 'code_v2':
+                        response = item['response']
+                        generations[response['key']] = (response['identity'], response['raw'],
+                                                        response['error'], response['wall_seconds'])
     cycle_path = root / 'cycle.json'
     legacy_terminal_reset = (cycle_path.exists() and
                             json.loads(cycle_path.read_text()).get('source_commit') ==
@@ -228,6 +237,15 @@ def check(root, bank_path=Path('data/freeway.json')):
                     counts['commitment_trials'] += 1
                 elif 'trace' in record:
                     verify_live(record, legacy_terminal_reset)
+                    if record.get('protocol') == 'compiled-controller-v1':
+                        from diagnose.compiled import verify
+                        verify(record)
+                        if archive.exists():
+                            response = record['generation_response']
+                            expected = generations.get(response['key'])
+                            if expected != (response['identity'], response['raw'], response['error'], response['wall_seconds']):
+                                raise ValueError('Compiled program is missing or changed from the published generation source')
+                        counts['compiled_episodes'] += 1
                     counts['live_episodes'] += 1
             except (ValueError, KeyError, TypeError) as error:
                 raise ValueError(f'{path}:{number}: {error}') from error

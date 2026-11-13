@@ -229,3 +229,27 @@ throughput, not answer quality. A phase can be partial. The worker records phase
 start/end/cutoff times and its own script hash. Source-commit history is retained;
 unchanged package fingerprints and trial manifests let validation resume exactly.
 The worker restarts once to apply this budget before any held-out test phase.
+
+### Saved-program latency pilot
+
+All ten saved `code_v2` samples (five per model) fail at least one fixed training
+check. Before any controller test, freeze a separate exploratory replay: use all
+five samples, never choose them by held-out accuracy. Compare the bounded
+interpreter alone with a strict training-check gate. The gate rejects any failing
+program and uses S; executable programs can still have wrong physics. Unsafe
+Python remains blocked in both conditions. No extra generation or repair is used.
+
+Cross each gate with two delay charges: saved generation time once per episode,
+or that same time every turn. The latter is a synthetic repeated-charge control,
+not a new measured model call. Both include measured local checking/execution
+costs. Replays make zero model-server requests. They use five programs by fifty
+fresh environment seeds (60000-60049) per condition per model; repeats of a saved
+program are not independent programs. The controller reads canonical object
+facts and uses a fixed U/S/D selector over its code forecasts. This removes input
+parsing and action readout work; it is not an isolated cognition or targeting test.
+It also does not solve delay-aware planning or the full latency utility rule.
+
+Keep this `compiled-controller-v1` cohort separate from v2 live play. Save every
+program failure, raw source response, CPU duration and logical generation charge.
+Audit both the program's chosen moves and every physical tick against upstream.
+The published archive must include the original generation logs for cross-checks.
