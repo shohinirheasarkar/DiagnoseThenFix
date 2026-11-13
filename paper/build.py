@@ -218,6 +218,13 @@ def analyze(root, bank_path):
     output = {'bank': bank_data['manifest'], 'models': {}, 'live': [], 'live_paired': [], 'files': {},
               'generated_at': datetime.now(timezone.utc).isoformat(),
               'bank_sha256': hashlib.sha256(Path(bank_path).read_bytes()).hexdigest()}
+    bank_audit = Path(bank_path).with_name(Path(bank_path).stem+'-search-audit.json')
+    if bank_audit.exists():
+        audit = json.loads(bank_audit.read_text())
+        if audit['bank_sha256'] != output['bank_sha256'] or audit['states'] != len(bank):
+            raise ValueError('Bank search audit does not match this bank')
+        output['bank_search_audit'] = audit
+        output['bank_search_audit_sha256'] = hashlib.sha256(bank_audit.read_bytes()).hexdigest()
     for path in sorted((p for p in root.rglob('*') if p.name.endswith(('.jsonl', '.jsonl.gz')))):
         output['files'][str(path)] = hashlib.sha256(path.read_bytes()).hexdigest()
     for folder in sorted(root.iterdir()):
@@ -736,6 +743,13 @@ def build(evidence, output, figures, root):
               f'{bank["source_episodes"]["train"]}/{bank["source_episodes"]["validation"]}/'
               f'{bank["source_episodes"]["test"]}. These categories are sampling strata, not '
               'estimates of how often each situation occurs in ordinary play.')
+    if evidence.get('bank_search_audit'):
+        audit = evidence['bank_search_audit']
+        paragraph(f'A separate path-search audit checked safe sets, optimal choices and required '
+                  f'foresight on all {audit["states"]} bank states ({audit["nodes"]:,} search nodes). '
+                  'It does not call the memoized oracle or labeler. Failed branches stop and a goal '
+                  'is an exact score upper bound. It shares replay physics; upstream differential '
+                  'tests check that separate layer. The saved report records bank and code hashes.', 'SmallNote')
     heading('3. Experimental protocol')
     paragraph('We registered hypotheses before model collection. A subsequent execution plan records '
               'the user-imposed eight-hour cap and its reduced scope. Renderer selection uses ten '

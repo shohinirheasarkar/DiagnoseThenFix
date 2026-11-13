@@ -6,7 +6,7 @@ that a fix helps. This list keeps those three things apart.
 
 | Plan | Working code | Evidence still needed |
 | --- | --- | --- |
-| Shared bank, exact replay, labels, splits (p2) | Freeway: 500 states; other games: replay adapters | 500 labeled states each for Snake and Overcooked; exhaustive search checks |
+| Shared bank, exact replay, labels, splits (p2) | Freeway: 500 states with full-bank search audit; other games: replay adapters | 500 labeled states each for Snake and Overcooked |
 | Six formats, five reading probes (p3-5) | Yes, Freeway; signed-error plot from saved forecasts | 200-state study; action transfer; perception scaffold |
 | Forecasts, k=1..10, confidence (p5-7) | Yes; exploratory held-out curve fits | 300-state matrix; thinking on; three paraphrases; confirmatory curve tests |
 | Direct/chained/rule/table/code/tool repairs (p6-7) | Prompt variants, separate chained calls, two bounded code formats | Full isolated comparisons; calibrated error onset controls |

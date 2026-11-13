@@ -165,3 +165,14 @@ claim, unique internal cause, or superiority of diagnosis targeting is establish
 Other-game banks, full 200/300-state matrices, extra families/thinking sweeps,
 causal cascades, matched random/leave-out/monitor comparisons, latency utility rules
 and conditional training remain open. Working code alone does not finish them.
+
+## Full-bank search cross-check
+
+A separate path search now checks all 500 Freeway states' safe sets, optimal
+scores/choices and required foresight. It never calls the memoized oracle or
+labeler. Failed paths stop; reaching the goal is a proven upper bound, so that
+branch needs no further exploration. Transition results may be cached, but path
+values are not. The saved report ties the check to bank and source-file hashes.
+This checks search logic using shared replay physics; upstream differential tests
+remain a separate check of physics. A node-budget limit raises an error rather
+than issuing a partial certificate. No model requests are involved.
