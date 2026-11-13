@@ -19,7 +19,7 @@ that a fix helps. This list keeps those three things apart.
 | Calibration/framing/neutral/strategy repairs (p12-13) | Calibration and strategy; input switches | Full frozen and live comparisons |
 | Cascade replay and four monitor triggers (p13-15) | Basic hooks and triggers | Real stage interventions; 100 failures/model; channel attribution; cost-matched monitor |
 | Diagnosis and composed agent (p15-16) | Switches; matched C and diary D validation profiles | Matched random/leave-out comparisons; learned validation thresholds |
-| Latency-aware agent (p16) | World advances during measured delay | Repair utility rule; cost-matched experiments; frozen-to-live prediction |
+| Latency-aware agent (p16) | World advances during measured delay; saved-program latency replay | Repair utility rule; cost-matched experiments; frozen-to-live prediction |
 | Live comparisons: 50 seeds/condition (p16) | Yes | First cycle reached 10 paired seeds/model for base/selected/all; extend cohorts |
 | Five Qwen sizes + another family + ceiling (p2) | Local Ollama client | 0.6B, second family, ceiling; no automatic downloads or paid services |
 | Five seeds, 95% intervals, Holm (p2,18) | Bootstrap, paired estimates, cluster sign-flip tests, Holm | Full planned contrasts with cluster-aware tests; keep missing cells visible |

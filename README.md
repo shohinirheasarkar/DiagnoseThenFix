@@ -61,3 +61,7 @@ separate. To rescore a local context run without calling a model:
 ```sh
 python -m diagnose.context --output results/overnight/qwen3-1.7b-q4_K_M/D-test --check
 ```
+
+Saved programs can also drive an offline controller. `python -m diagnose.compiled
+--help` shows how to replay them. This tests code reuse and delay charges with no
+new model calls; it stays separate from the live-agent study.
