@@ -108,6 +108,25 @@ def verify_forecast(record, situation):
     computed = score(task, value, error, state, situation['oracle'])
     if any(computed[key] != record['score'][key] for key in ('valid', 'correct')):
         raise ValueError('Forecast score mismatch')
+    if task['repair'] == 'chained_calls':
+        calls = [*record['response']['auxiliary'], record['response']]
+        if len(calls) > task['k'] or not calls:
+            raise ValueError('Chained request count mismatch')
+        if len(calls) < task['k'] and computed['valid']:
+            raise ValueError('Unfinished chain cannot be a valid final prediction')
+        from diagnose.probes import make_task
+        messages = []
+        for tick, call in enumerate(calls, 1):
+            query = make_task(state, 'B', task['representation'], tick, task['seed'],
+                              task['paraphrase'], kind='position', repair='chained_calls')
+            expected = [*messages, {'role': 'user', 'content': query['prompt']}]
+            if call['identity']['request']['messages'] != expected:
+                raise ValueError('Chained context mismatch')
+            answer, failed = parse_reply(call, ('answer', 'confidence'))
+            if tick < len(calls) and not score(query, answer, failed, state, situation['oracle'])['valid']:
+                raise ValueError('Chain continued after an invalid intermediate answer')
+            messages.extend(({'role': 'user', 'content': query['prompt']},
+                             {'role': 'assistant', 'content': call['raw'].get('message', {}).get('content', '')}))
 
 
 def verify_commitment(record, situation):

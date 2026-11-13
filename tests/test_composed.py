@@ -72,3 +72,61 @@ def test_all_repairs_count_scoring_calls_and_history_filtering():
     assert result['error'] is None and result['calls'] == 4
     assert result['seconds'] == .4 and result['tokens'] == 40
     assert result['repairs'] == ['bound', 'calibrate', 'code', 'no_history', 'structured']
+
+
+def test_v2_checks_program_only_on_fixed_training_inputs_and_reuses_it():
+    from diagnose.composed import program_error
+    assert program_error(ArithmeticProgram(CODE, extended=True)) is None
+    wrong = ArithmeticProgram('def forecast(x,timer,p,k):\n return x', extended=True)
+    assert program_error(wrong)['expected'] != program_error(wrong)['predicted']
+    model = Model()
+    policy = ComposedPolicy(model, {'split': 'validation', 'B': .1, 'C': .1}, revision='v2')
+    first = policy(initial(2222), [])
+    assert first['error'] is None and first['calls'] == 2
+    assert policy(initial(2223), [])['calls'] == 1
+
+
+def test_v2_retries_bad_code_once_then_uses_its_own_beliefs():
+    class Bad(Model):
+        def ask(self, prompt, **kwargs):
+            raw = super().ask(prompt, **kwargs)
+            if 'Write one Python function' in prompt:
+                raw['raw']['message']['content'] = json.dumps({'code': 'def forecast(x,timer,p,k):\n return x', 'confidence': 1})
+            return raw
+    model = Bad()
+    policy = ComposedPolicy(model, {'split': 'validation', 'B': .1, 'C': .1}, revision='v2')
+    first = policy(initial(2222), [])
+    assert first['calls'] == 3 and first['action'] == 'U'
+    assert first['collision'] == {'U': False, 'S': False, 'D': True}
+    assert 'Training-case failure' in first['error']
+    second = policy(initial(2223), [])
+    assert second['calls'] == 1 and second['action'] == 'U'
+    assert 'disabled' in second['error']
+
+
+def test_v2_calibration_failure_keeps_the_proposed_action_and_logs_failure():
+    class Missing(Model):
+        def action_scores(self, prompt, seed):
+            return {'scores': None, 'error': 'missing candidate', 'response': self.ask(prompt)}
+    result = ComposedPolicy(Missing(), {'split': 'validation', 'E': .1}, revision='v2')(initial(1000), [])
+    assert result['action'] == 'D' and result['collision'] is not None
+    assert result['error'].startswith('Calibration unavailable')
+    assert result['calls'] == 3
+
+
+def test_v2_counts_both_code_attempts_when_feedback_repairs_the_program():
+    class Fixable(Model):
+        attempts = 0
+        def ask(self, prompt, **kwargs):
+            raw = super().ask(prompt, **kwargs)
+            if 'Write one Python function' in prompt:
+                self.attempts += 1
+                if self.attempts == 1:
+                    raw['raw']['message']['content'] = json.dumps({'code': 'def forecast(x,timer,p,k):\n return x', 'confidence': 1})
+                else:
+                    assert 'fixed training-only check' in prompt
+            return raw
+    model = Fixable()
+    result = ComposedPolicy(model, {'split': 'validation', 'B': .1}, revision='v2')(initial(2222), [])
+    assert result['error'] is None and result['calls'] == 3 and model.attempts == 2
+    assert result['tokens'] == 30

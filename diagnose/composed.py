@@ -1,11 +1,29 @@
 """This turns on fixes selected from validation data and logs every extra call they cost."""
 from dataclasses import asdict
+import time
 
 from .model import parse_reply
 from .probes import make_task
 from .render import RULES, render
 from .repairs import ArithmeticProgram, ablations, bound_action, calibrate, choose_repairs, monitor
-from .world import ACTIONS
+from .world import ACTIONS, initial
+
+
+def program_error(program):
+    for seed in range(1000, 1006):
+        for car in initial(seed).cars:
+            current = car
+            for k in range(11):
+                try:
+                    predicted = program(car.x, car.timer, car.speed, k)
+                except (ValueError, KeyError, TypeError, ArithmeticError) as exc:
+                    return {'input': [car.x, car.timer, car.speed, k], 'error': str(exc),
+                            'expected': current.x}
+                if predicted != current.x:
+                    return {'input': [car.x, car.timer, car.speed, k],
+                            'predicted': predicted, 'expected': current.x}
+                current = current.tick()
+    return None
 
 
 def forecast_with_code(state, program, horizon=3):
@@ -32,7 +50,9 @@ def forecast_with_code(state, program, horizon=3):
 
 class ComposedPolicy:
     def __init__(self, model, profile, condition='selected', seed=0, thinking=False,
-                 horizon=3, max_tokens=1024):
+                 horizon=3, max_tokens=1024, revision='v1'):
+        if revision not in ('v1', 'v2'):
+            raise ValueError('Unknown policy revision')
         self.model, self.profile, self.seed = model, profile, seed
         selected = choose_repairs(profile)
         comparisons = ablations(selected, seed)
@@ -44,6 +64,7 @@ class ComposedPolicy:
             raise ValueError('Unknown composition condition')
         self.condition, self.thinking, self.horizon = condition, thinking, horizon
         self.max_tokens, self.program, self.previous = max_tokens, None, None
+        self.revision, self.program_attempted, self.program_failure = revision, False, None
 
     def __call__(self, state, history):
         enabled = set(self.enabled)
@@ -58,6 +79,24 @@ class ComposedPolicy:
                 messages.extend(({'role': 'user', 'content': row.get('observation', '')},
                                  {'role': 'assistant', 'content': row.get('answer', '')}))
         responses = []
+        repair_errors = []
+        cpu_seconds = [0.]
+
+        def compute(function, *args, **kwargs):
+            started = time.monotonic()
+            try:
+                return function(*args, **kwargs)
+            finally:
+                cpu_seconds[0] += time.monotonic() - started
+
+        def finish(action, beliefs, error, raw):
+            result = self._result(action, beliefs, error, responses, prompt, raw, enabled)
+            if self.revision == 'v2':
+                result.update(policy_revision='v2', cpu_seconds=cpu_seconds[0],
+                              seconds=result['seconds']+cpu_seconds[0],
+                              program_validated=self.program is not None,
+                              program_failure=self.program_failure)
+            return result
 
         def ask(text, **kwargs):
             result = self.model.ask(text, seed=self.seed+state.turn, thinking=self.thinking,
@@ -68,7 +107,7 @@ class ComposedPolicy:
         raw = ask(prompt, history=messages)
         value, error = parse_reply(raw, ('action', 'collision', 'confidence'))
         if error:
-            return self._result('S', None, error, responses, prompt, raw, enabled)
+            return finish('S', None, error, raw)
         try:
             action, beliefs = value['action'], value['collision']
             if action not in ACTIONS:
@@ -108,30 +147,59 @@ class ComposedPolicy:
                     action, beliefs = replacement['action'], replacement['collision']
                     bound_action(beliefs)
             if 'code' in enabled:
-                if self.program is None:
-                    code_task = make_task(state, 'B', k=self.horizon, repair='code')
-                    generated = ask(code_task['prompt'])
-                    code_value, failed = parse_reply(generated, ('code', 'confidence'))
-                    if failed:
-                        raise ValueError('Code generation failed: ' + failed)
-                    self.program = ArithmeticProgram(code_value['code'])
-                beliefs = forecast_with_code(state, self.program, self.horizon)
+                try:
+                    if self.program is None:
+                        if self.revision == 'v2' and self.program_attempted:
+                            raise ValueError('Code disabled after validation failure: ' + self.program_failure)
+                        self.program_attempted = True
+                        code_task = make_task(state, 'B', k=self.horizon,
+                                              repair='code_v2' if self.revision == 'v2' else 'code')
+                        feedback = ''
+                        for attempt in range(2 if self.revision == 'v2' else 1):
+                            generated = ask(code_task['prompt'] + feedback)
+                            code_value, failed = parse_reply(generated, ('code', 'confidence'))
+                            try:
+                                if failed:
+                                    raise ValueError('Code generation failed: ' + failed)
+                                candidate = compute(ArithmeticProgram, code_value['code'], extended=self.revision == 'v2')
+                                counterexample = compute(program_error, candidate) if self.revision == 'v2' else None
+                                if counterexample:
+                                    raise ValueError('Training-case failure: ' + str(counterexample))
+                                self.program = candidate
+                                break
+                            except (ValueError, KeyError, TypeError, SyntaxError, ArithmeticError) as exc:
+                                self.program_failure = str(exc)
+                                if attempt+1 == (2 if self.revision == 'v2' else 1):
+                                    raise
+                                feedback = ('\nYour previous program was ' + str(code_value) +
+                                            '\nIt failed a fixed training-only check: ' + str(exc) +
+                                            '\nFix the program. No test-board labels are supplied.')
+                    beliefs = compute(forecast_with_code, state, self.program, self.horizon)
+                except (ValueError, KeyError, TypeError, SyntaxError, ArithmeticError) as exc:
+                    if self.revision == 'v1':
+                        raise
+                    self.program, self.program_failure = None, str(exc)
+                    repair_errors.append(str(exc))
             if 'calibrate' in enabled:
                 common = RULES + '\nA means U, B means S, C means D.\n'
                 state_scores = self.model.action_scores(common + render(state, representation), self.seed)
                 null_scores = self.model.action_scores(common + 'BOARD MASKED.', self.seed)
                 responses.extend((state_scores['response'], null_scores['response']))
                 if state_scores['error'] or null_scores['error']:
-                    raise ValueError('Calibration unavailable: ' + str(state_scores['error'] or null_scores['error']))
-                action, _ = calibrate(state_scores['scores'], null_scores['scores'])
+                    failed = 'Calibration unavailable: ' + str(state_scores['error'] or null_scores['error'])
+                    if self.revision == 'v1':
+                        raise ValueError(failed)
+                    repair_errors.append(failed)
+                else:
+                    action, _ = calibrate(state_scores['scores'], null_scores['scores'])
             if 'bound' in enabled:
                 action = bound_action(beliefs) or 'S'
             if action not in ACTIONS:
                 raise ValueError('Repair returned invalid action')
             self.previous = asdict(state)
-            return self._result(action, beliefs, None, responses, prompt, raw, enabled)
+            return finish(action, beliefs, '; '.join(repair_errors) or None, raw)
         except (ValueError, KeyError, TypeError, SyntaxError, ArithmeticError) as exc:
-            return self._result('S', None, str(exc), responses, prompt, raw, enabled)
+            return finish('S', None, str(exc), raw)
 
     @staticmethod
     def _result(action, beliefs, error, responses, prompt, raw, enabled):

@@ -220,3 +220,26 @@ def test_deadline_and_null_state_are_not_performance_results(tmp_path):
     null = next(r for r in summary if r['kind'] == 'null')
     assert null['accuracy'] is None and null['ece_valid_only'] is None
     assert null['actions'] == {'U': 1}
+
+
+def test_real_chaining_uses_separate_calls_and_preserves_prior_answers(tmp_path):
+    fake = FakeOllama()
+    model = LocalModel('test', tmp_path/'cache', transport=fake)
+    state = initial(1000)
+    bank = [{'id': state.key, 'state': state.to_dict(), 'oracle': label(state), 'split': 'test'}]
+    rows = run(bank, model, tmp_path/'run', stages=('B',), repairs=('chained_calls',),
+               horizons=(3,), limit=1)
+    assert len(rows) == 1 and len(fake.calls) == 3
+    assert [len(r['messages']) for r in fake.calls] == [1, 3, 5]
+    assert len(rows[0]['response']['auxiliary']) == 2
+    assert fake.calls[2]['messages'][1]['content'] == json.dumps(fake.reply)
+
+
+def test_chaining_stops_on_invalid_intermediate_reply(tmp_path):
+    fake = FakeOllama()
+    fake.reply = {'answer': 'wrong type', 'confidence': .5}
+    model = LocalModel('test', tmp_path/'cache', transport=fake)
+    state = initial(1000)
+    bank = [{'id': state.key, 'state': state.to_dict(), 'oracle': label(state), 'split': 'test'}]
+    rows = run(bank, model, tmp_path/'run', stages=('B',), repairs=('chained_calls',), horizons=(10,))
+    assert len(fake.calls) == 1 and not rows[0]['score']['valid']

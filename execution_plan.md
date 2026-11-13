@@ -148,3 +148,20 @@ ordinary skin and label changes do not. The paired analysis reports invalid repl
 all-trial accuracy differences, valid-pair action/forecast flips, and safe-to-unsafe
 flips. Intervals resample source episodes. Cluster sign-flip tests and Holm correction
 are exploratory; small cohorts have very limited power.
+
+### Separate-call forecasts and recoverable repairs
+
+`chained_calls` is a new position-only condition: one request per tick, with earlier
+answers in later context. The old `chained` condition remains a one-reply table.
+Malformed intermediate replies stop the chain and count as invalid. Every request
+and its cost is saved; cached prefixes remain logical reused work.
+
+The opt-in composed policy `revision='v2'` accepts the wider arithmetic contract.
+It checks each generated program on fixed initial boards from training episode
+seeds 1000-1005, at horizons 0-10. It supplies the first failing training example
+for one retry. This is simulator-assisted code validation, not test-time oracle
+forecasting. Passing those checks does not prove a program correct everywhere.
+If code still fails, it is disabled for that episode; the original model forecast
+remains available. Missing calibration scores also leave the model action intact.
+Failures and every generation/retry/scoring call remain logged. The default v1
+policy and the first cycle stay unchanged. Never pool the two policy versions.

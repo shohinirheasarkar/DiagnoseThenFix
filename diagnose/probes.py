@@ -47,7 +47,8 @@ def make_task(state, stage, representation='coordinates', k=1, seed=0,
         raise ValueError('Invalid horizon or paraphrase')
     if not state.cars:
         raise ValueError('A probe needs at least one object')
-    allowed = {'A': {'base'}, 'B': {'base', 'rule', 'scratchpad', 'chained', 'tool', 'code', 'code_v2'},
+    allowed = {'A': {'base'}, 'B': {'base', 'rule', 'scratchpad', 'chained', 'chained_calls',
+                                 'tool', 'code', 'code_v2'},
                'C': {'base', 'generic', 'forecast_then_act', 'bound', 'retry', 'oracle_shield'},
                'D': {'base', 'no_history', 'window', 'balanced'},
                'E': {'base', 'strategy'}, 'action': {'base', 'generic'}}
@@ -94,7 +95,7 @@ def make_task(state, stage, representation='coordinates', k=1, seed=0,
             question += '\nApply the provided timer and delayed-wrap rules explicitly.'
         elif repair == 'scratchpad':
             question += '\nFirst fill a tick-by-tick table in the JSON field "table".'
-        elif repair == 'chained':
+        elif repair in ('chained', 'chained_calls'):
             question += '\nCompute each intermediate tick in sequence; include "table" in JSON.'
         elif repair == 'tool':
             question += '\nDeterministic forecast tool result: ' + json.dumps(truth)
