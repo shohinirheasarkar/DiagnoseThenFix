@@ -1,0 +1,34 @@
+{
+  "design": {
+    "bank_sha256": "f64f61dac4ac2a7d084068b64f66c236a2731f88d6853538db1ed188e35a4a27",
+    "digest": "2bfd38a7daaf4b1037efe517ccb73d1a3bbd4822cf89f1a82be1569050a114e0",
+    "horizon": 3,
+    "max_tokens": 256,
+    "model": "qwen3:4b-q4_K_M",
+    "protocol": "repeated-action-commitment-v1",
+    "representation": "ascii",
+    "seeds": [
+      0
+    ],
+    "source_files": {
+      "commitment.py": "747763a116cc748d40df48a4456f78a30a3a363f8bc2574dd531e8d4d5e37e75",
+      "model.py": "648d209dce53fe8f9d0720d35e695edea81b24d14aaa76c1baed5e24daa87aef",
+      "render.py": "f6880a45d4abc2ad5cc5c22973dd517ff36de55041e3b9fba3e3f8aacc35c742",
+      "repairs.py": "0b4c0c2f0cea2a68e39b4b4e6015f3747eca2d2d1e9bc2eb52ccbe2a4459c01a",
+      "world.py": "e4941972aa549fef5f32e9fc541f347699fad9300b3d3ba3bfef4ab77fe145a1"
+    },
+    "split": "validation",
+    "states": [
+      "004ac44fc111e84b487b",
+      "02eb4c66c7f11635c3ff",
+      "02f15ef43925363fe448",
+      "03008fd0f20136e38933"
+    ],
+    "thinking": false,
+    "version": {
+      "version": "0.40.16"
+    }
+  },
+  "git_revision": "d393c4e4f473381fa11127952482264076563545",
+  "created_at": "2026-11-13T08:52:13.186948+00:00"
+}

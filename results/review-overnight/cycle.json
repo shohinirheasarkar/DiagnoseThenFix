@@ -1,0 +1,73 @@
+{
+  "started_at": "2026-11-13T08:20:34.430301+00:00",
+  "resumed_at": "2026-11-13T08:41:26.877509+00:00",
+  "status": "running",
+  "source": "503f7e74f17c66679cc11da5e323f2f3fa4708ec1f2ef3af57e0c43394ed5d34",
+  "source_commit": "d393c4e4f473381fa11127952482264076563545",
+  "context_stop": "2026-11-13T10:50:00+00:00",
+  "collection_stop": "2026-11-13T15:05:00+00:00",
+  "full_research_plan_complete": false,
+  "policy_revision": "v2",
+  "collector_sha256": "ae8544654fa61d292faa63d2a3ec5ea8be262144d41b6b2b8b0d9e72d65de9dc",
+  "source_commit_history": [
+    "9963e57543eb72dce70a9c01e12cd12a972e3808",
+    "d393c4e4f473381fa11127952482264076563545"
+  ],
+  "queue_revision": "protect-context-stage-coverage",
+  "phase_history": [
+    {
+      "stage": "D",
+      "model": "qwen3:1.7b-q4_K_M",
+      "started_at": "2026-11-13T08:52:57.616543+00:00",
+      "stop_at": "2026-11-13T09:27:57.616535+00:00",
+      "ended_at": "2026-11-13T09:11:37.067624+00:00",
+      "saved_trials": 840
+    },
+    {
+      "stage": "D",
+      "model": "qwen3:4b-q4_K_M",
+      "started_at": "2026-11-13T09:11:37.099367+00:00",
+      "stop_at": "2026-11-13T09:46:37.099364+00:00",
+      "ended_at": "2026-11-13T09:46:40.660987+00:00",
+      "saved_trials": 546
+    },
+    {
+      "stage": "E",
+      "model": "qwen3:1.7b-q4_K_M",
+      "started_at": "2026-11-13T09:46:40.686962+00:00",
+      "stop_at": "2026-11-13T10:06:40.686960+00:00",
+      "ended_at": "2026-11-13T09:52:20.507094+00:00",
+      "saved_trials": 340
+    },
+    {
+      "stage": "E",
+      "model": "qwen3:4b-q4_K_M",
+      "started_at": "2026-11-13T09:52:20.538153+00:00",
+      "stop_at": "2026-11-13T10:12:20.538151+00:00",
+      "ended_at": "2026-11-13T10:05:54.291696+00:00",
+      "saved_trials": 340
+    },
+    {
+      "stage": "B-chain",
+      "model": "qwen3:1.7b-q4_K_M",
+      "started_at": "2026-11-13T10:05:54.331278+00:00",
+      "stop_at": "2026-11-13T10:10:54.331275+00:00",
+      "ended_at": "2026-11-13T10:06:38.218755+00:00",
+      "saved_trials": 36
+    },
+    {
+      "stage": "B-chain",
+      "model": "qwen3:4b-q4_K_M",
+      "started_at": "2026-11-13T10:06:38.249238+00:00",
+      "stop_at": "2026-11-13T10:11:38.249233+00:00",
+      "ended_at": "2026-11-13T10:08:44.805649+00:00",
+      "saved_trials": 36
+    }
+  ],
+  "phase_minutes": {
+    "D": 35,
+    "E": 20,
+    "B-chain": 5
+  },
+  "phase": "live"
+}

@@ -1,0 +1,6 @@
+{
+  "captured_at": "2026-11-13T11:04:19.189900+00:00",
+  "scope": "Closed frozen probes, compiled replays, and simulator controls; live neural episodes are still collecting and excluded.",
+  "full_research_plan_complete": false,
+  "live_collection_stop": "2026-11-13T15:05:00+00:00"
+}

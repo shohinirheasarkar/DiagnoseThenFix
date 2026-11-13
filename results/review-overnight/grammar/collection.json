@@ -1,0 +1,14 @@
+{
+  "source_commit": "0667a194f52545e6b48edfb0efe1063979cb06c5",
+  "deadline": "2026-11-13T08:30:00+00:00",
+  "recorded_closed_at": "2026-11-13T08:30:52.268640+00:00",
+  "expected_trials_per_model": 900,
+  "actual_trials": {
+    "qwen3-4b-q4_K_M": 337,
+    "qwen3-1.7b-q4_K_M": 900
+  },
+  "scope": "exploratory grammar and single-reply forecast repairs",
+  "protocol_script": "import json, sys\nfrom datetime import datetime\nfrom pathlib import Path\nsys.path.insert(0,str(Path('.cache/overnight-code').resolve()))\nfrom diagnose.model import LocalModel\nfrom diagnose.runner import run\nbank=json.load(open('data/freeway.json'))['situations']\nstop=datetime.fromisoformat('2026-11-13T08:30:00+00:00').timestamp()\nfor tag in ['qwen3:1.7b-q4_K_M','qwen3:4b-q4_K_M']:\n m=LocalModel(tag,cache='.cache/model',timeout=120)\n profile=json.load(open('results/cycle/'+tag.replace(':','-')+'/profile.json'))\n run(bank,m,Path('results/overnight-code')/tag.replace(':','-'),stages=('B',),representations=(profile['best_representation'],),seeds=tuple(range(5)),horizons=(1,5,10),repairs=('base','rule','scratchpad','chained','code','code_v2','tool'),split='test',limit=5,max_tokens=512,stop_at=stop)\n m.transport('/api/generate',{'model':m.name,'keep_alive':0})\n",
+  "protocol_sha256": "dae371f927cd6f48f6e8cc4e74ea8a7c37334a4ab34ada1b042057d844eaa8bc",
+  "old_study_unchanged": true
+}

@@ -54,7 +54,9 @@ what earlier work already covers.
 
 ## Overnight follow-up
 
-[The plan checklist](requirements.md) shows what still needs work. The follow-up
+[The plan checklist](requirements.md) shows what still needs work.
+[Closed follow-up evidence](results/review-overnight) is saved separately;
+neural live collection is still running, and the PDF update follows at the cap. The follow-up
 adds paired diary/story tests and an opt-in v2 agent that checks generated code,
 retries once, and keeps its own forecast when a repair fails. Old results stay
 separate. To rescore a local context run without calling a model:

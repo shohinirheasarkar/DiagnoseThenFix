@@ -1,0 +1,1188 @@
+{
+  "conditions": [
+    {
+      "labels": "standard",
+      "skin": "cars"
+    },
+    {
+      "labels": "neutral",
+      "skin": "cars"
+    },
+    {
+      "labels": "words",
+      "skin": "cars"
+    },
+    {
+      "labels": "standard",
+      "skin": "logs"
+    },
+    {
+      "labels": "neutral",
+      "skin": "logs"
+    },
+    {
+      "labels": "words",
+      "skin": "logs"
+    },
+    {
+      "labels": "standard",
+      "skin": "clouds"
+    },
+    {
+      "labels": "neutral",
+      "skin": "clouds"
+    },
+    {
+      "labels": "words",
+      "skin": "clouds"
+    },
+    {
+      "labels": "standard",
+      "skin": "X"
+    },
+    {
+      "labels": "neutral",
+      "skin": "X"
+    },
+    {
+      "labels": "words",
+      "skin": "X"
+    },
+    {
+      "name_leak": true
+    },
+    {
+      "repair": "strategy"
+    },
+    {
+      "reversal": true
+    },
+    {
+      "paraphrase": 1
+    },
+    {
+      "paraphrase": 2
+    }
+  ],
+  "digest": "2bfd38a7daaf4b1037efe517ccb73d1a3bbd4822cf89f1a82be1569050a114e0",
+  "max_tokens": 256,
+  "model": "qwen3:4b-q4_K_M",
+  "real": [],
+  "representation": "ascii",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "source": "503f7e74f17c66679cc11da5e323f2f3fa4708ec1f2ef3af57e0c43394ed5d34",
+  "split": "test",
+  "stage": "E",
+  "states": [
+    {
+      "id": "02e7af704da212048a3b",
+      "oracle": {
+        "category": "safe_advance",
+        "choice": "U",
+        "future_x": [
+          [
+            0,
+            0,
+            9,
+            9,
+            2,
+            5,
+            8,
+            2,
+            5,
+            8,
+            2,
+            5,
+            8,
+            8
+          ],
+          [
+            1,
+            1,
+            0,
+            0,
+            3,
+            6,
+            9,
+            3,
+            6,
+            9,
+            3,
+            6,
+            9,
+            8
+          ],
+          [
+            1,
+            1,
+            0,
+            0,
+            4,
+            7,
+            0,
+            4,
+            7,
+            0,
+            4,
+            7,
+            0,
+            9
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            5,
+            8,
+            1,
+            5,
+            8,
+            1,
+            5,
+            8,
+            1,
+            0
+          ],
+          [
+            2,
+            2,
+            1,
+            1,
+            6,
+            9,
+            2,
+            6,
+            9,
+            2,
+            6,
+            9,
+            2,
+            0
+          ],
+          [
+            2,
+            2,
+            2,
+            2,
+            7,
+            0,
+            3,
+            7,
+            0,
+            3,
+            7,
+            0,
+            3,
+            0
+          ],
+          [
+            2,
+            2,
+            2,
+            2,
+            8,
+            1,
+            4,
+            8,
+            1,
+            4,
+            8,
+            1,
+            4,
+            0
+          ],
+          [
+            3,
+            3,
+            3,
+            3,
+            9,
+            2,
+            5,
+            9,
+            2,
+            5,
+            9,
+            2,
+            5,
+            1
+          ],
+          [
+            3,
+            3,
+            3,
+            3,
+            0,
+            3,
+            6,
+            0,
+            3,
+            6,
+            0,
+            3,
+            6,
+            1
+          ],
+          [
+            3,
+            3,
+            4,
+            4,
+            1,
+            4,
+            7,
+            1,
+            4,
+            7,
+            1,
+            4,
+            7,
+            1
+          ]
+        ],
+        "horizon": 10,
+        "optimal": [
+          "U",
+          "S",
+          "D"
+        ],
+        "repeated_outcomes": {
+          "D": "neutral",
+          "S": "neutral",
+          "U": "collision"
+        },
+        "required_foresight": 1,
+        "safe": [
+          "U",
+          "S",
+          "D"
+        ],
+        "scores": {
+          "D": [
+            1,
+            0,
+            -1
+          ],
+          "S": [
+            1,
+            0,
+            -1
+          ],
+          "U": [
+            1,
+            0,
+            -1
+          ]
+        }
+      },
+      "split": "test",
+      "state": {
+        "cars": [
+          {
+            "lane": 1,
+            "length": 1,
+            "speed": 3,
+            "timer": 1,
+            "x": 0
+          },
+          {
+            "lane": 2,
+            "length": 1,
+            "speed": 3,
+            "timer": 1,
+            "x": 0
+          },
+          {
+            "lane": 3,
+            "length": 1,
+            "speed": 2,
+            "timer": 0,
+            "x": 8
+          },
+          {
+            "lane": 4,
+            "length": 1,
+            "speed": 2,
+            "timer": 0,
+            "x": 8
+          },
+          {
+            "lane": 5,
+            "length": 1,
+            "speed": 1,
+            "timer": 0,
+            "x": 1
+          },
+          {
+            "lane": 5,
+            "length": 1,
+            "speed": 1,
+            "timer": 0,
+            "x": 4
+          },
+          {
+            "lane": 5,
+            "length": 1,
+            "speed": 1,
+            "timer": 0,
+            "x": 7
+          },
+          {
+            "lane": 6,
+            "length": 1,
+            "speed": 1,
+            "timer": 0,
+            "x": 1
+          },
+          {
+            "lane": 6,
+            "length": 1,
+            "speed": 1,
+            "timer": 0,
+            "x": 4
+          },
+          {
+            "lane": 6,
+            "length": 1,
+            "speed": 1,
+            "timer": 0,
+            "x": 7
+          },
+          {
+            "lane": 7,
+            "length": 1,
+            "speed": 1,
+            "timer": 0,
+            "x": 1
+          },
+          {
+            "lane": 7,
+            "length": 1,
+            "speed": 1,
+            "timer": 0,
+            "x": 4
+          },
+          {
+            "lane": 7,
+            "length": 1,
+            "speed": 1,
+            "timer": 0,
+            "x": 7
+          },
+          {
+            "lane": 8,
+            "length": 1,
+            "speed": 4,
+            "timer": 2,
+            "x": 8
+          }
+        ],
+        "lane": 8,
+        "source_seed": 1069,
+        "turn": 1
+      },
+      "upstream": "3d5b3ef37dafee25ca2e8d2e8d71f5fe842eda7b"
+    },
+    {
+      "id": "04bc01124c49f6d4c3c1",
+      "oracle": {
+        "category": "must_retreat",
+        "choice": "D",
+        "future_x": [
+          [
+            9,
+            5,
+            4,
+            4,
+            5,
+            1,
+            5,
+            1,
+            7,
+            4,
+            4
+          ],
+          [
+            0,
+            5,
+            8,
+            8,
+            6,
+            2,
+            6,
+            2,
+            7,
+            4,
+            4
+          ],
+          [
+            0,
+            6,
+            12,
+            12,
+            6,
+            2,
+            6,
+            2,
+            7,
+            4,
+            4
+          ],
+          [
+            1,
+            6,
+            0,
+            0,
+            6,
+            2,
+            6,
+            2,
+            8,
+            4,
+            4
+          ],
+          [
+            1,
+            7,
+            4,
+            4,
+            7,
+            3,
+            7,
+            3,
+            8,
+            5,
+            5
+          ],
+          [
+            2,
+            7,
+            8,
+            8,
+            7,
+            3,
+            7,
+            3,
+            8,
+            5,
+            5
+          ],
+          [
+            2,
+            8,
+            12,
+            12,
+            7,
+            3,
+            7,
+            3,
+            9,
+            5,
+            5
+          ],
+          [
+            3,
+            8,
+            0,
+            0,
+            8,
+            4,
+            8,
+            4,
+            0,
+            5,
+            5
+          ],
+          [
+            3,
+            9,
+            4,
+            4,
+            8,
+            4,
+            8,
+            4,
+            0,
+            6,
+            6
+          ],
+          [
+            4,
+            0,
+            8,
+            8,
+            8,
+            4,
+            8,
+            4,
+            0,
+            6,
+            6
+          ]
+        ],
+        "horizon": 10,
+        "optimal": [
+          "D"
+        ],
+        "repeated_outcomes": {
+          "D": "neutral",
+          "S": "collision",
+          "U": "collision"
+        },
+        "required_foresight": 1,
+        "safe": [
+          "D"
+        ],
+        "scores": {
+          "D": [
+            1,
+            0,
+            -6
+          ],
+          "S": [
+            0,
+            0,
+            -10
+          ],
+          "U": [
+            0,
+            0,
+            -10
+          ]
+        }
+      },
+      "split": "test",
+      "state": {
+        "cars": [
+          {
+            "lane": 1,
+            "length": 1,
+            "speed": 2,
+            "timer": 0,
+            "x": 8
+          },
+          {
+            "lane": 1,
+            "length": 1,
+            "speed": 2,
+            "timer": 0,
+            "x": 4
+          },
+          {
+            "lane": 2,
+            "length": 4,
+            "speed": 0.25,
+            "timer": 0,
+            "x": 0
+          },
+          {
+            "lane": 3,
+            "length": 4,
+            "speed": 0.25,
+            "timer": 0,
+            "x": 0
+          },
+          {
+            "lane": 4,
+            "length": 1,
+            "speed": 3,
+            "timer": 1,
+            "x": 5
+          },
+          {
+            "lane": 4,
+            "length": 1,
+            "speed": 3,
+            "timer": 1,
+            "x": 1
+          },
+          {
+            "lane": 5,
+            "length": 1,
+            "speed": 3,
+            "timer": 1,
+            "x": 5
+          },
+          {
+            "lane": 5,
+            "length": 1,
+            "speed": 3,
+            "timer": 1,
+            "x": 1
+          },
+          {
+            "lane": 6,
+            "length": 1,
+            "speed": 3,
+            "timer": 0,
+            "x": 6
+          },
+          {
+            "lane": 7,
+            "length": 1,
+            "speed": 4,
+            "timer": 0,
+            "x": 3
+          },
+          {
+            "lane": 8,
+            "length": 1,
+            "speed": 4,
+            "timer": 0,
+            "x": 3
+          }
+        ],
+        "lane": 8,
+        "source_seed": 1209,
+        "turn": 62
+      },
+      "upstream": "3d5b3ef37dafee25ca2e8d2e8d71f5fe842eda7b"
+    },
+    {
+      "id": "070bb0ad244770abceaa",
+      "oracle": {
+        "category": "safe_advance",
+        "choice": "U",
+        "future_x": [
+          [
+            1,
+            5,
+            1,
+            5,
+            1,
+            5,
+            1,
+            5,
+            0,
+            7,
+            4,
+            4,
+            0,
+            0
+          ],
+          [
+            1,
+            5,
+            1,
+            5,
+            1,
+            5,
+            1,
+            5,
+            1,
+            8,
+            5,
+            6,
+            1,
+            1
+          ],
+          [
+            2,
+            6,
+            2,
+            6,
+            2,
+            6,
+            2,
+            6,
+            2,
+            9,
+            6,
+            8,
+            2,
+            2
+          ],
+          [
+            2,
+            6,
+            2,
+            6,
+            2,
+            6,
+            2,
+            6,
+            3,
+            0,
+            7,
+            10,
+            3,
+            3
+          ],
+          [
+            3,
+            7,
+            3,
+            7,
+            3,
+            7,
+            3,
+            7,
+            4,
+            1,
+            8,
+            0,
+            4,
+            4
+          ],
+          [
+            3,
+            7,
+            3,
+            7,
+            3,
+            7,
+            3,
+            7,
+            5,
+            2,
+            9,
+            2,
+            5,
+            5
+          ],
+          [
+            4,
+            8,
+            4,
+            8,
+            4,
+            8,
+            4,
+            8,
+            6,
+            3,
+            0,
+            4,
+            6,
+            6
+          ],
+          [
+            4,
+            8,
+            4,
+            8,
+            4,
+            8,
+            4,
+            8,
+            7,
+            4,
+            1,
+            6,
+            7,
+            7
+          ],
+          [
+            5,
+            9,
+            5,
+            9,
+            5,
+            9,
+            5,
+            9,
+            8,
+            5,
+            2,
+            8,
+            8,
+            8
+          ],
+          [
+            5,
+            0,
+            5,
+            0,
+            5,
+            0,
+            5,
+            0,
+            9,
+            6,
+            3,
+            10,
+            9,
+            9
+          ]
+        ],
+        "horizon": 10,
+        "optimal": [
+          "U",
+          "S",
+          "D"
+        ],
+        "repeated_outcomes": {
+          "D": "neutral",
+          "S": "neutral",
+          "U": "collision"
+        },
+        "required_foresight": 1,
+        "safe": [
+          "U",
+          "S",
+          "D"
+        ],
+        "scores": {
+          "D": [
+            1,
+            0,
+            -4
+          ],
+          "S": [
+            1,
+            0,
+            -4
+          ],
+          "U": [
+            1,
+            0,
+            -4
+          ]
+        }
+      },
+      "split": "test",
+      "state": {
+        "cars": [
+          {
+            "lane": 1,
+            "length": 1,
+            "speed": 2,
+            "timer": 0,
+            "x": 0
+          },
+          {
+            "lane": 1,
+            "length": 1,
+            "speed": 2,
+            "timer": 0,
+            "x": 4
+          },
+          {
+            "lane": 2,
+            "length": 1,
+            "speed": 2,
+            "timer": 0,
+            "x": 0
+          },
+          {
+            "lane": 2,
+            "length": 1,
+            "speed": 2,
+            "timer": 0,
+            "x": 4
+          },
+          {
+            "lane": 3,
+            "length": 1,
+            "speed": 2,
+            "timer": 0,
+            "x": 0
+          },
+          {
+            "lane": 3,
+            "length": 1,
+            "speed": 2,
+            "timer": 0,
+            "x": 4
+          },
+          {
+            "lane": 4,
+            "length": 1,
+            "speed": 2,
+            "timer": 0,
+            "x": 0
+          },
+          {
+            "lane": 4,
+            "length": 1,
+            "speed": 2,
+            "timer": 0,
+            "x": 4
+          },
+          {
+            "lane": 5,
+            "length": 1,
+            "speed": 1,
+            "timer": 0,
+            "x": 9
+          },
+          {
+            "lane": 5,
+            "length": 1,
+            "speed": 1,
+            "timer": 0,
+            "x": 6
+          },
+          {
+            "lane": 5,
+            "length": 1,
+            "speed": 1,
+            "timer": 0,
+            "x": 3
+          },
+          {
+            "lane": 6,
+            "length": 2,
+            "speed": 0.5,
+            "timer": 0,
+            "x": 2
+          },
+          {
+            "lane": 7,
+            "length": 1,
+            "speed": 1,
+            "timer": 0,
+            "x": 9
+          },
+          {
+            "lane": 8,
+            "length": 1,
+            "speed": 1,
+            "timer": 0,
+            "x": 9
+          }
+        ],
+        "lane": 9,
+        "source_seed": 1048,
+        "turn": 1
+      },
+      "upstream": "3d5b3ef37dafee25ca2e8d2e8d71f5fe842eda7b"
+    },
+    {
+      "id": "0e7287803589daefeac0",
+      "oracle": {
+        "category": "safe_advance",
+        "choice": "U",
+        "future_x": [
+          [
+            1,
+            1,
+            2,
+            9,
+            5,
+            2,
+            2,
+            2,
+            2
+          ],
+          [
+            1,
+            1,
+            -1,
+            0,
+            5,
+            3,
+            3,
+            3,
+            3
+          ],
+          [
+            2,
+            2,
+            8,
+            0,
+            6,
+            4,
+            4,
+            4,
+            4
+          ],
+          [
+            2,
+            2,
+            5,
+            1,
+            6,
+            5,
+            5,
+            5,
+            5
+          ],
+          [
+            3,
+            3,
+            2,
+            1,
+            7,
+            6,
+            6,
+            6,
+            6
+          ],
+          [
+            3,
+            3,
+            -1,
+            2,
+            7,
+            7,
+            7,
+            7,
+            7
+          ],
+          [
+            4,
+            4,
+            8,
+            2,
+            8,
+            8,
+            8,
+            8,
+            8
+          ],
+          [
+            4,
+            4,
+            5,
+            3,
+            8,
+            9,
+            9,
+            9,
+            9
+          ],
+          [
+            5,
+            5,
+            2,
+            3,
+            9,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            5,
+            5,
+            -1,
+            4,
+            0,
+            1,
+            1,
+            1,
+            1
+          ]
+        ],
+        "horizon": 10,
+        "optimal": [
+          "U",
+          "S",
+          "D"
+        ],
+        "repeated_outcomes": {
+          "D": "neutral",
+          "S": "neutral",
+          "U": "collision"
+        },
+        "required_foresight": 1,
+        "safe": [
+          "U",
+          "S",
+          "D"
+        ],
+        "scores": {
+          "D": [
+            1,
+            0,
+            -3
+          ],
+          "S": [
+            1,
+            0,
+            -3
+          ],
+          "U": [
+            1,
+            0,
+            -3
+          ]
+        }
+      },
+      "split": "test",
+      "state": {
+        "cars": [
+          {
+            "lane": 1,
+            "length": 1,
+            "speed": 2,
+            "timer": 0,
+            "x": 0
+          },
+          {
+            "lane": 2,
+            "length": 1,
+            "speed": 2,
+            "timer": 0,
+            "x": 0
+          },
+          {
+            "lane": 3,
+            "length": 3,
+            "speed": -0.3333333333333333,
+            "timer": 0,
+            "x": 5
+          },
+          {
+            "lane": 4,
+            "length": 1,
+            "speed": 2,
+            "timer": 0,
+            "x": 8
+          },
+          {
+            "lane": 4,
+            "length": 1,
+            "speed": 2,
+            "timer": 0,
+            "x": 4
+          },
+          {
+            "lane": 5,
+            "length": 1,
+            "speed": 1,
+            "timer": 0,
+            "x": 1
+          },
+          {
+            "lane": 6,
+            "length": 1,
+            "speed": 1,
+            "timer": 0,
+            "x": 1
+          },
+          {
+            "lane": 7,
+            "length": 1,
+            "speed": 1,
+            "timer": 0,
+            "x": 1
+          },
+          {
+            "lane": 8,
+            "length": 1,
+            "speed": 1,
+            "timer": 0,
+            "x": 1
+          }
+        ],
+        "lane": 9,
+        "source_seed": 1059,
+        "turn": 1
+      },
+      "upstream": "3d5b3ef37dafee25ca2e8d2e8d71f5fe842eda7b"
+    }
+  ],
+  "thinking": false,
+  "version": {
+    "version": "0.40.16"
+  }
+}

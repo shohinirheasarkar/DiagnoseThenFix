@@ -1,0 +1,264 @@
+{
+  "split": "validation",
+  "model": "qwen3:4b-q4_K_M",
+  "digest": "2bfd38a7daaf4b1037efe517ccb73d1a3bbd4822cf89f1a82be1569050a114e0",
+  "best_representation": "ascii",
+  "representation_accuracy": {
+    "ascii": 0.62,
+    "coordinates": 0.6,
+    "prose": 0.46,
+    "lanes": 0.24,
+    "relations": 0.42,
+    "json": 0.56
+  },
+  "A": 0.62,
+  "B": 0.3333333333333333,
+  "C": 0,
+  "prior": {
+    "scores": {
+      "U": -8.388846397399902,
+      "S": -0.00023135205752078397,
+      "D": -15.097933769226074
+    },
+    "response": {
+      "cache_hit": true,
+      "created_at": "2026-11-12T08:28:04.958574+00:00",
+      "error": null,
+      "identity": {
+        "digest": "2bfd38a7daaf4b1037efe517ccb73d1a3bbd4822cf89f1a82be1569050a114e0",
+        "request": {
+          "keep_alive": "5m",
+          "logprobs": true,
+          "messages": [
+            {
+              "content": "Game rules: U moves one lane toward 0, D toward 9, S stays. Column stays 4.\nThe player moves first. Reaching lane 0 wins before objects update.\nEach object is [head x, lane, timer, speed_parameter p, length].\nIf x<0 set x=8; if x>8 set x=0; either wrap uses the whole tick.\nOtherwise if abs(p)>=1: decrease timer by 1; only if timer becomes -1,\nincrease timer by abs(p) and move head by sign(p).\nIf abs(p)<1: move head by int(1/p). No same-tick modulo wrap.\nAn object occupies x, x-sign(p), ... for its length. After objects move, contact\nwith column 4 in the player's lane causes a collision and resets the board.\nOnly occupied cells at tick endpoints collide; no swept collision rule.\nAt tick 100 the game ends. Prefer safe progress to the goal; don't wait forever.\nA means U, B means S, C means D.\nBOARD MASKED.\nReply with exactly one token: A for U, B for S, C for D.",
+              "role": "user"
+            }
+          ],
+          "model": "qwen3:4b-q4_K_M",
+          "options": {
+            "num_ctx": 8192,
+            "num_predict": 1,
+            "seed": 0,
+            "temperature": 1.0
+          },
+          "stream": false,
+          "think": false,
+          "top_logprobs": 20
+        },
+        "version": {
+          "version": "0.40.16"
+        }
+      },
+      "key": "9768e7451dbeab4c2f1cd2e240284ca689ae89f4425834a904143c4cf0feb112",
+      "raw": {
+        "created_at": "2026-11-12T08:28:04.957833Z",
+        "done": true,
+        "done_reason": "length",
+        "eval_count": 1,
+        "eval_duration": 1000,
+        "load_duration": 4211542,
+        "logprobs": [
+          {
+            "bytes": [
+              66
+            ],
+            "logprob": -0.00023135238734539598,
+            "token": "B",
+            "top_logprobs": [
+              {
+                "bytes": [
+                  66
+                ],
+                "logprob": -0.00023135238734539598,
+                "token": "B"
+              },
+              {
+                "bytes": [
+                  65
+                ],
+                "logprob": -8.388846397399902,
+                "token": "A"
+              },
+              {
+                "bytes": [
+                  73
+                ],
+                "logprob": -12.66710376739502,
+                "token": "I"
+              },
+              {
+                "bytes": [
+                  68
+                ],
+                "logprob": -14.267897605895996,
+                "token": "D"
+              },
+              {
+                "bytes": [
+                  67
+                ],
+                "logprob": -15.097933769226074,
+                "token": "C"
+              },
+              {
+                "bytes": [
+                  208,
+                  145
+                ],
+                "logprob": -18.756412506103516,
+                "token": "\u0411"
+              },
+              {
+                "bytes": [
+                  84,
+                  104,
+                  101
+                ],
+                "logprob": -20.11725425720215,
+                "token": "The"
+              },
+              {
+                "bytes": [
+                  84,
+                  111
+                ],
+                "logprob": -20.26039695739746,
+                "token": "To"
+              },
+              {
+                "bytes": [
+                  69
+                ],
+                "logprob": -20.628969192504883,
+                "token": "E"
+              },
+              {
+                "bytes": [
+                  239,
+                  188,
+                  162
+                ],
+                "logprob": -20.978946685791016,
+                "token": "\uff22"
+              },
+              {
+                "bytes": [
+                  66,
+                  97,
+                  115,
+                  101,
+                  100
+                ],
+                "logprob": -21.35403060913086,
+                "token": "Based"
+              },
+              {
+                "bytes": [
+                  65,
+                  115,
+                  115
+                ],
+                "logprob": -21.453670501708984,
+                "token": "Ass"
+              },
+              {
+                "bytes": [
+                  32,
+                  66
+                ],
+                "logprob": -21.832691192626953,
+                "token": " B"
+              },
+              {
+                "bytes": [
+                  208,
+                  146
+                ],
+                "logprob": -21.913944244384766,
+                "token": "\u0412"
+              },
+              {
+                "bytes": [
+                  83,
+                  105,
+                  110,
+                  99,
+                  101
+                ],
+                "logprob": -22.3027286529541,
+                "token": "Since"
+              },
+              {
+                "bytes": [
+                  66,
+                  66
+                ],
+                "logprob": -22.60681915283203,
+                "token": "BB"
+              },
+              {
+                "bytes": [
+                  83
+                ],
+                "logprob": -22.610858917236328,
+                "token": "S"
+              },
+              {
+                "bytes": [
+                  60,
+                  66
+                ],
+                "logprob": -22.664037704467773,
+                "token": "<B"
+              },
+              {
+                "bytes": [
+                  42,
+                  42
+                ],
+                "logprob": -22.716106414794922,
+                "token": "**"
+              },
+              {
+                "bytes": [
+                  42,
+                  66
+                ],
+                "logprob": -22.73125457763672,
+                "token": "*B"
+              }
+            ]
+          }
+        ],
+        "message": {
+          "content": "B",
+          "role": "assistant"
+        },
+        "model": "qwen3:4b-q4_K_M",
+        "prompt_eval_cached_count": 3,
+        "prompt_eval_count": 257,
+        "prompt_eval_duration": 1500573000,
+        "total_duration": 1545816917
+      },
+      "wall_seconds": 1.547355165996123
+    },
+    "error": null
+  },
+  "D": 0.75,
+  "history_not_profiled": false,
+  "null_probabilities": {
+    "U": 0.00022739027607084704,
+    "S": 0.9997723323585413,
+    "D": 2.773653877257889e-07
+  },
+  "E": 0.5,
+  "followup_profile": {
+    "D": "worst validation diary stability; invalid pairs score zero",
+    "C": "matched own-forecast consistency; invalid replies score zero",
+    "diary_trials": 168,
+    "commitment_trials": 32,
+    "thresholds": "unchanged fixed A/B .8 and C/D/E .9",
+    "exploratory": true
+  }
+}

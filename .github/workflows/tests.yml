@@ -26,3 +26,7 @@ jobs:
       - name: Replay published evidence
         if: ${{ hashFiles('results/review/archive.json') != '' }}
         run: python scripts/check_evidence.py results/review
+
+      - name: Replay follow-up evidence
+        if: ${{ hashFiles('results/review-overnight/archive.json') != '' }}
+        run: python scripts/check_evidence.py results/review-overnight
