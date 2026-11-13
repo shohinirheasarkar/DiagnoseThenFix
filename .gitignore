@@ -12,3 +12,6 @@ vislogs/
 results/cycle/
 results/local-pilot/
 results/throughput-pilot/
+results/overnight-code/
+results/overnight-context/
+results/overnight-live/
