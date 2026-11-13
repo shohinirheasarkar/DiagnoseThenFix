@@ -121,3 +121,11 @@ All 250 simulator-control episodes completed. Commitment trials completed at 800
 (11 boards).
 Collection stopped at 14:55 UTC. The paper and lossless archive report these
 actual cohorts; the full multi-game research plan remains unfinished.
+
+## November 13 follow-up
+
+The user authorized eight more local hours. See [the requirements checklist](requirements.md)
+for the full plan audit and the second cycle's fixed deadline. New studies are
+exploratory follow-ups. The old arithmetic contract remains the default; an
+explicit `code_v2` condition adds bounded conditional expressions and `sign`.
+This fixes an interface limitation, not the model's understanding of motion.

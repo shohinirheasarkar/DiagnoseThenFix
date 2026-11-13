@@ -68,15 +68,18 @@ def monitor(stays=0, collision=None, action=None, forecast_error=None, perceptio
 
 
 class ArithmeticProgram:
-    def __init__(self, source):
+    def __init__(self, source, extended=False):
         tree = ast.parse(source)
         if len(tree.body) != 1 or not isinstance(tree.body[0], ast.FunctionDef):
             raise ValueError('Expected one forecast(x, timer, p, k) function')
         self.function = tree.body[0]
+        self.extended = extended
         if ([a.arg for a in self.function.args.args] != ['x', 'timer', 'p', 'k']
                 or self.function.decorator_list or self.function.args.defaults
                 or self.function.args.vararg or self.function.args.kwarg
-                or self.function.args.kwonlyargs):
+                or self.function.args.kwonlyargs or self.function.args.posonlyargs
+                or self.function.returns or self.function.type_comment
+                or any(a.annotation for a in self.function.args.args)):
             raise ValueError('Expected four plain arguments')
         allowed = (ast.Module, ast.FunctionDef, ast.arguments, ast.arg, ast.Assign, ast.AugAssign,
                    ast.For, ast.If, ast.Return, ast.Expr, ast.Name, ast.Constant, ast.BinOp,
@@ -84,6 +87,8 @@ class ArithmeticProgram:
                    ast.Add, ast.Sub, ast.Mult, ast.Div, ast.FloorDiv, ast.Mod,
                    ast.USub, ast.UAdd, ast.Not, ast.And, ast.Or, ast.Eq, ast.NotEq,
                    ast.Lt, ast.LtE, ast.Gt, ast.GtE)
+        if extended:
+            allowed += (ast.IfExp,)
         if any(not isinstance(n, allowed) for n in ast.walk(tree)):
             raise ValueError('Only bounded arithmetic, assignments, if, and for are allowed')
         if len(list(ast.walk(tree))) > 500:
@@ -120,6 +125,8 @@ class ArithmeticProgram:
             if isinstance(node, ast.UnaryOp):
                 return {ast.USub: operator.neg, ast.UAdd: operator.pos, ast.Not: operator.not_}[
                     type(node.op)](expression(node.operand))
+            if isinstance(node, ast.IfExp) and self.extended:
+                return expression(node.body if expression(node.test) else node.orelse)
             if isinstance(node, ast.BoolOp):
                 if isinstance(node.op, ast.And):
                     return all(expression(v) for v in node.values)
@@ -141,6 +148,8 @@ class ArithmeticProgram:
                     return result
                 if node.func.id in ('abs', 'int', 'min', 'max'):
                     return bounded({'abs': abs, 'int': int, 'min': min, 'max': max}[node.func.id](*args))
+                if node.func.id == 'sign' and self.extended and len(args) == 1:
+                    return (args[0] > 0) - (args[0] < 0)
             raise ValueError('Unsupported arithmetic expression')
 
         class Returned(Exception):

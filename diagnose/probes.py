@@ -47,7 +47,7 @@ def make_task(state, stage, representation='coordinates', k=1, seed=0,
         raise ValueError('Invalid horizon or paraphrase')
     if not state.cars:
         raise ValueError('A probe needs at least one object')
-    allowed = {'A': {'base'}, 'B': {'base', 'rule', 'scratchpad', 'chained', 'tool', 'code'},
+    allowed = {'A': {'base'}, 'B': {'base', 'rule', 'scratchpad', 'chained', 'tool', 'code', 'code_v2'},
                'C': {'base', 'generic', 'forecast_then_act', 'bound', 'retry', 'oracle_shield'},
                'D': {'base', 'no_history', 'window', 'balanced'},
                'E': {'base', 'strategy'}, 'action': {'base', 'generic'}}
@@ -69,9 +69,16 @@ def make_task(state, stage, representation='coordinates', k=1, seed=0,
         else:
             question = f'What is object 0 head column after exactly {k} car ticks? Answer integer.'
             truth = futures(state, k)[-1][0]
-        if repair == 'code':
+        if repair in ('code', 'code_v2'):
             if kind != 'position':
                 raise ValueError('Code offload currently scores position forecasts only')
+            contract = (' Calls also allowed: sign(x), returning -1, 0, or 1. '
+                        'Conditional expressions (a if condition else b) are supported. '
+                        'Use four unannotated arguments, no defaults or decorators. '
+                        'The inputs are one object head x, its remaining timer, signed '
+                        'speed_parameter p, and horizon k from 0 to 10. '
+                        'Return only its integer head, without resetting the whole game. '
+                        if repair == 'code_v2' else '')
             return {'stage': stage, 'representation': representation, 'k': k, 'seed': seed,
                     'paraphrase': paraphrase, 'kind': kind, 'repair': repair,
                     'history_kind': history_kind, 'history_length': history_length,
@@ -81,6 +88,7 @@ def make_task(state, stage, representation='coordinates', k=1, seed=0,
                     'column after k ticks. Only arithmetic, assignments, if/elif, and for '
                     'loops over range are supported. Calls allowed: abs,int,min,max,range. '
                     'No imports, attributes, recursion, lists, or other functions. '
+                    + contract +
                     'Return JSON {"code": "function source", "confidence": number from 0 to 1}.'}
         if repair == 'rule':
             question += '\nApply the provided timer and delayed-wrap rules explicitly.'

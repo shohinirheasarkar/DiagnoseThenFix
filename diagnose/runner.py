@@ -63,7 +63,7 @@ def run(bank, model, output, stages=('A', 'B', 'C'), representations=('coordinat
         diaries = list(itertools.product(history_kinds, history_lengths)) if stage == 'D' else [('none', 0)]
         frames = list(itertools.product(skins, labels)) if stage == 'E' else [('cars', 'standard')]
         for kind, k, (diary, length), (skin, label_set) in itertools.product(kinds, ks, diaries, frames):
-            if stage == 'B' and repair == 'code' and kind != 'position':
+            if stage == 'B' and repair in ('code', 'code_v2') and kind != 'position':
                 continue
             if stage == 'C' and repair in ('bound', 'retry', 'oracle_shield', 'forecast_then_act') and kind != 'combined':
                 continue
@@ -98,7 +98,7 @@ def run(bank, model, output, stages=('A', 'B', 'C'), representations=('coordinat
                              history_kind=diary, history_length=length, skin=skin, labels=label_set,
                              injected=injected)
             response = model.ask(task['prompt'], seed, thinking, max_tokens, schema='json')
-            required = (('code', 'confidence') if repair == 'code' else
+            required = (('code', 'confidence') if repair in ('code', 'code_v2') else
                         ('answer', 'confidence') if stage in ('A', 'B') else
                         ('collision', 'confidence') if stage == 'C' and kind == 'forecast' else
                         ('action', 'confidence') if stage == 'C' and kind in ('action', 'own', 'oracle') else
@@ -107,10 +107,11 @@ def run(bank, model, output, stages=('A', 'B', 'C'), representations=('coordinat
             proposal = value
             if stage == 'C' and kind == 'own' and forecast_error:
                 error = 'own forecast unavailable: ' + forecast_error
-            if not error and repair == 'code':
+            if not error and repair in ('code', 'code_v2'):
                 try:
                     c = state.cars[0]
-                    answer = ArithmeticProgram(value['code'])(c.x, c.timer, c.speed, k)
+                    answer = ArithmeticProgram(value['code'], extended=repair == 'code_v2')(
+                        c.x, c.timer, c.speed, k)
                     value = {**value, 'answer': answer}
                 except (ValueError, KeyError, TypeError, SyntaxError, ArithmeticError) as exc:
                     error = f'code failed: {exc}'

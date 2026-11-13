@@ -165,3 +165,39 @@ def test_already_terminal_start_is_not_censored_by_an_expired_clock(kind):
     result = episode(forbidden, start=state, stop_at=0)
     assert result['success'] == (kind == 'goal')
     assert not result['censored'] and not result['trace'] and result['calls'] == 0
+
+
+@pytest.mark.parametrize('x', [-3, 0, 5])
+def test_extended_arithmetic_is_opt_in_and_short_circuits(x):
+    code = 'def forecast(x,timer,p,k):\n return sign(x) if x else 0'
+    with pytest.raises(ValueError):
+        ArithmeticProgram(code)
+    assert ArithmeticProgram(code, extended=True)(x, 0, 1, 0) == (x > 0) - (x < 0)
+    lazy = 'def forecast(x,timer,p,k):\n return x if p else 1/0'
+    assert ArithmeticProgram(lazy, extended=True)(x, 0, 1, 0) == x
+
+
+@pytest.mark.parametrize('code', [
+    'def forecast(x,timer,p,k):\n return sign(x, p)',
+    'def forecast(x,timer,p,k):\n return open(x) if p else 0',
+    'def forecast(x,timer,p,k):\n return [x][0] if p else 0',
+    'def forecast(x,timer,p,k):\n return (lambda: x)() if p else 0',
+    'def forecast(x:int,timer,p,k):\n return x',
+    'def forecast(x,timer,p,k, /):\n return x',
+])
+def test_extended_contract_still_blocks_unsupported_python(code):
+    with pytest.raises((ValueError, KeyError)):
+        ArithmeticProgram(code, extended=True)(1, 0, 1, 2)
+
+
+def test_extended_contract_can_express_delayed_wrap_without_an_oracle():
+    code = CODE.replace('if p > 0:\n                    x += 1\n                else:\n                    x -= 1',
+                        'x += sign(p) if p else 0')
+    program = ArithmeticProgram(code, extended=True)
+    from diagnose.world import initial
+    for seed in range(1000, 1030):
+        for car in initial(seed).cars:
+            current = car
+            for k in range(11):
+                assert program(car.x, car.timer, car.speed, k) == current.x
+                current = current.tick()
