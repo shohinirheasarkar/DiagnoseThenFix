@@ -4,7 +4,7 @@ Where do small language models get stuck in real-time games? We separate reading
 the board, forecasting motion, choosing an action, copying history, and following
 priors, then test fixes against simulator labels.
 
-This eight-hour cycle completed 8,000 held-out Freeway forecast trials across
+The first eight-hour cycle completed 8,000 held-out Freeway forecast trials across
 four local Qwen3 artifacts. [The review paper](output/pdf/diagnose-then-repair.pdf)
 reports the results, failures, and partial live cohorts.
 
@@ -49,15 +49,15 @@ older one-tick/repeated-action logs are only a risk-disagreement proxy.
 
 See [the preregistration](preregistration.md). Built on
 [RealtimeGym](https://github.com/SALT-NLP/RealtimeGym) and
-[Wen et al.](https://arxiv.org/abs/2511.04898). Stage diagnosis itself is not new. [The source comparison](related_work.md) explains
-what earlier work already covers.
+[Wen et al.](https://arxiv.org/abs/2511.04898). Stage diagnosis itself is not new.
+[The source comparison](related_work.md) explains what earlier work already covers.
 
 ## Overnight follow-up
 
 [The plan checklist](requirements.md) shows what still needs work.
 [Closed follow-up evidence](results/review-overnight) is saved separately;
-neural live collection is still running, and the PDF update follows at the cap. The follow-up
-adds paired diary/story tests and an opt-in v2 agent that checks generated code,
+neural live collection is still running, and the PDF update follows at the cap.
+The follow-up adds paired diary/story tests and an opt-in v2 agent that checks generated code,
 retries once, and keeps its own forecast when a repair fails. Old results stay
 separate. To rescore a local context run without calling a model:
 
