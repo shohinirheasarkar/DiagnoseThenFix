@@ -279,6 +279,12 @@ def sign_test(differences, seed=0, draws=20000):
 def verify(record, row):
     t = record['task']
     state = State.from_dict(row['state'])
+    rebuilt = task(row, t['stage'], t['representation'], t['seed'],
+                   **{k: t[k] for k in ('kind', 'length', 'repair', 'outcomes', 'skin',
+                                        'labels', 'name_leak', 'reversal', 'paraphrase')},
+                   real=t['diary'] if t['kind'] == 'own' else ())
+    if canonical(rebuilt) != canonical(t):
+        raise ValueError('Context prompt or diary mismatch')
     target = State(state.cars[1:] if t['reversal'] else state.cars,
                    state.lane, state.turn, state.source_seed)
     if t['truth'] != json.loads(canonical(oracle(target))):
@@ -294,3 +300,39 @@ def verify(record, row):
     if score(t, record['response']) != record['score']:
         raise ValueError('Context score mismatch')
     return True
+
+
+def main():
+    import argparse
+    from .model import LocalModel
+    parser = argparse.ArgumentParser(description='Paired diary and framing tests')
+    parser.add_argument('--model')
+    parser.add_argument('--bank', type=Path, default=Path('data/freeway.json'))
+    parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--stage', choices=('D', 'E'), default='D')
+    parser.add_argument('--representation', default='coordinates')
+    parser.add_argument('--real-log', type=Path)
+    parser.add_argument('--split', choices=('validation', 'test'), default='test')
+    parser.add_argument('--limit', type=int, default=8)
+    parser.add_argument('--thinking', action='store_true')
+    parser.add_argument('--check', action='store_true', help='Rescore saved replies, with no model calls')
+    args = parser.parse_args()
+    bank = json.loads(args.bank.read_text())['situations']
+    if args.check:
+        records = read_jsonl(args.output / 'responses.jsonl')
+        by_id = {r['id']: r for r in bank}
+        for record in records:
+            verify(record, by_id[record['state_id']])
+    else:
+        if not args.model or (args.stage == 'D' and not args.real_log):
+            parser.error('Supply --model and, for Stage D, --real-log from live play')
+        real = real_diary(read_jsonl(args.real_log)) if args.real_log else ()
+        model = LocalModel(args.model)
+        records = run(bank, model, args.output, args.stage, args.representation, real=real,
+                      split=args.split, limit=args.limit, thinking=args.thinking)
+    (args.output / 'summary.json').write_text(json.dumps(summarize(records), indent=2))
+    print(f'Checked {len(records)} trials.')
+
+
+if __name__ == '__main__':
+    main()
