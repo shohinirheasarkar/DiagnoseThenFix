@@ -12,6 +12,27 @@ The full multi-game study remains unfinished; [the execution plan](execution_pla
 records the scope and deviations. Snake and Overcooked have tested snapshot/replay
 adapters.
 
+## Focused repair study
+
+[The new paper](output/pdf/diagnosis-guided-repair.pdf) asks whether choosing
+failure examples by diagnosis helps repair generated forecast code. The
+[fixed protocol](targeted_protocol.md) uses two models and 20 starting programs
+each. [Saved evidence](results/targeted-study) covers 1,458,000 forecast checks
+and 36,000 game episodes; the independent replay audit passes.
+
+The intended comparison collapsed. All 17 usable small-model repair pairs ended
+with identical code. Every large-model repair used the wrong JSON field, making
+it invalid under the fixed rules. This shows a repair-interface failure, not
+that diagnostic feedback is useless. The full original plan remains unfinished.
+
+To audit and rebuild this separate study without model calls:
+
+```sh
+python scripts/check_targeted.py --root results/targeted-study
+python scripts/summarize_targeted.py --root results/targeted-study --audit results/targeted-study/audit.json
+python paper/build_targeted.py --summary results/targeted-study/summary.json --output output/pdf/diagnosis-guided-repair.pdf
+```
+
 ## Run locally
 
 Use Python 3.12 and a running Ollama server with your chosen model installed.

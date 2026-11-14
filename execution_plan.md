@@ -196,3 +196,22 @@ The context tables show valid answers alongside total trials. Action-label chang
 also change the required output vocabulary, so their accuracy mixes decision
 quality with format compliance. A condition with no valid pairs has an unavailable
 flip rate, not zero evidence of an effect. Raw records and scoring stay unchanged.
+
+## Focused study, November 14
+
+The separate, frozen [targeted-feedback protocol](targeted_protocol.md) completed
+200 logical generation requests, 120 final candidates, 1,458,000 forecast checks
+and 36,000 uncensored game episodes. The independent full replay audit passes.
+Earlier archives and their paper remain separate.
+
+The repair treatments did not produce a useful semantic contrast: all 17 usable
+1.7B pairs had identical final code; all 4B repairs failed the required output
+contract. Alternative JSON fields were inspected statically, never rescored.
+Zero observed differences therefore do not establish equivalence or show that
+diagnosis is ineffective.
+
+Missing: the planned 100-seed assisted reference, broader models/games and the
+original multiweek matrix. The small development reference is not a substitute.
+Most primitive test inputs overlap training inputs despite disjoint board seeds.
+Research calls closed at the fixed 16:11:19 UTC cutoff; subsequent work audits
+and packages existing records. See the new paper for limits and exact counts.

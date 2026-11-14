@@ -43,3 +43,22 @@ Order: repair the code interface; add honest paired history/framing studies;
 collect balanced exploratory cohorts on 1.7B and 4B; extend repair/live coverage
 as time allows; audit and publish the actual results. Changes are exploratory
 follow-ups after seeing the first cycle, not new preregistered confirmations.
+
+## Focused study, November 14
+
+The separate, frozen [targeted-feedback protocol](targeted_protocol.md) completed
+200 logical generation requests, 120 final candidates, 1,458,000 forecast checks
+and 36,000 uncensored game episodes. The independent full replay audit passes.
+Earlier archives and their paper remain separate.
+
+The repair treatments did not produce a useful semantic contrast: all 17 usable
+1.7B pairs had identical final code; all 4B repairs failed the required output
+contract. Alternative JSON fields were inspected statically, never rescored.
+Zero observed differences therefore do not establish equivalence or show that
+diagnosis is ineffective.
+
+Missing: the planned 100-seed assisted reference, broader models/games and the
+original multiweek matrix. The small development reference is not a substitute.
+Most primitive test inputs overlap training inputs despite disjoint board seeds.
+Research calls closed at the fixed 16:11:19 UTC cutoff; subsequent work audits
+and packages existing records. See the new paper for limits and exact counts.
