@@ -49,3 +49,36 @@ def test_invalid_program_stays_and_error_persists():
 def test_unknown_regime_rejected():
     with pytest.raises(ValueError):
         evaluate_episode(None, 1, 'mystery')
+
+
+@pytest.mark.parametrize('delay', [0, 1, 2])
+def test_delay_beliefs_match_wait_then_action_physics(delay):
+    from dataclasses import replace
+    from diagnose.targeted_live import delayed_beliefs
+    from diagnose.world import ACTIONS, initial, step
+    for seed in range(900100, 900110):
+        for lane in (1, 4, 8, 9):
+            state = replace(initial(seed), lane=lane)
+            beliefs = delayed_beliefs(state, correct_forecast, delay)
+            for action in ACTIONS:
+                current, collision = state, False
+                for move in (['S'] * delay + [action]) * 3:
+                    current, event = step(current, move)
+                    if event in ('collision', 'goal'):
+                        collision = event == 'collision'
+                        break
+                assert beliefs[action] == collision
+
+
+def test_live_rejects_non_integer_forecast():
+    from diagnose.targeted_live import delayed_beliefs
+    from diagnose.world import initial
+    with pytest.raises(ValueError, match='integer'):
+        delayed_beliefs(initial(900100), lambda *args: 4., 1)
+
+
+def test_planned_and_actual_delays_recorded():
+    for regime, delay in [('zero', 0), ('native', 1), ('two_ticks', 2)]:
+        record = evaluate_episode(correct_forecast, 900100, regime)
+        assert all(f['response']['planned_delay_ticks'] == delay for f in record['trace'])
+        assert all(f['response']['actual_delay_ticks'] == f['delay_ticks'] for f in record['trace'])

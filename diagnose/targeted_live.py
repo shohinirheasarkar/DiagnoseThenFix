@@ -3,11 +3,10 @@ import ast
 import math
 import time
 
-from .composed import forecast_with_code
 from .live import episode
 from .repairs import ArithmeticProgram, bound_action
 from .targeted import correct_forecast
-from .world import ACTIONS, State, initial, repeated_outcome, step
+from .world import ACTIONS, State, initial, step
 
 REGIMES = ('zero', 'native', 'two_ticks')
 
@@ -27,11 +26,35 @@ def prepare(source):
         return None, source, str(exc), 'candidate'
 
 
-def decision(program, error, state):
+def delayed_beliefs(state, program, delay):
+    beliefs = {}
+    for action in ACTIONS:
+        lane, collision = state.lane, False
+        for tick in range(1, 3 * (delay + 1) + 1):
+            if tick % (delay + 1) == 0:
+                lane = max(0, min(9, lane + {'U': -1, 'S': 0, 'D': 1}[action]))
+            if lane == 0:
+                break
+            for car in state.cars:
+                head = program(car.x, car.timer, car.speed, tick)
+                if type(head) is not int:
+                    raise ValueError('Prediction must be an integer')
+                direction = -1 if car.speed > 0 else 1
+                if car.lane == lane and any(head + offset * direction == 4
+                                            for offset in range(car.length)):
+                    collision = True
+                    break
+            if collision:
+                break
+        beliefs[action] = collision
+    return beliefs
+
+
+def decision(program, error, state, delay):
     action, beliefs = 'S', None
     if program is not None:
         try:
-            beliefs = forecast_with_code(state, program, 3)
+            beliefs = delayed_beliefs(state, program, delay)
             action = bound_action(beliefs) or 'S'
         except (ValueError, TypeError, KeyError, ArithmeticError) as exc:
             program, error = None, str(exc)
@@ -42,24 +65,28 @@ def evaluate_episode(source, env_seed, regime):
     if regime not in REGIMES:
         raise ValueError('Unknown delay regime')
     program, source, error, kind = prepare(source)
+    planned = {'zero': 0, 'native': 1, 'two_ticks': 2}[regime]
 
     def policy(state, history):
         nonlocal program, error
         started = time.perf_counter()
-        program, error, action, beliefs = decision(program, error, state)
+        program, error, action, beliefs = decision(program, error, state, planned)
         cpu = time.perf_counter() - started
         seconds = cpu if regime == 'native' else 2. if regime == 'two_ticks' else 0.
         return {'action': action, 'collision': beliefs, 'error': error,
                 'cpu_seconds': cpu, 'seconds': seconds, 'tokens': 0, 'calls': 0,
-                'program_executable': program is not None}
+                'program_executable': program is not None,
+                'planned_delay_ticks': planned, 'actual_delay_ticks': math.ceil(seconds)}
 
     result = episode(policy, env_seed, tick_seconds=1., max_decisions=100)
-    return {'protocol': 'targeted-live-v1', 'source': source, 'program_kind': kind,
+    for frame in result['trace']:
+        frame.pop('stage_labels')
+    return {'protocol': 'targeted-live-v3', 'source': source, 'program_kind': kind,
             'regime': regime, 'horizon': 3, 'preparation_cost_charged': False, **result}
 
 
 def verify_episode(record):
-    if (record['protocol'] != 'targeted-live-v1' or record['regime'] not in REGIMES
+    if (record['protocol'] != 'targeted-live-v3' or record['regime'] not in REGIMES
             or record['horizon'] != 3 or record['tick_seconds'] != 1.
             or record['preparation_cost_charged'] is not False):
         raise ValueError('Unknown live protocol')
@@ -70,8 +97,8 @@ def verify_episode(record):
     source = correct_forecast if record['program_kind'] == 'assisted_reference' else record['source']
     program, _, error, _ = prepare(source)
     state = initial(record['seed'])
+    planned = {'zero': 0, 'native': 1, 'two_ticks': 2}[record['regime']]
     collisions = ticks = stays = longest = 0
-    actions = []
     if not record['trace'] or len(record['trace']) > 100:
         raise ValueError('Invalid trace length')
     for index, frame in enumerate(record['trace']):
@@ -79,7 +106,7 @@ def verify_episode(record):
             raise ValueError('Trace continues after terminal state')
         if frame['decision'] != index or State.from_dict(frame['before']) != state:
             raise ValueError('Observation mismatch')
-        program, error, action, beliefs = decision(program, error, state)
+        program, error, action, beliefs = decision(program, error, state, planned)
         response = frame['response']
         cpu = response['cpu_seconds']
         if type(cpu) not in (int, float) or not math.isfinite(cpu) or cpu < 0:
@@ -87,18 +114,12 @@ def verify_episode(record):
         seconds = cpu if record['regime'] == 'native' else 2. if record['regime'] == 'two_ticks' else 0.
         expected = {'action': action, 'collision': beliefs, 'error': error,
                     'cpu_seconds': cpu, 'seconds': seconds, 'tokens': 0, 'calls': 0,
-                    'program_executable': program is not None}
+                    'program_executable': program is not None,
+                    'planned_delay_ticks': planned, 'actual_delay_ticks': math.ceil(seconds)}
         if response != expected or frame['delay_ticks'] != math.ceil(seconds):
             raise ValueError('Policy or time charge mismatch')
-        actual = {a: repeated_outcome(state, a, min(3, 100-state.turn)) == 'collision'
-                  for a in ACTIONS}
-        labels = {'forecast_correct': beliefs == actual if beliefs is not None else None,
-                  'contradiction': beliefs[action] if beliefs is not None else None,
-                  'history_mode_match': action == max(ACTIONS, key=actions.count)
-                  if actions else None}
-        if frame['stage_labels'] != labels:
-            raise ValueError('Stage labels mismatch')
-        actions.append(action)
+        if 'stage_labels' in frame:
+            raise ValueError('Legacy stage labels do not apply to delayed decisions')
         events = []
         for _ in range(math.ceil(seconds)):
             state, event = step(state, 'S')
