@@ -1,4 +1,4 @@
-"""This gives two copies of a forecast program equally sized feedback and checks their repairs."""
+"""This gives two copies of a forecast program the same maximum feedback budget and checks their repairs."""
 from dataclasses import replace
 import json
 import random
