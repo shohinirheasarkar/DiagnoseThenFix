@@ -10,7 +10,8 @@ import json
 import math
 from pathlib import Path
 
-TITLE = 'Does Diagnostic Targeting Improve Forecast Repair?'
+TITLE = 'When Repair Breaks the Interface'
+SUBTITLE = 'A controlled test of targeted feedback for Freeway forecasts'
 REFERENCES = [
     ('Wen et al. (2025). Real-Time Reasoning Agents in Evolving Environments.',
      'https://arxiv.org/abs/2511.04898'),
@@ -89,18 +90,52 @@ def read_rows(path):
                 yield json.loads(line)
 
 
+def verify_audit_hashes(summary, root):
+    audit = summary.get('audit', {})
+    if audit.get('passed') is not True or audit.get('scope') != 'full':
+        raise ValueError('A passed full independent audit is required')
+    hashes = audit.get('input_sha256', {})
+    required = {summary[key] for key in ('forecast_file', 'live_file', 'candidates_file')}
+    if not required <= set(hashes):
+        raise ValueError('Audit omits required paper evidence')
+    for name, expected in hashes.items():
+        path = (root / name).resolve()
+        if not path.is_relative_to(root.resolve()):
+            raise ValueError('Audit path outside archive')
+        digest = hashlib.sha256()
+        with path.open('rb') as handle:
+            for chunk in iter(lambda: handle.read(1024 * 1024), b''):
+                digest.update(chunk)
+        if digest.hexdigest() != expected:
+            raise ValueError(f'Evidence changed after audit: {name}')
+
+
+def input_overlap_text(summary):
+    coverage = summary['input_coverage']
+    count, seen = coverage['test_cases'], coverage['seen_test_cases']
+    if type(count) is not int or type(seen) is not int or not 0 <= seen <= count or not count:
+        raise ValueError('Invalid input coverage counts')
+    return (f'The split holds out boards, not primitive motion inputs: '
+            f'{seen:,} of {count:,} test car-forecast inputs ({percentage(seen/count)}) '
+            'also occur in training. The tuple is (x, timer, p, k). Supplied rules and '
+            'familiar inputs make this a narrow repair test, not evidence of '
+            'unseen-dynamics generalization.')
+
+
 def collect_evidence(summary, root):
     if summary.get('audit', {}).get('passed') is not True:
         raise ValueError('A passed independent audit is required')
     required = ('forecast_contrasts', 'board_macro_contrasts', 'live_contrasts', 'protocol')
     if any(key not in summary for key in required):
         raise ValueError('Incomplete audited summary')
+    verify_audit_hashes(summary, root)
     paths = {key: root / summary[key] for key in
              ('forecast_file', 'live_file', 'candidates_file')}
     forecasts = defaultdict(lambda: [0, 0])
     goals, timing = defaultdict(list), defaultdict(list)
     counters, costs = Counter(), defaultdict(lambda: Counter())
     selections, feedback = Counter(), {}
+    final_status = defaultdict(Counter)
     for row in read_rows(paths['forecast_file']):
         key = (row['model'], row['program_id'], row['branch'])
         if type(row['correct']) is not bool:
@@ -140,6 +175,8 @@ def collect_evidence(summary, root):
                 counters['fallback_decisions'] += not response['program_executable']
         if seen != set(expected):
             raise ValueError('Trace shard is missing live metric keys')
+        if filename not in summary['audit']['input_sha256']:
+            raise ValueError('Audit omits trace shard')
         paths[f'trace_shard:{filename}'] = root / filename
     for row in read_rows(paths['candidates_file']):
         key = (row['model'], row['branch'])
@@ -152,6 +189,17 @@ def collect_evidence(summary, root):
         costs[key]['output_tokens'] += response['raw'].get('eval_count', 0)
         costs[key]['input_tokens'] += response['raw'].get('prompt_eval_count', 0)
         costs[key]['invalid'] += row['error'] is not None
+        if row['round'] == (0 if row['branch'] == 'original' else 2):
+            final_status[key]['total'] += 1
+            final_status[key]['valid'] += row['error'] is None
+            raw_text = response['raw'].get('message', {}).get('content', '')
+            try:
+                payload = json.loads(raw_text)
+            except (ValueError, TypeError):
+                payload = {}
+            final_status[key]['candidate_without_code'] += (
+                isinstance(payload, dict) and 'candidate' in payload and 'code' not in payload)
+
         if row['round']:
             feedback[(row['model'], row['program_id'], row['round'], row['branch'])] = {
                 item['id'] for item in row['feedback']['examples']}
@@ -171,7 +219,7 @@ def collect_evidence(summary, root):
         raise ValueError('Actual forecast and live records are required')
     return dict(paths=paths, forecasts={k: [total / count] for k, (total, count) in forecasts.items()}, goals=dict(goals),
                 timing=dict(timing), counters=dict(counters), costs=dict(costs),
-                selections=dict(selections), overlaps=overlaps)
+                selections=dict(selections), overlaps=overlaps, final_status=dict(final_status))
 
 
 def short_model(name):
@@ -255,6 +303,15 @@ def render(summary_path, output):
     summary = load_json(summary_path)
     data = collect_evidence(summary, summary_path.parent)
     output.parent.mkdir(parents=True, exist_ok=True)
+    for size, valid in [('1.7b', 17), ('4b', 0)]:
+        model = f'qwen3:{size}-q4_K_M'
+        for branch in ('uniform', 'targeted'):
+            status = data['final_status'].get((model, branch), {})
+            if status.get('total') != 20 or status.get('valid') != valid:
+                raise ValueError('Final findings narrative needs review for this cohort')
+    if (data['counters']['forecast_cases'] != 1458000 or
+            data['counters']['episodes'] != 36000):
+        raise ValueError('Final findings narrative requires the completed study cohort')
     figures = make_figures(data, output.parent)
     styles = getSampleStyleSheet()
     styles['Normal'].fontSize = 10
@@ -278,19 +335,23 @@ def render(summary_path, output):
         text(caption)
 
     text(TITLE, 'Title')
-    text('A paired Freeway experiment with executable forecasts', 'Heading2')
+    text(SUBTITLE, 'Heading2')
     text('Abstract', 'Heading2')
     primary = [r for r in summary['forecast_contrasts'] if r['primary']]
     results = '; '.join(f"{short_model(r['model'])}: {signed_points(r['mean'])} "
                         f"(95% interval {signed_points(r['low'])} to {signed_points(r['high'])})"
                         for r in primary)
-    text('Does choosing feedback from a diagnosed weak category improve code repair more '
-         'than uniformly sampling true failures? We compare both strategies from shared '
-         'initial programs using two local Qwen model sizes. Both receive at most six '
-         'examples per round and two repair rounds. The primary held-out forecast '
-         f'contrast, targeted minus uniform, is {results}. We separately evaluate gameplay '
-         'through one fixed human-written controller. These results concern feedback '
-         'selection for one component; they do not establish a general diagnostic agent.')
+    text('We tested whether diagnosis-targeted failure examples improve executable '
+         'forecast repair more than uniformly sampled failures. Forty initial programs '
+         'from two Qwen sizes received two repair rounds per arm. Across 1,458,000 '
+         'forecast records and 36,000 gameplay episodes, the primary targeted-minus-uniform '
+         f'contrast was {results}. This equality does not establish that targeting is '
+         'ineffective: all 40 final 4B repair responses lacked the required code field, '
+         'although their raw JSON contained a candidate field. Both arms therefore '
+         'failed at the interface before their repaired programs could be evaluated. '
+         'The smaller model retained 17 executable final programs per arm. The main '
+         'finding is a failed intervention under a fixed output contract, not evidence '
+         'for or against the general value of diagnosis.')
     text('1. Why this comparison?', 'Heading2')
     text('Executable game models, environment feedback, and program repair are established '
          'ideas [2-5]. Real-time environments also make decision delay consequential [1]. '
@@ -308,10 +369,7 @@ def render(summary_path, output):
          'from the worst category and fills remaining slots from other failures. Both arms '
          'receive fewer than six examples when too few failures exist. With no failures, '
          'the prompt supplies no failing example. Actual costs are reported separately.')
-    text('The split holds out boards, not primitive motion inputs: zero board keys '
-         'are shared, but 11,810 of 12,150 test car-forecast inputs (97.2%) also occur '
-         'in training. The tuple is (x, timer, p, k). Supplied rules and familiar inputs '
-         'make this a narrow repair test, not evidence of unseen-dynamics generalization.')
+    text(input_overlap_text(summary))
     story.append(PageBreak())
     text('3. Held-out forecast results', 'Heading1')
     figure(0, 'Figure 1. Each thin line is one initial-program family; the thick line is the '
@@ -323,8 +381,22 @@ def render(summary_path, output):
                      f"{signed_points(r['low'])} to {signed_points(r['high'])}",
                      f"{r['p_value_holm']:.4f}"])
     table(rows, [90, 125, 190, 99])
+    rows = [['Model / branch', 'Executable finals', 'Candidate without code', 'Accuracy']]
+    for (model, branch), status in sorted(data['final_status'].items()):
+        values = [statistics.mean(v) for k, v in data['forecasts'].items()
+                  if k[0] == model and k[2] == branch]
+        rows.append([f'{short_model(model)} / {branch}',
+                     f"{status['valid']} / {status['total']}",
+                     str(status['candidate_without_code']), percentage(statistics.mean(values))])
+    table(rows, [150, 100, 150, 104])
+    text('All 4B original programs were executable and achieved perfect test accuracy. '
+         'Both final repair arms instead scored zero because the output contract failed. '
+         'For 1.7B, executable programs fell from 19/20 originals to 17/20 in each arm. '
+         'The frozen parser required code; we did not reinterpret candidate after seeing '
+         'the results. Such reinterpretation would be a separate post-hoc protocol.')
     text('The primary score weights forecast cases equally and counts invalid forecasts '
-         'as wrong. Bootstrap intervals preserve program pairing. Sign-flip tests use '
+         'as wrong. Identical paired scores yield degenerate zero-width intervals; these '
+         'describe this sample, not population equivalence. Bootstrap intervals preserve program pairing. Sign-flip tests use '
          'Holm adjustment over the two primary model comparisons. These are comparisons '
          'of sampled programs under this protocol, not independent draws of every forecast.')
     rows = [['Model', 'Board-macro sensitivity', '95% interval']]
@@ -388,11 +460,20 @@ def render(summary_path, output):
          'because the first repairs differ. Category labels summarize externally observed '
          'errors; they do not identify an internal reasoning mechanism.')
     text('7. Discussion and limits', 'Heading1')
-    text('This experiment separates targeted feedback from the general benefit of repair. '
-         'A forecast gain without a gameplay gain is a transfer limitation under this '
-         'controller. Similar outcomes with wide uncertainty do not establish equivalence. '
-         'A negative result is limited to this selection rule, feedback budget, interface, '
-         'and models. The supplied rules and correct examples are human/simulator assistance.')
+    text('Neither model showed an observed targeted-versus-uniform advantage. For 4B, '
+         'that contrast is blocked by a shared output-interface failure: every final '
+         'repair was rejected before execution. The intended semantic repair comparison '
+         'was therefore not realized for that model. The 1.7B arms also had identical '
+         'paired scores and lost executable programs relative to their initial versions. '
+         'These findings support auditing interface validity before interpreting repair '
+         'effectiveness. They do not identify whether feedback targeting would help '
+         'under a reliable interface or a harder unsaturated forecasting task.')
+    text('The controller was weak under delay even with correct forecasts in development: '
+         'the ten-seed pilot achieved 8/10 goals at zero delay and 1/10 in each delayed '
+         'regime. These are development checks, not matched test controls. The planned '
+         '100-seed assisted test control was not collected before the research cutoff. '
+         'Gameplay is therefore a limited secondary result, not a clean ceiling-normalized '
+         'test of forecast transfer. No new research runs were started after the cutoff.')
     text('Only Freeway and two sizes in one model family are tested. The generated motion '
          'function is simpler than a full world model. Most primitive test inputs also '
          'occur in training despite disjoint boards. The fixed controller can limit or '
