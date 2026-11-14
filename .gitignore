@@ -17,3 +17,5 @@ results/overnight-context/
 results/overnight-live/
 results/overnight/
 results/compiled/
+results/targeted-study/cache/
+results/targeted-study/collector.lock

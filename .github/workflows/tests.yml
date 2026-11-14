@@ -30,3 +30,9 @@ jobs:
       - name: Replay follow-up evidence
         if: ${{ hashFiles('results/review-overnight/archive.json') != '' }}
         run: python scripts/check_evidence.py results/review-overnight
+
+      - name: Check targeted repair records and replay receipt
+        if: ${{ hashFiles('results/targeted-study/audit.json') != '' }}
+        run: |
+          python scripts/check_targeted.py --root results/targeted-study --collection-only
+          python -c "from pathlib import Path; from scripts.summarize_targeted import checked_inputs; p=Path('results/targeted-study'); checked_inputs(p,p/'audit.json')"
