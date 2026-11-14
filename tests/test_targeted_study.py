@@ -91,6 +91,17 @@ def test_resume_only_missing_records(root):
     assert not FakeModel.calls
 
 
+def test_resume_rejects_changed_saved_response(root):
+    study.collect(root)
+    rows = read_jsonl(root/'candidates.jsonl')
+    rows[0]['response']['raw']['message']['content'] = '{}'
+    (root/'candidates.jsonl').write_text(''.join(study.canonical(r)+'\n' for r in rows))
+    FakeModel.calls.clear()
+    with pytest.raises(ValueError, match='Saved candidate changed'):
+        study.collect(root)
+    assert not FakeModel.calls
+
+
 def test_deadline_never_asks(root, monkeypatch):
     monkeypatch.setattr(study.time, 'time', lambda: 5_000_000_000.)
     study.collect(root)
