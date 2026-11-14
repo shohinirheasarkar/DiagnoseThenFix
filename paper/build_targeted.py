@@ -370,6 +370,10 @@ def render(summary_path, output):
          'initial program, prompt structure, repair limits, and controller fixed. A '
          'forecast improvement is not assumed to improve gameplay.')
     text('2. Design', 'Heading2')
+    text('We use qwen3:1.7b-q4_K_M and qwen3:4b-q4_K_M, with 20 initial programs per '
+         'model, thinking off, temperature 0.7 and a 1,024-token generation cap. Test '
+         'forecasts cover 100 boards at horizons 1-10; each final program plays 100 '
+         'shared fresh seeds in each delay regime. Model digests are in the manifest.')
     text('Every initial program has three branches: original, uniformly selected failure '
          'feedback, and category-targeted failure feedback. Repairs always use the final '
          'round; unsuccessful or invalid programs remain in the analysis. The two arms '

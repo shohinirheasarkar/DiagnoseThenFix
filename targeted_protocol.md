@@ -1,6 +1,6 @@
 # Does targeted feedback improve repair?
 
-Status: protocol fixed before new held-out evaluation; the signed manifest records the freeze time and hashes.
+Status: protocol fixed before new held-out evaluation; the frozen manifest records the freeze time and hashes.
 
 This is a fresh, narrower study. Earlier Freeway studies informed its design but
 are not pooled with it. It tests diagnostic example selection, not a new code
