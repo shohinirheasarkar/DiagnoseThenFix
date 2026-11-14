@@ -302,6 +302,15 @@ def render(summary_path, output):
     summary_path, output = Path(summary_path), safe_output(output)
     summary = load_json(summary_path)
     data = collect_evidence(summary, summary_path.parent)
+    failure_path = summary_path.parent / 'failure-audit.json'
+    failure = load_json(failure_path)
+    if (failure['new_model_calls'] != 0 or failure['alternative_program_executions'] != 0
+            or failure['primary_results_changed'] is not False):
+        raise ValueError('Expected static-only post-hoc failure audit')
+    for name, expected in failure['input_sha256'].items():
+        if input_receipt([summary_path.parent / name])[str((summary_path.parent / name).resolve())] != expected:
+            raise ValueError('Failure audit inputs changed')
+    data['paths']['failure_audit'] = failure_path
     output.parent.mkdir(parents=True, exist_ok=True)
     for size, valid in [('1.7b', 17), ('4b', 0)]:
         model = f'qwen3:{size}-q4_K_M'
@@ -314,12 +323,14 @@ def render(summary_path, output):
         raise ValueError('Final findings narrative requires the completed study cohort')
     figures = make_figures(data, output.parent)
     styles = getSampleStyleSheet()
-    styles['Normal'].fontSize = 10
-    styles['Normal'].leading = 14
+    styles['Normal'].fontSize = 9.5
+    styles['Normal'].leading = 13
     story = []
 
     def text(value, style='Normal'):
-        story.extend([paragraph(value, styles[style]), Spacer(1, 7)])
+        story.append(paragraph(value, styles[style]))
+        if not style.startswith('Heading'):
+            story.append(Spacer(1, 6))
 
     def table(rows, widths):
         item = Table([[paragraph(x, styles['Normal']) for x in row] for row in rows],
@@ -399,12 +410,10 @@ def render(summary_path, output):
          'describe this sample, not population equivalence. Bootstrap intervals preserve program pairing. Sign-flip tests use '
          'Holm adjustment over the two primary model comparisons. These are comparisons '
          'of sampled programs under this protocol, not independent draws of every forecast.')
-    rows = [['Model', 'Board-macro sensitivity', '95% interval']]
-    for r in summary['board_macro_contrasts']:
-        if r['contrast'] == 'targeted-uniform':
-            rows.append([short_model(r['model']), signed_points(r['mean']),
-                         f"{signed_points(r['low'])} to {signed_points(r['high'])}"])
-    table(rows, [90, 180, 234])
+    macro = [r for r in summary['board_macro_contrasts']
+             if r['contrast'] == 'targeted-uniform']
+    text('Board-macro sensitivity (equal board weights) also gives ' + '; '.join(
+        f"{short_model(r['model'])}: {signed_points(r['mean'])}" for r in macro) + '.')
     text(f"The archive contains {data['counters']['forecast_cases']:,} forecast records, "
          f"including {data['counters']['invalid_forecasts']:,} invalid forecasts. "
          'Board-macro scoring gives each board equal weight and is a sensitivity check.')
@@ -459,6 +468,24 @@ def render(summary_path, output):
          'different examples. Later repair rounds can have different candidate failures '
          'because the first repairs differ. Category labels summarize externally observed '
          'errors; they do not identify an internal reasoning mechanism.')
+    paired = Counter()
+    for row in failure['final_pairs']:
+        if {row['left'], row['right']} == {'uniform', 'targeted'}:
+            paired[(row['model'], 'same')] += row['same_available_source']
+            paired[(row['model'], 'unavailable')] += row['both_sources_unavailable']
+    text('A post-hoc static audit found ' + '; '.join(
+        f"{short_model(row['model'])}: {row['distinct_available_sources']} distinct initial "
+        f"source strings among {row['programs']} requests, "
+        f"{paired[(row['model'], 'same')]} final pairs with identical available code and "
+        f"{paired[(row['model'], 'unavailable')]} pairs with both sources unavailable"
+        for row in failure['initial_diversity']) + '. '
+        'Thus the final comparison did not produce different executable treatments. '
+        'Identical scores and zero-width intervals are not evidence of general equivalence.')
+    text(f"The {sum(r['logical_requests'] for r in failure['request_counts'])} logical requests "
+         f"included {sum(r['cache_hits'] for r in failure['request_counts'])} cache hits. "
+         'Repeated cached responses are not independent fresh model calls. Alternative '
+         'candidate fields were inspected only for text and grammar; they were not '
+         'executed or rescored. The frozen primary results remain unchanged.')
     text('7. Discussion and limits', 'Heading1')
     text('Neither model showed an observed targeted-versus-uniform advantage. For 4B, '
          'that contrast is blocked by a shared output-interface failure: every final '
@@ -492,7 +519,6 @@ def render(summary_path, output):
          'code, and an evidence manifest. The independent audit must pass before this '
          'builder accepts the summary. Protocol deviations and assisted-reference results '
          'must accompany the final evidence package.')
-    story.append(PageBreak())
     text('References', 'Heading1')
     for index, (title, url) in enumerate(REFERENCES, 1):
         text(f'[{index}] {title} {url}')
