@@ -303,11 +303,15 @@ def render(summary_path, output):
          'round; unsuccessful or invalid programs remain in the analysis. The two arms '
          "share each round's sampling seed and counterbalance execution order. Each "
          'prompt contains the current program and current feedback, without accumulated chat.')
-    text('Training, development validation, and test episodes are separate. Targeting ranks '
+    text('Training, development validation, and test board identities are separate. Targeting ranks '
          'predefined behavioral categories by training error rate. It prioritizes failures '
          'from the worst category and fills remaining slots from other failures. Both arms '
          'receive fewer than six examples when too few failures exist. With no failures, '
          'the prompt supplies no failing example. Actual costs are reported separately.')
+    text('The split holds out boards, not primitive motion inputs: zero board keys '
+         'are shared, but 11,810 of 12,150 test car-forecast inputs (97.2%) also occur '
+         'in training. The tuple is (x, timer, p, k). Supplied rules and familiar inputs '
+         'make this a narrow repair test, not evidence of unseen-dynamics generalization.')
     story.append(PageBreak())
     text('3. Held-out forecast results', 'Heading1')
     figure(0, 'Figure 1. Each thin line is one initial-program family; the thick line is the '
@@ -390,7 +394,8 @@ def render(summary_path, output):
          'A negative result is limited to this selection rule, feedback budget, interface, '
          'and models. The supplied rules and correct examples are human/simulator assistance.')
     text('Only Freeway and two sizes in one model family are tested. The generated motion '
-         'function is simpler than a full world model. The fixed controller can limit or '
+         'function is simpler than a full world model. Most primitive test inputs also '
+         'occur in training despite disjoint boards. The fixed controller can limit or '
          'mask forecast improvements. Tick rounding creates a coarse latency threshold. '
          'The initial programs, not episodes, determine how much independent evidence '
          'we have about generation and repair variability. Earlier studies are development '
