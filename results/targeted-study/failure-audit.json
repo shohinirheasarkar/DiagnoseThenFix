@@ -1,0 +1,4308 @@
+{
+  "post_hoc": true,
+  "primary_results_changed": false,
+  "new_model_calls": 0,
+  "alternative_program_executions": 0,
+  "scope": "saved response structure, exact text identity, feedback and cache provenance",
+  "interpretation": "Static grammar acceptance is not correctness or gameplay evidence. Identical outputs or unavailable programs limit the intervention; zero outcome contrasts do not establish diagnosis is ineffective.",
+  "arm_summary": [
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "branch": "original",
+      "programs": 20,
+      "strict_valid": 19,
+      "strict_source_available": 20,
+      "json_key_sets": {
+        "[\"code\",\"confidence\"]": 20
+      },
+      "strict_errors": {
+        "none": 19,
+        "Expected one forecast(x, timer, p, k) function": 1
+      },
+      "alternative_candidate_strings": 0,
+      "alternative_static_grammar_accepted": 0
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "branch": "uniform",
+      "programs": 20,
+      "strict_valid": 17,
+      "strict_source_available": 17,
+      "json_key_sets": {
+        "[\"code\",\"confidence\"]": 17,
+        "[\"candidate\",\"examples\"]": 2,
+        "[\"candidate\",\"confidence\"]": 1
+      },
+      "strict_errors": {
+        "none": 17,
+        "malformed: missing fields": 3
+      },
+      "alternative_candidate_strings": 3,
+      "alternative_static_grammar_accepted": 3
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "branch": "targeted",
+      "programs": 20,
+      "strict_valid": 17,
+      "strict_source_available": 17,
+      "json_key_sets": {
+        "[\"code\",\"confidence\"]": 17,
+        "[\"candidate\",\"confidence\"]": 2,
+        "[\"candidate\",\"examples\"]": 1
+      },
+      "strict_errors": {
+        "none": 17,
+        "malformed: missing fields": 3
+      },
+      "alternative_candidate_strings": 3,
+      "alternative_static_grammar_accepted": 2
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "branch": "original",
+      "programs": 20,
+      "strict_valid": 20,
+      "strict_source_available": 20,
+      "json_key_sets": {
+        "[\"code\",\"confidence\"]": 20
+      },
+      "strict_errors": {
+        "none": 20
+      },
+      "alternative_candidate_strings": 0,
+      "alternative_static_grammar_accepted": 0
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "branch": "uniform",
+      "programs": 20,
+      "strict_valid": 0,
+      "strict_source_available": 0,
+      "json_key_sets": {
+        "[\"candidate\",\"confidence\"]": 20
+      },
+      "strict_errors": {
+        "malformed: missing fields": 20
+      },
+      "alternative_candidate_strings": 20,
+      "alternative_static_grammar_accepted": 20
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "branch": "targeted",
+      "programs": 20,
+      "strict_valid": 0,
+      "strict_source_available": 0,
+      "json_key_sets": {
+        "[\"candidate\",\"confidence\"]": 20
+      },
+      "strict_errors": {
+        "malformed: missing fields": 20
+      },
+      "alternative_candidate_strings": 20,
+      "alternative_static_grammar_accepted": 20
+    }
+  ],
+  "initial_diversity": [
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "programs": 20,
+      "distinct_prompt_texts": 1,
+      "distinct_sampling_seeds": 20,
+      "distinct_request_keys": 20,
+      "distinct_raw_contents": 13,
+      "distinct_available_sources": 13
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "programs": 20,
+      "distinct_prompt_texts": 1,
+      "distinct_sampling_seeds": 20,
+      "distinct_request_keys": 20,
+      "distinct_raw_contents": 4,
+      "distinct_available_sources": 1
+    }
+  ],
+  "request_counts": [
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "branch": "original",
+      "logical_requests": 20,
+      "cache_hits": 0,
+      "distinct_request_keys": 20,
+      "distinct_raw_contents": 13
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "branch": "targeted",
+      "logical_requests": 40,
+      "cache_hits": 4,
+      "distinct_request_keys": 40,
+      "distinct_raw_contents": 27
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "branch": "uniform",
+      "logical_requests": 40,
+      "cache_hits": 5,
+      "distinct_request_keys": 40,
+      "distinct_raw_contents": 25
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "branch": "original",
+      "logical_requests": 20,
+      "cache_hits": 0,
+      "distinct_request_keys": 20,
+      "distinct_raw_contents": 4
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "branch": "targeted",
+      "logical_requests": 40,
+      "cache_hits": 10,
+      "distinct_request_keys": 40,
+      "distinct_raw_contents": 5
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "branch": "uniform",
+      "logical_requests": 40,
+      "cache_hits": 10,
+      "distinct_request_keys": 40,
+      "distinct_raw_contents": 4
+    }
+  ],
+  "final_pairs": [
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 0,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 0,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 0,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 1,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 1,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 1,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 2,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 2,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 2,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 3,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 3,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 3,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 4,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 4,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 4,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 5,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 5,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 5,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 6,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 6,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 6,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 7,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 7,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 7,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 8,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 8,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 8,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 9,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 9,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 9,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 10,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 10,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 10,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 11,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 11,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 11,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 12,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 12,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 12,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 13,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 13,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 13,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 14,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 14,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 14,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 15,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 15,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 15,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 16,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 16,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 16,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 17,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 17,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 17,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 18,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 18,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 18,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 19,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 19,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 19,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 0,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 0,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 0,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 1,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 1,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 1,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 2,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 2,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 2,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 3,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 3,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 3,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 4,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 4,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 4,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 5,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 5,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 5,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 6,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 6,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 6,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 7,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 7,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 7,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 8,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 8,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 8,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 9,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 9,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 9,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 10,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 10,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 10,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 11,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 11,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 11,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 12,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 12,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 12,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 13,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 13,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 13,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 14,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 14,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 14,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 15,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 15,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 15,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 16,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 16,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 16,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 17,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 17,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 17,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 18,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 18,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 18,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 19,
+      "left": "original",
+      "right": "uniform",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 19,
+      "left": "original",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 19,
+      "left": "uniform",
+      "right": "targeted",
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    }
+  ],
+  "feedback_pairs": [
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 0,
+      "round": 1,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 0,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 1,
+      "round": 1,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 1,
+      "round": 2,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": true,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 2,
+      "round": 1,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 2,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 3,
+      "round": 1,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 3,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 4,
+      "round": 1,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 4,
+      "round": 2,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": true,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 5,
+      "round": 1,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 5,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 6,
+      "round": 1,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 6,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 7,
+      "round": 1,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 7,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 8,
+      "round": 1,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 8,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 9,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 9,
+      "round": 2,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 10,
+      "round": 1,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 10,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 11,
+      "round": 1,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 11,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 12,
+      "round": 1,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 12,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 13,
+      "round": 1,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 13,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 14,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 14,
+      "round": 2,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 15,
+      "round": 1,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 15,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 16,
+      "round": 1,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 16,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 17,
+      "round": 1,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": false,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 17,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 18,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": true,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 18,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 19,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 19,
+      "round": 2,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": true,
+      "both_sources_unavailable": false,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 0,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 0,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 1,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 1,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 2,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 2,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 3,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 3,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 4,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 4,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 5,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 5,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 6,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 6,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 7,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 7,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 8,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 8,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 9,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 9,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 10,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 10,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 11,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 11,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 12,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 12,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 13,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 13,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": false,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 14,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 14,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 15,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 15,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 16,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 16,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 17,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 17,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 18,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 18,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 19,
+      "round": 1,
+      "same_examples_in_order": true,
+      "same_example_ids": true,
+      "uniform_examples": 0,
+      "targeted_examples": 0,
+      "same_prompt": true,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": true
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 19,
+      "round": 2,
+      "same_examples_in_order": false,
+      "same_example_ids": false,
+      "uniform_examples": 6,
+      "targeted_examples": 6,
+      "same_prompt": false,
+      "same_available_source": false,
+      "both_sources_unavailable": true,
+      "same_raw_content": true,
+      "same_request_key": false
+    }
+  ],
+  "final_payloads": [
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 0,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 0,
+      "branch": "uniform",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 0,
+      "branch": "targeted",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 1,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 1,
+      "branch": "targeted",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 1,
+      "branch": "uniform",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 2,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 2,
+      "branch": "uniform",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 2,
+      "branch": "targeted",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 3,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 3,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": "Expected one forecast(x, timer, p, k) function",
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 3,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "examples"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 4,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 4,
+      "branch": "uniform",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 4,
+      "branch": "targeted",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 0,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 0,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 0,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 1,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 1,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 1,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 2,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 2,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 2,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 3,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 3,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 3,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 4,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 4,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 4,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 5,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 5,
+      "branch": "targeted",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 5,
+      "branch": "uniform",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 6,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 6,
+      "branch": "uniform",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 6,
+      "branch": "targeted",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 7,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 7,
+      "branch": "targeted",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 7,
+      "branch": "uniform",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 8,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 8,
+      "branch": "uniform",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 8,
+      "branch": "targeted",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 9,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 9,
+      "branch": "targeted",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 9,
+      "branch": "uniform",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 5,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 5,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 5,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 6,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 6,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 6,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 7,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 7,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 7,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 8,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 8,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 8,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 9,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 9,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 9,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 10,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 10,
+      "branch": "uniform",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 10,
+      "branch": "targeted",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 11,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 11,
+      "branch": "targeted",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 11,
+      "branch": "uniform",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 12,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 12,
+      "branch": "uniform",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 12,
+      "branch": "targeted",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 13,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 13,
+      "branch": "targeted",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 13,
+      "branch": "uniform",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 14,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 14,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "examples"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 14,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "examples"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 10,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 10,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 10,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 11,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 11,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 11,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 12,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 12,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 12,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 13,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 13,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 13,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 14,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 14,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 14,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 15,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 15,
+      "branch": "targeted",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 15,
+      "branch": "uniform",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 16,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": "Expected one forecast(x, timer, p, k) function",
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 16,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 16,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 17,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 17,
+      "branch": "targeted",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 17,
+      "branch": "uniform",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 18,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 18,
+      "branch": "uniform",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 18,
+      "branch": "targeted",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 19,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 19,
+      "branch": "targeted",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:1.7b-q4_K_M",
+      "program_id": 19,
+      "branch": "uniform",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 15,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 15,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 15,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 16,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 16,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 16,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 17,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 17,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 17,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 18,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 18,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 18,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 19,
+      "branch": "original",
+      "json_keys": [
+        "code",
+        "confidence"
+      ],
+      "strict_source_available": true,
+      "strict_error": null,
+      "alternative_candidate_string": false,
+      "alternative_static_grammar_accepted": false,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 19,
+      "branch": "targeted",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    },
+    {
+      "model": "qwen3:4b-q4_K_M",
+      "program_id": 19,
+      "branch": "uniform",
+      "json_keys": [
+        "candidate",
+        "confidence"
+      ],
+      "strict_source_available": false,
+      "strict_error": "malformed: missing fields",
+      "alternative_candidate_string": true,
+      "alternative_static_grammar_accepted": true,
+      "alternative_static_grammar_error": null,
+      "alternative_executed": false
+    }
+  ],
+  "input_sha256": {
+    "manifest.json": "fc756b112a883fd4834d645bb7f967bff2c8dd47a7f98507206bea89ba8777b2",
+    "candidates.jsonl": "29db98c8d1cf64f5f6af7beaa2c7e2686a19a77a11d569a90ebedfee5480d64c",
+    "audit.json": "7231bbb3b669c1555fff44ae8154c8459b37b7d2f8e100cc367ed581ff012a49"
+  }
+}

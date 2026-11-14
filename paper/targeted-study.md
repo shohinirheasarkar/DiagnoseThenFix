@@ -47,6 +47,13 @@ training cases only. Validation is for development gates. Test outcomes do not
 change prompts, sample sizes, category rules, or the controller. Earlier study data
 are development context and are never pooled with this experiment.
 
+The split holds out board identities, not primitive motion inputs. There are zero
+shared training/test board keys, but 11,810 of 12,150 test car-forecast inputs
+(x, timer, p, k; 97.2%) also occur in training. This finite-physics task primarily
+tests repair over familiar inputs in different boards. It does not establish
+generalization to unseen dynamics. Seen/unseen-input scores are descriptive checks,
+not new primary endpoints.
+
 ## Evaluation
 
 The planned frozen test has 100 held-out boards and horizons 1 through 10. The

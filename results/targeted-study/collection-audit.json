@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "scope": "collection",
+  "counts": {
+    "candidates": 120,
+    "requests": 200
+  },
+  "input_sha256": {
+    "manifest.json": "fc756b112a883fd4834d645bb7f967bff2c8dd47a7f98507206bea89ba8777b2",
+    "train.json": "38b24bc4207636e5827e9e61a8319063ae8857d07cd24fc961cc105641c4fbf3",
+    "validation.json": "ee0fc73b95d9c5a667f6605d8b5b86f3d972984e2c88aa00ffa503118e6f1ed6",
+    "test.json": "5cb6df93b17d731cf41794b3276121477f6a4dce73a4f5031c886de2dd3cf864",
+    "candidates.jsonl": "29db98c8d1cf64f5f6af7beaa2c7e2686a19a77a11d569a90ebedfee5480d64c"
+  }
+}
