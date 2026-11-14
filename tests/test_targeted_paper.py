@@ -47,3 +47,48 @@ def test_old_paper_is_protected(tmp_path):
     with pytest.raises(ValueError, match='PDF'):
         safe_output(tmp_path / 'new.txt')
     assert safe_output(tmp_path / 'new.pdf') == tmp_path / 'new.pdf'
+
+
+def test_unapproved_evidence_cannot_render(tmp_path):
+    from paper.build_targeted import collect_evidence
+    with pytest.raises(ValueError, match='audit'):
+        collect_evidence({'audit': {'passed': False}}, tmp_path)
+
+
+def test_compressed_records_costs_and_feedback(tmp_path):
+    import gzip
+    from paper.build_targeted import collect_evidence
+    common = {'model': 'test-model', 'program_id': 0}
+    forecast = []
+    live = []
+    candidates = []
+    trace = {'trace': [{'response': {'cpu_seconds': .01, 'program_executable': True,
+                                    'planned_delay_ticks': 1, 'actual_delay_ticks': 1}}]}
+    with gzip.open(tmp_path / 'trace.json.gz', 'wt') as handle:
+        json.dump(trace, handle)
+    for branch in ('original', 'uniform', 'targeted'):
+        forecast.extend([{**common, 'branch': branch, 'correct': correct, 'valid': True}
+                         for correct in (True, False)])
+        live.append({**common, 'branch': branch, 'regime': 'native', 'goals': 0,
+                     'censored': False, 'trace_file': 'trace.json.gz'})
+        candidates.append({**common, 'branch': branch, 'round': int(branch != 'original'),
+                           'error': None, 'feedback': {'target_category': 'wrap',
+                                                      'examples': [{'id': 'a'}]},
+                           'response': {'wall_seconds': 10, 'cache_hit': branch == 'targeted',
+                                        'raw': {'eval_count': 20, 'prompt_eval_count': 30}}})
+    for filename, rows in [('forecast.jsonl.gz', forecast), ('live.jsonl', live),
+                           ('candidates.jsonl', candidates)]:
+        opener = gzip.open if filename.endswith('.gz') else open
+        with opener(tmp_path / filename, 'wt') as handle:
+            handle.writelines(json.dumps(row) + '\n' for row in rows)
+    summary = {'audit': {'passed': True}, 'forecast_contrasts': [],
+               'board_macro_contrasts': [], 'live_contrasts': [], 'protocol': {},
+               'forecast_file': 'forecast.jsonl.gz', 'live_file': 'live.jsonl',
+               'candidates_file': 'candidates.jsonl'}
+    result = collect_evidence(summary, tmp_path)
+    assert result['forecasts'][('test-model', 0, 'targeted')] == [.5]
+    assert result['costs'][('test-model', 'targeted')]['seconds'] == 10
+    assert result['costs'][('test-model', 'targeted')]['fresh_seconds'] == 0
+    assert result['costs'][('test-model', 'uniform')]['fresh_seconds'] == 10
+    assert result['overlaps'] == [1.]
+    assert result['counters']['delay_mismatches'] == 0
