@@ -1,0 +1,16 @@
+{
+  "pdf_sha256": "87fc894f82497316ca58e19b9fd227c86cd7ac6070be3db94fe19e45b8bd5dbc",
+  "pages": 6,
+  "visually_inspected_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "result": "pass: readable text and figures; no clipping, overlapping content or orphan headings",
+  "checked_at": "2026-11-14T16:27:00.296741+00:00",
+  "tests": "542 passed; latest paper-only checks 19 passed; Ruff passed",
+  "original_archives": "unchanged from 7ce10818a98fb7131d6a6389626c9be5e9ff89e7"
+}
