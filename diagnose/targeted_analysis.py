@@ -4,6 +4,8 @@ from collections import defaultdict
 
 import numpy as np
 
+from .analysis import holm
+
 BRANCHES = ('original', 'uniform', 'targeted')
 CONTRASTS = (('uniform', 'targeted'), ('original', 'uniform'), ('original', 'targeted'))
 
@@ -51,8 +53,36 @@ def _grid(rows, cells, metric):
                      for p in programs]), programs, keys
 
 
+
+def paired_signflip(differences, seed=0, draws=10000):
+    """Two-sided paired sign-flip test assumes exchangeability under the null."""
+    values = np.asarray(differences, dtype=float)
+    if values.ndim != 1 or not len(values) or not np.isfinite(values).all():
+        raise ValueError('Need finite paired differences')
+    if not isinstance(draws, int) or draws < 100:
+        raise ValueError('Need at least 100 Monte Carlo draws')
+    observed = abs(values.sum())
+    threshold = observed - 1e-12
+    n = len(values)
+    if n <= 20:
+        extreme, total = 0, 2 ** n
+        for start in range(0, total, 8192):
+            ids = np.arange(start, min(start + 8192, total), dtype=np.uint64)
+            signs = ((ids[:, None] >> np.arange(n, dtype=np.uint64)) & 1).astype(float) * 2 - 1
+            extreme += int((np.abs((signs * values).sum(axis=1)) >= threshold).sum())
+        return {'p_value': extreme / total, 'test': 'exact two-sided paired sign-flip',
+                'permutations': total}
+    rng = np.random.default_rng(seed)
+    extreme = 0
+    for start in range(0, draws, 8192):
+        signs = rng.integers(0, 2, size=(min(8192, draws - start), n)) * 2 - 1
+        extreme += int((np.abs((signs * values).sum(axis=1)) >= threshold).sum())
+    return {'p_value': (extreme + 1) / (draws + 1),
+            'test': 'Monte Carlo two-sided paired sign-flip; plus-one correction',
+            'permutations': draws}
+
 def forecast_contrasts(rows, seed=0, replicates=5000, expected_programs=None,
-                       board_macro=False):
+                       board_macro=False, expected_cells=None):
     """Intervals describe program variability conditional on this fixed test bank."""
     _check_options(replicates)
     strata = defaultdict(list)
@@ -71,6 +101,8 @@ def forecast_contrasts(rows, seed=0, replicates=5000, expected_programs=None,
         grid, programs, cells = _grid(records, ('state_id', 'horizon'), 'correct')
         if expected_programs is not None and set(programs) != set(expected_programs[model]):
             raise ValueError('Observed programs differ from the frozen expected cohort')
+        if expected_cells is not None and set(cells) != {tuple(c) for c in expected_cells}:
+            raise ValueError('Observed forecast cells differ from the frozen expected cohort')
         means = grid.mean(axis=2)
         if board_macro:
             board_for_cell = {}
@@ -88,16 +120,22 @@ def forecast_contrasts(rows, seed=0, replicates=5000, expected_programs=None,
         for left, right in CONTRASTS:
             differences = means[:, BRANCHES.index(right)] - means[:, BRANCHES.index(left)]
             output.append({'model': model, 'contrast': f'{right}-{left}',
-                           'primary': left == 'uniform', 'test_cells': len(cells),
+                           'primary': left == 'uniform' and not board_macro, 'test_cells': len(cells),
                            'weighting': 'equal-board' if board_macro else 'equal-case',
                            'uncertainty': 'paired program bootstrap; fixed held-out bank',
                            **_interval(differences[draws].mean(axis=1), differences.mean(),
                                        len(programs), len(programs) * len(cells))})
+            if left == 'uniform' and not board_macro:
+                output[-1].update(paired_signflip(differences, seed=seed))
+    primary = [r for r in output if r['primary'] and not board_macro]
+    for row, adjusted in zip(primary, holm([r['p_value'] for r in primary])):
+        row['p_value_holm'] = adjusted
+        row['holm_family_size'] = len(primary)
     return output
 
 
 def live_contrasts(rows, metric='goals', seed=0, replicates=5000,
-                   expected_programs=None, expected_seeds=None):
+                   expected_programs=None, expected_seeds=None, expected_regimes=None):
     """Resample programs and game seeds independently, retaining paired branches."""
     _check_options(replicates)
     strata = defaultdict(list)
@@ -106,6 +144,10 @@ def live_contrasts(rows, metric='goals', seed=0, replicates=5000,
     observed_models = {row['model'] for records in strata.values() for row in records}
     if expected_programs is not None and observed_models != set(expected_programs):
         raise ValueError('Observed models differ from the frozen expected cohort')
+    if expected_regimes is not None:
+        expected = {(m, r) for m in observed_models for r in expected_regimes}
+        if set(strata) != expected:
+            raise ValueError('Observed live regimes differ from the frozen expected cohort')
     output = []
     rng = np.random.default_rng(seed)
     for (model, regime), records in sorted(strata.items()):

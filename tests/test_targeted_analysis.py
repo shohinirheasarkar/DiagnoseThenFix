@@ -123,3 +123,47 @@ def test_macro_board_weighting():
 def test_expected_live_seeds():
     with pytest.raises(ValueError, match='seeds'):
         live_contrasts(games(), expected_seeds=range(6), replicates=100)
+
+
+def test_entire_missing_forecast_cell_is_detected():
+    rows = forecasts()
+    with pytest.raises(ValueError, match='cells'):
+        forecast_contrasts(rows, expected_cells=[(s, k) for s in range(4) for k in (1, 2)],
+                           replicates=100)
+
+
+def test_entire_missing_live_regime_is_detected():
+    with pytest.raises(ValueError, match='regimes'):
+        live_contrasts(games(), expected_regimes=['actual', 'delay', 'zero'], replicates=100)
+
+
+def test_signflip_exact_known_results():
+    from diagnose.targeted_analysis import paired_signflip
+    assert paired_signflip([0, 0, 0])['p_value'] == 1
+    assert paired_signflip([1, 1, 1, 1])['p_value'] == .125
+    assert paired_signflip([1, -1])['p_value'] == 1
+    assert paired_signflip([1, 1, 1, 1])['permutations'] == 16
+
+
+def test_signflip_montecarlo_reproducible_and_plus_one():
+    from diagnose.targeted_analysis import paired_signflip
+    result = paired_signflip([1] * 21, seed=4)
+    assert result == paired_signflip([1] * 21, seed=4)
+    assert result['p_value'] >= 1 / 10001
+    assert result['permutations'] == 10000
+
+
+def test_holm_only_primary_two_model_family():
+    rows = forecast_contrasts(forecasts(), replicates=100)
+    for row in rows:
+        if row['primary']:
+            assert row['holm_family_size'] == 2
+            assert row['p_value_holm'] == .5
+            assert row['p_value'] == .25
+        else:
+            assert 'p_value' not in row
+    source = forecasts()
+    for row in source:
+        row['board_id'] = row['state_id']
+    sensitivity = forecast_contrasts(source, board_macro=True, replicates=100)
+    assert all('p_value' not in row for row in sensitivity)
