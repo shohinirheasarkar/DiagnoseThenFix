@@ -31,14 +31,16 @@ Every initial program is retained. Its two repair branches each receive at most 
 repair rounds. Ordinary feedback samples true failures uniformly. Targeted feedback
 samples true failures from the weakest predefined behavioral category. Category
 rules, tie breaking, sampling, and behavior when too few failures exist must be
-fixed before collection. The input template and generation caps are shared. The
-chosen examples differ. Actual tokens, elapsed time, and feedback-selection cost
+fixed before collection. Each round uses at most six failure examples, fewer when insufficient failures
+exist. The input template and generation caps are shared. The chosen examples differ.
+Both branches use the same sampling seed for a given paired round; branch order is
+counterbalanced. Each prompt contains the current candidate and current feedback,
+without an accumulated conversation history. Actual tokens, elapsed time, and feedback-selection cost
 are reported rather than assumed equal.
 
 The final round is evaluated even if it regresses. No best-of-test selection is
 allowed. Failed execution remains a failure, not a silently excluded observation.
-The implementation must specify whether feedback history is accumulated and how
-zero-failure branches are treated.
+The frozen implementation specifies how zero-failure branches are treated.
 
 Fresh source episodes define training, validation, and test splits. Feedback uses
 training cases only. Validation is for development gates. Test outcomes do not
@@ -60,9 +62,12 @@ The generated function is a component, not an autonomous LLM policy.
 
 Generation and repair are preparation costs. Execution is a separate deployment
 cost. We record actual execution time and rerun trajectories under predefined delay
-stress tests. Injected delays are synthetic conditions, not measurements of LLM
-latency. Numerical delay values and time-accounting rules remain pending protocol
-freeze.
+stress tests. The three regimes are zero delay, measured native execution delay, and a fixed
+two-tick delay. Each game tick is one second. Native delay uses ceiling rounding,
+so a positive subsecond execution still consumes one tick. This coarse time model
+is a limitation: it does not resolve small speed differences. Native timing runs
+are isolated from competing task workloads. Injected delays are synthetic
+conditions, not measurements of LLM latency.
 
 ## Analysis
 
@@ -70,8 +75,10 @@ The independent model samples are initial program generations. Thousands of
 forecasts and episodes do not create thousands of independent model samples.
 Uncertainty must preserve the three-way pairing and account for shared test boards
 and environment seeds. Per-model effects are reported; pooled summaries cannot hide
-opposite effects. The final analysis specification determines intervals and any
-multiplicity adjustments before test evaluation.
+opposite effects. The primary score weights test cases equally. Board-macro accuracy is a
+sensitivity analysis. Program-paired bootstrap intervals accompany sign-flip
+tests; Holm adjustment covers the two primary per-model tests. Closed-loop
+intervals additionally account for shared environment seeds.
 
 Mechanism checks report the diagnosed categories, overlap between selected feedback
 sets, repair validity, training-to-test changes, and regression rates. They explain
