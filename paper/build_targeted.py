@@ -109,22 +109,38 @@ def collect_evidence(summary, root):
         forecasts[key][1] += 1
         counters['forecast_cases'] += 1
         counters['invalid_forecasts'] += not row['valid']
+    trace_shards = defaultdict(dict)
+    identity = ('model', 'program_id', 'branch', 'regime', 'env_seed')
+    metrics = ('goals', 'collisions', 'final_lane', 'censored')
+    live_keys = set()
     for row in read_rows(paths['live_file']):
-        key = (row['model'], row['program_id'], row['branch'], row['regime'])
-        goals[key].append(row['goals'])
+        key = tuple(row[field] for field in identity)
+        if key in live_keys:
+            raise ValueError('Duplicate live metric key')
+        live_keys.add(key)
+        trace_shards[row['trace_file']][key] = row
+        goals[key[:4]].append(row['goals'])
         counters['episodes'] += 1
         counters['censored_episodes'] += bool(row['censored'])
-        trace_path = root / row['trace_file']
-        opener = gzip.open if trace_path.suffix == '.gz' else open
-        with opener(trace_path, 'rt') as handle:
-            record = json.load(handle)
-        for frame in record['trace']:
-            response = frame['response']
-            timing[(row['model'], row['regime'])].append(response['cpu_seconds'])
-            counters['delay_mismatches'] += (response['actual_delay_ticks'] !=
-                                             response['planned_delay_ticks'])
-            counters['decisions'] += 1
-            counters['fallback_decisions'] += not response['program_executable']
+    for filename, expected in trace_shards.items():
+        seen = set()
+        for row in read_rows(root / filename):
+            key = tuple(row[field] for field in identity)
+            if key not in expected or key in seen:
+                raise ValueError('Unexpected or duplicate trace key')
+            if any(row[field] != expected[key][field] for field in metrics):
+                raise ValueError('Trace and flat metrics disagree')
+            seen.add(key)
+            for frame in row['record']['trace']:
+                response = frame['response']
+                timing[(row['model'], row['regime'])].append(response['cpu_seconds'])
+                counters['delay_mismatches'] += (response['actual_delay_ticks'] !=
+                                                 response['planned_delay_ticks'])
+                counters['decisions'] += 1
+                counters['fallback_decisions'] += not response['program_executable']
+        if seen != set(expected):
+            raise ValueError('Trace shard is missing live metric keys')
+        paths[f'trace_shard:{filename}'] = root / filename
     for row in read_rows(paths['candidates_file']):
         key = (row['model'], row['branch'])
         response = row['response']
@@ -392,7 +408,11 @@ def render(summary_path, output):
     text('Evidence receipt', 'Heading1')
     receipt = input_receipt([summary_path, *data['paths'].values()])
     for path, sha in receipt.items():
-        text(f'{Path(path).name}: {sha}', 'Code')
+        if path in {str(Path(value).resolve()) for key, value in data['paths'].items()
+                    if not key.startswith('trace_shard:')} | {str(summary_path.resolve())}:
+            text(f'{Path(path).name}: {sha}', 'Code')
+    text(f'All {len(receipt)} input hashes, including trace shards, are saved in the '
+         'companion evidence JSON file.')
     text('This paper describes the new targeted-repair study only. Previous paper and '
          'evidence archives remain separate. A passed audit checks records and scoring; '
          'it is not a guarantee of scientific novelty or publication acceptance.')

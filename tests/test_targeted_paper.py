@@ -64,18 +64,19 @@ def test_compressed_records_costs_and_feedback(tmp_path):
     candidates = []
     trace = {'trace': [{'response': {'cpu_seconds': .01, 'program_executable': True,
                                     'planned_delay_ticks': 1, 'actual_delay_ticks': 1}}]}
-    with gzip.open(tmp_path / 'trace.json.gz', 'wt') as handle:
-        json.dump(trace, handle)
     for branch in ('original', 'uniform', 'targeted'):
         forecast.extend([{**common, 'branch': branch, 'correct': correct, 'valid': True}
                          for correct in (True, False)])
         live.append({**common, 'branch': branch, 'regime': 'native', 'goals': 0,
-                     'censored': False, 'trace_file': 'trace.json.gz'})
+                     'censored': False, 'trace_file': 'trace.jsonl.gz', 'env_seed': 3,
+                     'collisions': 0, 'final_lane': 1})
         candidates.append({**common, 'branch': branch, 'round': int(branch != 'original'),
                            'error': None, 'feedback': {'target_category': 'wrap',
                                                       'examples': [{'id': 'a'}]},
                            'response': {'wall_seconds': 10, 'cache_hit': branch == 'targeted',
                                         'raw': {'eval_count': 20, 'prompt_eval_count': 30}}})
+    with gzip.open(tmp_path / 'trace.jsonl.gz', 'wt') as handle:
+        handle.writelines(json.dumps({**row, 'record': trace}) + '\n' for row in live)
     for filename, rows in [('forecast.jsonl.gz', forecast), ('live.jsonl', live),
                            ('candidates.jsonl', candidates)]:
         opener = gzip.open if filename.endswith('.gz') else open
@@ -92,3 +93,10 @@ def test_compressed_records_costs_and_feedback(tmp_path):
     assert result['costs'][('test-model', 'uniform')]['fresh_seconds'] == 10
     assert result['overlaps'] == [1.]
     assert result['counters']['delay_mismatches'] == 0
+
+    assert result['counters']['decisions'] == 3
+    assert len([k for k in result['paths'] if k.startswith('trace_shard:')]) == 1
+    live[0]['goals'] = 1
+    (tmp_path / 'live.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in live))
+    with pytest.raises(ValueError, match='disagree'):
+        collect_evidence(summary, tmp_path)
